@@ -106,11 +106,7 @@
       "tests": 48,
       "coverage": 87,
       "specsList": [
-        { "id": "FORGE-001", "title": "Template System", "status": "implemented", "priority": "P0" },
-        { "id": "FORGE-002", "title": "Code Generation", "status": "implemented", "priority": "P0" },
-        { "id": "FORGE-003", "title": "Project Scaffolding", "status": "implemented", "priority": "P1" },
-        { "id": "FORGE-004", "title": "AST Manipulation", "status": "implemented", "priority": "P2" },
-        { "id": "FORGE-005", "title": "Custom Templates", "status": "implemented", "priority": "P1" }
+        { "id": "FORGE-001", "title": "Template System", "status": "implemented", "priority": "P0" }
       ]
     },
     {
@@ -120,10 +116,7 @@
       "tests": 38,
       "coverage": 92,
       "specsList": [
-        { "id": "EVAL-001", "title": "Metrics Collection", "status": "implemented", "priority": "P0" },
-        { "id": "EVAL-002", "title": "Benchmarks", "status": "implemented", "priority": "P1" },
-        { "id": "EVAL-003", "title": "A/B Testing", "status": "implemented", "priority": "P1" },
-        { "id": "EVAL-004", "title": "CI/CD Integration", "status": "implemented", "priority": "P2" }
+        { "id": "EVAL-001", "title": "Metrics Collection", "status": "implemented", "priority": "P0" }
       ]
     },
     {
@@ -133,9 +126,7 @@
       "tests": 34,
       "coverage": 96,
       "specsList": [
-        { "id": "TYPE-001", "title": "Branded Types", "status": "implemented", "priority": "P0" },
-        { "id": "TYPE-002", "title": "Result Type", "status": "implemented", "priority": "P0" },
-        { "id": "TYPE-003", "title": "Validation Utils", "status": "implemented", "priority": "P1" }
+        { "id": "TYPE-001", "title": "Branded Types", "status": "implemented", "priority": "P0" }
       ]
     },
     {
@@ -145,12 +136,7 @@
       "tests": 52,
       "coverage": 86,
       "specsList": [
-        { "id": "INFRA-001", "title": "Multi-Cloud Support", "status": "implemented", "priority": "P0" },
-        { "id": "INFRA-002", "title": "State Management", "status": "implemented", "priority": "P0" },
-        { "id": "INFRA-003", "title": "Resource Provisioning", "status": "implemented", "priority": "P1" },
-        { "id": "INFRA-004", "title": "Secret Management", "status": "implemented", "priority": "P0" },
-        { "id": "INFRA-005", "title": "Drift Detection", "status": "implemented", "priority": "P2" },
-        { "id": "INFRA-006", "title": "Plan Generation", "status": "implemented", "priority": "P1" }
+        { "id": "INFRA-001", "title": "Multi-Cloud Support", "status": "implemented", "priority": "P0" }
       ]
     },
     {
@@ -162,8 +148,7 @@
       "specsList": [
         { "id": "GOV-001", "title": "Policy Engine", "status": "implemented", "priority": "P0" },
         { "id": "GOV-002", "title": "RBAC/ABAC", "status": "implemented", "priority": "P1" },
-        { "id": "GOV-003", "title": "Compliance Auditing", "status": "implemented", "priority": "P2" },
-        { "id": "GOV-004", "title": "Auto-Remediation", "status": "planned", "priority": "P2" }
+        { "id": "GOV-003", "title": "Compliance Auditing", "status": "implemented", "priority": "P2" }
       ]
     },
     {
