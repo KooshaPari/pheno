@@ -39,7 +39,9 @@ mod tests {
     }
 
     // Traces to: FR-BDD-002 - Public API exports
+    // Traces to: FR-BDD-002 - Public API exports
     #[test]
+    #[allow(unused_imports)]
     fn test_prelude_imports() {
         use prelude::*;
     }
