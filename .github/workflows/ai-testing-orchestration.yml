@@ -33,17 +33,16 @@ jobs:
           repository: KooshaPari/nanovms
           path: nanovms
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Run Tests
+      - name: Run Tests (Bun + Cargo)
         run: |
-          echo "NanoVMS testing with Vitest + Playwright + Cargo"
-          npm install vitest @playwright/test
-          npx vitest run || true
-          npx playwright test || true
+          echo "NanoVMS: Vitest + Playwright + Cargo"
+          bun add -d vitest @playwright/test
+          bunx playwright install --with-deps
+          bun run vitest run || true
+          bun run playwright test || true
           cargo test --workspace || true
 
   agileplus:
@@ -58,17 +57,16 @@ jobs:
           repository: KooshaPari/AgilePlus
           path: AgilePlus
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Run Tests
+      - name: Run Tests (Bun)
         run: |
-          echo "AgilePlus testing with Vitest + Playwright + Cucumber"
-          npm install vitest @playwright/test @cucumber/cucumber
-          npx vitest run || true
-          npx playwright test || true
+          echo "AgilePlus: Vitest + Playwright + Cucumber"
+          bun add -d vitest @playwright/test @cucumber/cucumber
+          bunx playwright install --with-deps
+          bun run vitest run || true
+          bun run playwright test || true
 
   thegent:
     name: thegent Tests
@@ -82,24 +80,21 @@ jobs:
           repository: KooshaPari/thegent
           path: thegent
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
 
-      - name: Run Tests
+      - name: Run Tests (Bun + uv)
         run: |
-          echo "thegent testing with Vitest + Playwright + pytest"
-          pip install pytest pytest-cov
-          npm install vitest @playwright/test
-          npx vitest run || true
+          echo "thegent: Vitest + Playwright + pytest"
+          bun add -d vitest @playwright/test
+          bunx playwright install --with-deps
+          uv pip install pytest pytest-cov --system
+          bun run vitest run || true
           pytest tests/ -v || true
-          npx playwright test || true
+          bun run playwright test || true
 
   aggregate-results:
     name: Aggregate Results
