@@ -45,7 +45,19 @@ def main():
     parser = argparse.ArgumentParser(description="Phenotype Traceability Checker")
     parser.add_argument("--json", help="Path to traceability.json")
     parser.add_argument("--root", default=".", help="Root directory to scan")
-    parser.add_argument("--strict", action="store_true", help="Fail if any implemented spec is missing code/tests")
+    parser.add_argument(
+        "--strict-annotations",
+        action="store_true",
+        help="Fail (exit nonzero) if any implemented spec is missing code/tests. "
+             "Default is soft mode: prints WARN lines and exits 0. "
+             "See specs/FR-TRACE-BACKFILL-001.md for the pending backfill.",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        dest="strict_annotations",
+        help="Deprecated alias for --strict-annotations.",
+    )
     args = parser.parse_args()
 
     if not args.json:
@@ -86,6 +98,8 @@ def main():
             
             if missing:
                 print(f"❌ {repo_name}: Missing {len(missing)} implementation(s): {', '.join(missing)}")
+                for sid in missing:
+                    print(f"WARN: Missing {sid} ({repo_name})")
                 overall_missing.extend([(repo_name, sid) for sid in missing])
             else:
                 print(f"✅ {repo_name}: All {len(implemented)} implemented specs verified.")
@@ -95,8 +109,15 @@ def main():
     print("\n--- Summary ---")
     if overall_missing:
         print(f"Total missing annotations: {len(overall_missing)}")
-        if args.strict:
+        if args.strict_annotations:
+            print("Strict mode enabled (--strict-annotations): failing.")
             sys.exit(1)
+        else:
+            print(
+                "Soft mode (default): exiting 0. "
+                "Pass --strict-annotations to fail on gaps. "
+                "Backfill tracked in specs/FR-TRACE-BACKFILL-001.md."
+            )
     else:
         print("All traceability checks passed!")
 
