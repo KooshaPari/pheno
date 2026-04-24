@@ -1,5 +1,5 @@
 name: 'Security Checks'
-description: 'Run security scanning tools: cargo-audit, cargo-deny, gitleaks, and Python bandit'
+description: 'Run security scanning tools: cargo-audit, cargo-deny, trufflehog, and Python bandit'
 
 inputs:
   cargo-audit:
@@ -10,8 +10,8 @@ inputs:
     description: 'Run cargo-deny for license/advisory/duplicate checking'
     required: false
     default: 'true'
-  gitleaks:
-    description: 'Run gitleaks for secret detection in git history'
+  trufflehog:
+    description: 'Run trufflehog for secret detection in git history'
     required: false
     default: 'true'
   python-bandit:
@@ -31,7 +31,7 @@ inputs:
     required: false
     default: '.'
   checkout-depth:
-    description: 'Fetch depth (0 required for gitleaks full history)'
+    description: 'Fetch depth (0 required for trufflehog full history)'
     required: false
     default: '1'
 
@@ -60,12 +60,13 @@ runs:
           cargo deny check
         fi
 
-    - name: Gitleaks Secret Detection
-      if: inputs.gitleaks == 'true'
-      uses: gitleaks/gitleaks-action@v2
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-
+    - name: Secrets scan (trufflehog)
+      if: inputs.trufflehog == 'true'
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: ${{ github.event.repository.default_branch }}
+        extra_args: --only-verified
     - name: Setup Python for bandit
       if: inputs.python-bandit == 'true'
       uses: actions/setup-python@v5

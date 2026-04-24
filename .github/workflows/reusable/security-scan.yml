@@ -18,8 +18,8 @@ on:
         required: false
         default: true
         type: boolean
-      gitleaks:
-        description: 'Run gitleaks'
+      trufflehog:
+        description: 'Run trufflehog'
         required: false
         default: true
         type: boolean
@@ -53,7 +53,7 @@ jobs:
         with:
           cargo-audit: ${{ inputs.cargo-audit }}
           cargo-deny: ${{ inputs.cargo-deny }}
-          gitleaks: ${{ inputs.gitleaks }}
+          trufflehog: ${{ inputs.trufflehog }}
           python-bandit: ${{ inputs.python-bandit }}
           bandit-path: ${{ inputs.bandit-path }}
           working-directory: ${{ inputs.workspace }}

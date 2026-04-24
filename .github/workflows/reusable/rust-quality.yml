@@ -88,6 +88,6 @@ jobs:
         with:
           cargo-audit: 'true'
           cargo-deny: 'true'
-          gitleaks: 'false'
+          trufflehog: 'false'
           python-bandit: 'false'
           working-directory: ${{ inputs.workspace }}

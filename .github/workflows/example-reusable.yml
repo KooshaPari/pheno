@@ -26,7 +26,7 @@ jobs:
       workspace: .
       cargo-audit: true
       cargo-deny: true
-      gitleaks: true
+      trufflehog: true
       python-bandit: false
 
   # Example 3: Build release binaries (only on tags)
