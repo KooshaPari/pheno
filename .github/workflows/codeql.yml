@@ -4,21 +4,17 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
   schedule:
-    - cron: '0 12 * * 1'
+    - cron: '17 4 * * 1'
 
 jobs:
   analyze:
-    runs-on: ubuntu-latest
+    uses: KooshaPari/phenoShared/.github/workflows/reusable/codeql.yml@30358ce629168f0e1ec3699706cb73d1f77cb751
     permissions:
+      contents: read
+      actions: read
       security-events: write
-    strategy:
-      matrix:
-        language: [rust]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@v3
-      - uses: github/codeql-action/analyze@v3
+    with:
+      languages: '["rust"]'
+      build-mode: 'autobuild'
