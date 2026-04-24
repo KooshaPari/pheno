@@ -190,7 +190,6 @@ tests/conftest.py
 REPOS_INDEX.md
 SESSION_GAPS_2026_03_29.md
 audit_worktrees.sh
-Cargo.toml
 EXTRACTION_REPORT_CONFIG_CORE.md
 docs/CI-CD-IMPLEMENTATION-SUMMARY.md
 docs/reference/GAP_SWEEP_INDEX.md
