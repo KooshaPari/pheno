@@ -16,6 +16,7 @@ dirs-next = "2"
 zeroize = { version = "1", features = ["derive"] }
 keyring = { version = "3", optional = true }
 agileplus-plugin-core = { git = "https://github.com/KooshaPari/agileplus-plugin-core", optional = true }
+phenotype-migrations = { path = "../../../../../phenotype-shared/crates/phenotype-migrations" }
 
 [features]
 keychain = ["dep:keyring"]

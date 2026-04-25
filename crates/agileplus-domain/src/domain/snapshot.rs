@@ -3,12 +3,15 @@
 //! Traceability: FR-022 / WP01-T002
 
 use chrono::{DateTime, Utc};
+use phenotype_migrations::Versioned;
 use serde::{Deserialize, Serialize};
 
 /// A snapshot of an entity's current state at a given event sequence.
 ///
 /// Created every N events or every T minutes per entity for fast state
 /// reconstruction without replaying the full event stream.
+///
+/// Implements `Versioned` for state migrations via phenotype-migrations.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Snapshot {
     pub id: i64,
@@ -17,6 +20,23 @@ pub struct Snapshot {
     pub state: serde_json::Value,
     pub event_sequence: i64,
     pub created_at: DateTime<Utc>,
+    /// Schema version for state migration. Defaults to "1.0".
+    #[serde(default = "default_version")]
+    pub version: String,
+}
+
+fn default_version() -> String {
+    "1.0".to_string()
+}
+
+impl Versioned for Snapshot {
+    fn version(&self) -> String {
+        self.version.clone()
+    }
+
+    fn set_version(&mut self, v: String) {
+        self.version = v;
+    }
 }
 
 impl Snapshot {
@@ -33,6 +53,7 @@ impl Snapshot {
             state,
             event_sequence,
             created_at: Utc::now(),
+            version: default_version(),
         }
     }
 }

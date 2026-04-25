@@ -11,7 +11,6 @@ description = "Phenotype Infrastructure Kit"
 resolver = "2"
 members = [
     "crates/phenotype-async-traits",
-    "crates/phenotype-bdd",
     "crates/phenotype-cache-adapter",
     "crates/phenotype-config-core",
     "crates/phenotype-contract",
