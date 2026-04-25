@@ -1,4 +1,4 @@
-# git-cliff configuration for phenotype-infrakit (AgilePlus monorepo)
+# git-cliff configuration for phenotype-shared (Phenotype Rust workspace monorepo)
 # https://git-cliff.org/docs/configuration
 
 [changelog]
