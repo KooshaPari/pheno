@@ -230,7 +230,7 @@ class AsyncConnectionPool:
                 self.logger.error(f"Failed to initialize connection pool: {e}")
                 raise
 
-    def _setup_connection(self, conn: asyncpg.Connection) -> None:
+    async def _setup_connection(self, conn: asyncpg.Connection) -> None:
         """
         Setup connection configuration.
         """
@@ -246,7 +246,7 @@ class AsyncConnectionPool:
         # Enable better analyzer
         await conn.execute("SET enable_seqscan = off")
 
-    def _init_connection(self, conn: asyncpg.Connection) -> None:
+    async def _init_connection(self, conn: asyncpg.Connection) -> None:
         """
         Initialize connection with custom settings.
         """
