@@ -12,6 +12,9 @@ on:
       - FUNCTIONAL_REQUIREMENTS.md
       - docs/reference/SPEC_BRANCH_WORKFLOW.md
 
+permissions:
+  contents: read
+
 jobs:
   validate-specs:
     runs-on: ubuntu-latest
@@ -144,4 +147,3 @@ jobs:
               repo: context.repo.repo,
               body: '✅ Spec validation passed! All FR IDs are unique and format is valid.'
             })
-

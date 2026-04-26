@@ -11,6 +11,9 @@ on:
   schedule:
     - cron: '0 5 * * 0'  # Weekly cross-project
 
+permissions:
+  contents: read
+
 jobs:
   orchestration:
     name: Test Orchestration
