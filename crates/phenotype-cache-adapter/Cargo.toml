@@ -15,7 +15,10 @@ lru = "0.12"
 dashmap = "5"
 tokio = { version = "1", features = ["sync", "rt"] }
 tracing = "0.1"
+<<<<<<< Updated upstream
 phenotype-observability = { git = "https://github.com/KooshaPari/PhenoProc.git", branch = "main" }
+=======
+>>>>>>> Stashed changes
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
