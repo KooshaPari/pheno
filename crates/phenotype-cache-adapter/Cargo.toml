@@ -15,7 +15,7 @@ lru = "0.12"
 dashmap = "5"
 tokio = { version = "1", features = ["sync", "rt"] }
 tracing = "0.1"
-phenotype-observability = { git = "https://github.com/KooshaPari/PhenoProc.git", branch = "main" }
+phenotype-observability = { git = "https://github.com/KooshaPari/PhenoProc.git", rev = "086b7f68dbf0e32e9939060c924a6c0d5187ed1f" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }

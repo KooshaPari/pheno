@@ -1922,6 +1922,7 @@ dependencies = [
 [[package]]
 name = "phenotype-observability"
 version = "0.1.0"
+source = "git+https://github.com/KooshaPari/PhenoProc.git?rev=086b7f68dbf0e32e9939060c924a6c0d5187ed1f#086b7f68dbf0e32e9939060c924a6c0d5187ed1f"
 dependencies = [
  "metrics",
  "tracing",
