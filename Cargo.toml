@@ -12,7 +12,6 @@ resolver = "2"
 members = [
     "crates/phenotype-async-traits",
     "crates/phenotype-cache-adapter",
-    "crates/phenotype-config-core",
     "crates/phenotype-contract",
     "crates/phenotype-contracts",
     "crates/phenotype-core",
@@ -89,7 +88,6 @@ phenotype-async-traits = { path = "crates/phenotype-async-traits" }
 phenotype-bdd = { path = "crates/phenotype-bdd" }
 phenotype-cache-adapter = { path = "crates/phenotype-cache-adapter" }
 phenotype-compliance-scanner = { path = "crates/phenotype-compliance-scanner" }
-phenotype-config-core = { path = "crates/phenotype-config-core" }
 phenotype-contract = { path = "crates/phenotype-contract" }
 phenotype-contracts = { path = "crates/phenotype-contracts" }
 phenotype-core = { path = "crates/phenotype-core" }
