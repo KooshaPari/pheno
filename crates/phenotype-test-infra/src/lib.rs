@@ -12,5 +12,5 @@ pub mod assertions;
 
 // Re-export commonly used types
 pub use bdd::TestContext;
-pub use fixtures::Fixture;
+pub use fixtures::TempDirFixture;
 pub use assertions::Assertion;
