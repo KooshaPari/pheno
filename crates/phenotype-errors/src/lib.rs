@@ -7,6 +7,12 @@ pub use phenotype_error_core::{ApiError, ConfigError, DomainError, RepositoryErr
 /// Canonical error type alias.
 pub type Error = ApiError;
 
+/// Phenotype umbrella error alias for cross-crate consumers (Sidekick, Eidolon, etc.).
+///
+/// Equivalent to [`ApiError`]; provided so downstream crates can `use
+/// phenotype_errors::PhenoError` without coupling to the underlying alias name.
+pub type PhenoError = ApiError;
+
 /// Convenience result type.
 pub type Result<T> = std::result::Result<T, ApiError>;
 
