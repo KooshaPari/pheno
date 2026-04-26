@@ -99,3 +99,7 @@ their correct locations:
 - Project-specific issues: `cd <project>` and check that project's docs
 - Architecture decisions: `cat docs/adr/INDEX.md`
 - General questions: Check `projects/INDEX.md` first
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
