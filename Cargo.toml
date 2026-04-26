@@ -21,6 +21,7 @@ members = [
     "crates/phenotype-health",
     "crates/phenotype-http-client-core",
     "crates/phenotype-iter",
+    "crates/phenotype-casbin-wrapper",
     "crates/phenotype-policy-engine",
     "crates/phenotype-port-traits",
     "crates/phenotype-retry",
