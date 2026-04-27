@@ -8,6 +8,8 @@ on:
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
 jobs:
   deploy:
     uses: KooshaPari/phenoShared/.github/workflows/reusable/vitepress-pages.yml@bda2ba0ab5abefd0abb0d29874379049786aaf0f
