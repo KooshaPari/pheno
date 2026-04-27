@@ -278,7 +278,7 @@ All implementations trace to FRs:
 2. **Update workflows:**
    ```yaml
    env:
-     SENTRY_DSN: ${{ secrets.SENTRY_DSN_<REPO> }}
+     SENTRY_DSN: $&#123;&#123; secrets.SENTRY_DSN_<REPO> &#125;&#125;
    ```
 
 3. **Tests will automatically report errors:**

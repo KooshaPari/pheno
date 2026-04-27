@@ -20,6 +20,9 @@
     "vitepress-plugin-mermaid": "^2.0.10"
   },
   "overrides": {
-    "lodash-es": "^4.18.1"
+    "esbuild": "^0.25.0",
+    "lodash-es": "^4.18.1",
+    "uuid": "^14.0.0",
+    "vite": "^6.4.2"
   }
 }

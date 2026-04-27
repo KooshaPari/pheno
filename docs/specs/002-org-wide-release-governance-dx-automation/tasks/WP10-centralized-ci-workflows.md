@@ -85,7 +85,7 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
 
      jobs:
        publish:
-         name: Publish ${{ inputs.package_name }}
+         name: Publish $&#123;&#123; inputs.package_name &#125;&#125;
          runs-on: ubuntu-latest
          steps:
            - name: Checkout code
@@ -102,7 +102,7 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
 
            - name: Publish to registry
              run: |
-               case "${{ inputs.registry }}" in
+               case "$&#123;&#123; inputs.registry &#125;&#125;" in
                  npm)
                    npm publish --registry https://registry.npmjs.org --access public
                    ;;
@@ -114,9 +114,9 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
                    ;;
                esac
              env:
-               NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-               PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-               CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_TOKEN }}
+               NPM_TOKEN: $&#123;&#123; secrets.NPM_TOKEN &#125;&#125;
+               PYPI_PASSWORD: $&#123;&#123; secrets.PYPI_TOKEN &#125;&#125;
+               CARGO_REGISTRY_TOKEN: $&#123;&#123; secrets.CRATES_TOKEN &#125;&#125;
 
            - name: Verify published
              run: |
@@ -135,7 +135,7 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
 
            - name: Report success
              run: |
-               echo "::notice title=Publish::✓ Published ${{ inputs.package_name }}@${{ inputs.version }} to ${{ inputs.registry }}"
+               echo "::notice title=Publish::✓ Published $&#123;&#123; inputs.package_name &#125;&#125;@$&#123;&#123; inputs.version &#125;&#125; to $&#123;&#123; inputs.registry &#125;&#125;"
      ```
   2. Implement language setup matrix:
      - Go: `actions/setup-go@v4`
@@ -177,18 +177,18 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
          outputs:
            passed:
              description: "Whether all gates passed"
-             value: ${{ jobs.gates.outputs.passed }}
+             value: $&#123;&#123; jobs.gates.outputs.passed &#125;&#125;
            results:
              description: "Gate results JSON"
-             value: ${{ jobs.gates.outputs.results }}
+             value: $&#123;&#123; jobs.gates.outputs.results &#125;&#125;
 
      jobs:
        gates:
          name: Evaluate Gates
          runs-on: ubuntu-latest
          outputs:
-           passed: ${{ steps.evaluate.outputs.passed }}
-           results: ${{ steps.evaluate.outputs.results }}
+           passed: $&#123;&#123; steps.evaluate.outputs.passed &#125;&#125;
+           results: $&#123;&#123; steps.evaluate.outputs.results &#125;&#125;
          steps:
            - name: Checkout code
              uses: actions/checkout@v4
@@ -203,8 +203,8 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
              id: evaluate
              run: |
                # Run gate evaluation for channel
-               CHANNEL="${{ inputs.channel }}"
-               RISK="${{ inputs.risk_profile }}"
+               CHANNEL="$&#123;&#123; inputs.channel &#125;&#125;"
+               RISK="$&#123;&#123; inputs.risk_profile &#125;&#125;"
 
                # Execute gates based on channel and risk profile
                GATES_PASSED=true
@@ -241,10 +241,10 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
 
            - name: Report results
              run: |
-               if [[ "${{ steps.evaluate.outputs.passed }}" == "true" ]]; then
-                 echo "::notice title=Gates::✓ All gates passed for ${{ inputs.channel }}"
+               if [[ "$&#123;&#123; steps.evaluate.outputs.passed &#125;&#125;" == "true" ]]; then
+                 echo "::notice title=Gates::✓ All gates passed for $&#123;&#123; inputs.channel &#125;&#125;"
                else
-                 echo "::error title=Gates::✗ Gates failed for ${{ inputs.channel }}"
+                 echo "::error title=Gates::✗ Gates failed for $&#123;&#123; inputs.channel &#125;&#125;"
                  exit 1
                fi
      ```
@@ -312,20 +312,20 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
          name: Check Gates
          uses: KooshaPari/phenotypeActions/.github/workflows/gate-check.yml@v1
          with:
-           language: ${{ inputs.language }}
-           channel: ${{ inputs.to_channel }}
-           risk_profile: ${{ inputs.risk_profile }}
+           language: $&#123;&#123; inputs.language &#125;&#125;
+           channel: $&#123;&#123; inputs.to_channel &#125;&#125;
+           risk_profile: $&#123;&#123; inputs.risk_profile &#125;&#125;
 
        publish:
          name: Publish
          needs: gate-check
-         if: ${{ needs.gate-check.outputs.passed == 'true' }}
+         if: $&#123;&#123; needs.gate-check.outputs.passed == 'true' &#125;&#125;
          uses: KooshaPari/phenotypeActions/.github/workflows/publish.yml@v1
          with:
-           language: ${{ inputs.language }}
-           registry: ${{ inputs.registry }}
-           version: ${{ inputs.version }}
-           package_name: ${{ github.event.repository.name }}
+           language: $&#123;&#123; inputs.language &#125;&#125;
+           registry: $&#123;&#123; inputs.registry &#125;&#125;
+           version: $&#123;&#123; inputs.version &#125;&#125;
+           package_name: $&#123;&#123; github.event.repository.name &#125;&#125;
          secrets: inherit
 
        notify:
@@ -336,8 +336,8 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
          steps:
            - name: Report promotion result
              run: |
-               if [[ "${{ needs.gate-check.outputs.passed }}" == "true" ]]; then
-                 echo "::notice title=Promote::✓ Promoted from ${{ inputs.from_channel }} to ${{ inputs.to_channel }}"
+               if [[ "$&#123;&#123; needs.gate-check.outputs.passed &#125;&#125;" == "true" ]]; then
+                 echo "::notice title=Promote::✓ Promoted from $&#123;&#123; inputs.from_channel &#125;&#125; to $&#123;&#123; inputs.to_channel &#125;&#125;"
                else
                  echo "::error title=Promote::✗ Promotion failed: gates not passed"
                  exit 1
@@ -382,14 +382,14 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
 
            - name: Generate changelog
              run: |
-               git cliff ${{ inputs.version }} > CHANGELOG.md
+               git cliff $&#123;&#123; inputs.version &#125;&#125; > CHANGELOG.md
 
            - name: Commit changelog
              run: |
                git config user.name "phenotype-bot"
                git config user.email "bot@phenotype.io"
                git add CHANGELOG.md
-               git commit -m "docs: update changelog for ${{ inputs.version }}" || true
+               git commit -m "docs: update changelog for $&#123;&#123; inputs.version &#125;&#125;" || true
 
            - name: Push changes
              run: |
@@ -398,10 +398,10 @@ This work package implements reusable GitHub Actions workflows in the `phenotype
            - name: Create release
              uses: actions/create-release@v1
              env:
-               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+               GITHUB_TOKEN: $&#123;&#123; secrets.GITHUB_TOKEN &#125;&#125;
              with:
-               tag_name: ${{ inputs.version }}
-               release_name: Release ${{ inputs.version }}
+               tag_name: $&#123;&#123; inputs.version &#125;&#125;
+               release_name: Release $&#123;&#123; inputs.version &#125;&#125;
                body_path: CHANGELOG.md
                draft: false
                prerelease: false

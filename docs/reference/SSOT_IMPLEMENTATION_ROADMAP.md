@@ -451,8 +451,8 @@ jobs:
         run: |
           python scripts/spec-reconciliation-service.py \
             origin/main \
-            ${{ github.event.pull_request.head.ref }} \
-            ${{ github.event.pull_request.user.login }}
+            $&#123;&#123; github.event.pull_request.head.ref &#125;&#125; \
+            $&#123;&#123; github.event.pull_request.user.login &#125;&#125;
 
       - name: Upload AUDIT_LOG changes
         if: always()

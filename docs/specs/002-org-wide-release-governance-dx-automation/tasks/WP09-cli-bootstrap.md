@@ -428,7 +428,7 @@ description = "Run integration tests"
                from_channel: alpha
                to_channel: beta
                risk_profile: \{\{ .RiskProfile \}\}
-               version: \${{ github.ref_name }}
+               version: \$&#123;&#123; github.ref_name &#125;&#125;
              secrets: inherit
 
        changelog:
@@ -439,7 +439,7 @@ description = "Run integration tests"
            - uses: actions/checkout@v4
            - uses: KooshaPari/phenotypeActions/.github/workflows/changelog.yml@v1
              with:
-               version: \${{ github.ref_name }}
+               version: \$&#123;&#123; github.ref_name &#125;&#125;
      ```
   3. Ensure workflows reference correct phenotypeActions workflows (from WP10)
   4. Support language variable substitution

@@ -989,19 +989,19 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          key: $&#123;&#123; runner.os &#125;&#125;-cargo-registry-$&#123;&#123; hashFiles('**/Cargo.lock') &#125;&#125;
 
       - name: Cache cargo index
         uses: actions/cache@v3
         with:
           path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
+          key: $&#123;&#123; runner.os &#125;&#125;-cargo-git-$&#123;&#123; hashFiles('**/Cargo.lock') &#125;&#125;
 
       - name: Cache cargo build
         uses: actions/cache@v3
         with:
           path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+          key: $&#123;&#123; runner.os &#125;&#125;-cargo-build-target-$&#123;&#123; hashFiles('**/Cargo.lock') &#125;&#125;
 
       - name: Check formatting
         run: cargo fmt --all -- --check

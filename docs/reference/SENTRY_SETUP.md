@@ -214,7 +214,7 @@ Store DSN in GitHub Secrets and inject via CI/CD:
 
 ```yaml
 env:
-  SENTRY_DSN: ${{ secrets.SENTRY_DSN_AGILEPLUS }}
+  SENTRY_DSN: $&#123;&#123; secrets.SENTRY_DSN_AGILEPLUS &#125;&#125;
   ENVIRONMENT: production
 ```
 
@@ -362,7 +362,7 @@ jobs:
 
       - name: Create Sentry release
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: $&#123;&#123; secrets.SENTRY_AUTH_TOKEN &#125;&#125;
           SENTRY_ORG: phenotype
           SENTRY_PROJECT: agileplus
         run: |

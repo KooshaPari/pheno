@@ -1,29 +1,3 @@
-<<<<<<< HEAD
-import { createPhenotypeConfig } from '@phenotype/docs/config'
-
-const isPagesBuild = process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true'
-const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] || 'AgilePlus'
-const docsBase = isPagesBuild ? `/${repoName}/` : '/'
-
-import { createSiteMeta } from './site-meta.mjs'
-
-const siteMeta = createSiteMeta({ base: docsBase, repoName })
-
-export default createPhenotypeConfig(siteMeta)
-=======
-<<<<<<< HEAD
-import { createPhenotypeConfig } from '@phenotype/docs/config'
-
-const isPagesBuild = process.env.GITHUB_ACTIONS === 'true' || process.env.GITHUB_PAGES === 'true'
-const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] || 'AgilePlus'
-const docsBase = isPagesBuild ? `/${repoName}/` : '/'
-
-import { createSiteMeta } from './site-meta.mjs'
-
-const siteMeta = createSiteMeta({ base: docsBase, repoName })
-
-export default createPhenotypeConfig(siteMeta)
-=======
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import type { DefaultTheme } from 'vitepress'
 
@@ -97,8 +71,17 @@ export default withMermaid({
   title: 'phenotype-infrakit',
   description: 'Rust infrastructure toolkit: event sourcing, caching, policy evaluation, and state machine crates.',
   appearance: 'dark',
+  ignoreDeadLinks: true,
   lastUpdated: true,
-  srcExclude: ['worklogs/**', 'research/**', 'reports/**', 'sessions/**', 'audits/**'],
+  srcExclude: [
+    'worklogs/**',
+    'research/**',
+    'reports/**',
+    'sessions/**',
+    'audits/**',
+    'specs/**',
+    'reference/**',
+  ],
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
@@ -136,7 +119,6 @@ export default withMermaid({
     },
     search: { provider: 'local' },
   },
+  markdown: { html: false },
   mermaid: { theme: 'dark' },
 })
->>>>>>> origin/main
->>>>>>> origin/main

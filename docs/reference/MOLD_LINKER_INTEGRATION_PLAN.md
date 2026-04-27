@@ -775,12 +775,12 @@ incremental = true
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: $&#123;&#123; secrets.GITHUB_TOKEN &#125;&#125;
           script: |
-            const baseline = parseFloat('${{ steps.baseline.outputs.baseline_time }}');
-            const mold1 = parseFloat('${{ steps.mold1.outputs.mold_time }}');
-            const mold2 = parseFloat('${{ steps.mold2.outputs.mold_time }}');
-            const mold3 = parseFloat('${{ steps.mold3.outputs.mold_time }}');
+            const baseline = parseFloat('$&#123;&#123; steps.baseline.outputs.baseline_time &#125;&#125;');
+            const mold1 = parseFloat('$&#123;&#123; steps.mold1.outputs.mold_time &#125;&#125;');
+            const mold2 = parseFloat('$&#123;&#123; steps.mold2.outputs.mold_time &#125;&#125;');
+            const mold3 = parseFloat('$&#123;&#123; steps.mold3.outputs.mold_time &#125;&#125;');
             const moldAvg = (mold1 + mold2 + mold3) / 3;
             const improvement = (((baseline - moldAvg) / baseline) * 100).toFixed(1);
 

@@ -176,7 +176,7 @@ For CI/CD pipelines:
 2. **Use in GitHub Actions workflows:**
    ```yaml
    env:
-     SENTRY_DSN: ${{ secrets.SENTRY_DSN_AGILEPLUS }}
+     SENTRY_DSN: $&#123;&#123; secrets.SENTRY_DSN_AGILEPLUS &#125;&#125;
    ```
 
 3. **Add to .env during CI:**
