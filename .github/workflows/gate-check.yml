@@ -16,6 +16,8 @@ on:
         type: string
         description: 'Risk profile (low, medium, high)'
 
+permissions:
+  contents: read
 jobs:
   gate-check:
     runs-on: ubuntu-latest
