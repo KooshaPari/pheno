@@ -35,6 +35,8 @@ on:
       CARGO_TOKEN:
         required: false
 
+permissions:
+  contents: read
 jobs:
   gate-check:
     uses: ./.github/workflows/gate-check.yml
