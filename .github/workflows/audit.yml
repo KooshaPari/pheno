@@ -8,6 +8,8 @@ on:
         type: string
         description: 'Directory containing repos to audit'
 
+permissions:
+  contents: read
 jobs:
   audit:
     runs-on: ubuntu-latest
