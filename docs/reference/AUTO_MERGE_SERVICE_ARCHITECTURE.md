@@ -473,7 +473,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GH_BOT_TOKEN }}
+          token: $&#123;&#123; secrets.GH_BOT_TOKEN &#125;&#125;
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -503,7 +503,7 @@ jobs:
             --target-branch "specs/main" \
             --log-level "info" \
             --max-parallel 10 \
-            ${{ github.event.inputs.branch_filter }})
+            $&#123;&#123; github.event.inputs.branch_filter &#125;&#125;)
 
           echo "$OUTPUT" | tee /tmp/merge-output.txt
 
@@ -534,9 +534,9 @@ jobs:
             const summary = `
             # Auto-Merge Batch Report
 
-            **Successful:** ${{ steps.merge.outputs.successful }}
-            **Conflicts:** ${{ steps.merge.outputs.conflicts }}
-            **Failed:** ${{ steps.merge.outputs.failed }}
+            **Successful:** $&#123;&#123; steps.merge.outputs.successful &#125;&#125;
+            **Conflicts:** $&#123;&#123; steps.merge.outputs.conflicts &#125;&#125;
+            **Failed:** $&#123;&#123; steps.merge.outputs.failed &#125;&#125;
 
             \`\`\`
             ${ output }
@@ -556,8 +556,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `⚠️ Batch merge completed with issues:
-              - Conflicts: ${{ steps.merge.outputs.conflicts }}
-              - Failed: ${{ steps.merge.outputs.failed }}
+              - Conflicts: $&#123;&#123; steps.merge.outputs.conflicts &#125;&#125;
+              - Failed: $&#123;&#123; steps.merge.outputs.failed &#125;&#125;
 
               See Actions logs for details.`
             });

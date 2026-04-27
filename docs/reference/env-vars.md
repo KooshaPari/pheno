@@ -427,7 +427,7 @@ export AGILEPLUS_NO_CLEANUP="1"
 ```bash
 export AGILEPLUS_DB=".agileplus/agileplus.db"
 export AGILEPLUS_LOG_LEVEL="info"
-export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+export GITHUB_TOKEN="$&#123;&#123; secrets.GITHUB_TOKEN &#125;&#125;"
 export AGILEPLUS_CI="1"
 ```
 

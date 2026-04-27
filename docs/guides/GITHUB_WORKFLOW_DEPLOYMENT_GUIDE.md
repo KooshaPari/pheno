@@ -124,12 +124,12 @@ jobs:
         with:
           snyk-version: latest
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
 
       - name: Snyk test
         run: snyk test --json-file-output=snyk-report.json
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
         continue-on-error: true
 
       - name: Upload scan results
@@ -228,12 +228,12 @@ jobs:
       - name: Run Snyk scan
         uses: snyk/actions/setup@master
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
 
       - name: Snyk test
         run: snyk test --json-file-output=snyk-report.json
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
         continue-on-error: true
 
       - name: Upload results
@@ -297,12 +297,12 @@ jobs:
       - name: Run Snyk scan
         uses: snyk/actions/setup@master
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
 
       - name: Snyk test
         run: snyk test --json-file-output=snyk-report.json
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
         continue-on-error: true
 
       - name: Upload results
@@ -352,12 +352,12 @@ jobs:
       - name: Run Snyk scan
         uses: snyk/actions/setup@master
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
 
       - name: Snyk test
         run: snyk test --json-file-output=snyk-report.json
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: $&#123;&#123; secrets.SNYK_TOKEN &#125;&#125;
         continue-on-error: true
 
       - name: Upload results

@@ -592,7 +592,7 @@ jobs:
     steps:
       - name: Check job status
         run: |
-          if [[ "${{ needs.lint-and-format.result }}" == "failure" || "${{ needs.type-check.result }}" == "failure" ]]; then
+          if [[ "$&#123;&#123; needs.lint-and-format.result &#125;&#125;" == "failure" || "$&#123;&#123; needs.type-check.result &#125;&#125;" == "failure" ]]; then
             echo "❌ Quality gate failed"
             exit 1
           fi

@@ -495,7 +495,7 @@ agent:
     RUST_LOG: info
     DATABASE_URL: postgresql://localhost/testdb
     REDIS_URL: redis://localhost:6379
-    JWT_SECRET: ${{ secrets.JWT_SECRET }}  # Injected at runtime
+    JWT_SECRET: $&#123;&#123; secrets.JWT_SECRET &#125;&#125;  # Injected at runtime
 ```
 
 ### What Agents CAN Do

@@ -265,13 +265,13 @@ jobs:
 
       - name: Set Sentry DSN
         run: |
-          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN_AGILEPLUS }}" >> $GITHUB_ENV
+          echo "SENTRY_DSN=$&#123;&#123; secrets.SENTRY_DSN_AGILEPLUS &#125;&#125;" >> $GITHUB_ENV
 
       - name: Run tests
         run: cargo test
 ```
 
-The `${{ secrets.SENTRY_DSN_AGILEPLUS }}` will be replaced with the actual DSN value at runtime.
+The `$&#123;&#123; secrets.SENTRY_DSN_AGILEPLUS &#125;&#125;` will be replaced with the actual DSN value at runtime.
 
 ---
 
@@ -311,7 +311,7 @@ The `${{ secrets.SENTRY_DSN_AGILEPLUS }}` will be replaced with the actual DSN v
 **Solution:**
 1. Verify the secret name matches exactly: `SENTRY_DSN_AGILEPLUS` (not `sentry_dsn_agileplus`)
 2. Go to Org Settings and confirm the repository is in the access list
-3. Use correct syntax in workflow: `${{ secrets.SENTRY_DSN_AGILEPLUS }}`
+3. Use correct syntax in workflow: `$&#123;&#123; secrets.SENTRY_DSN_AGILEPLUS &#125;&#125;`
 
 ### Problem: "Insufficient permissions" error
 
