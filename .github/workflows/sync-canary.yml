@@ -28,10 +28,17 @@ jobs:
 
       - name: Prepare local canary ref
         run: |
-          git fetch origin canary:canary || git branch canary origin/canary
+          git fetch origin main
+          if git ls-remote --exit-code --heads origin canary; then
+            git fetch origin canary:canary
+            git switch canary
+            git merge --ff-only origin/main
+          else
+            git switch -c canary origin/main
+          fi
 
       - name: Sync canary from main
-        run: cargo run -p agileplus-cli --locked -- branch:sync --source main --target canary
+        run: git status --short --branch
 
       - name: Push canary
-        run: git push origin canary
+        run: git push origin canary:canary
