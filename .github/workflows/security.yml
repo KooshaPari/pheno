@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2am UTC
+    - cron: "0 2 * * *" # Daily at 2am UTC
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,6 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # ─── Cargo Audit ──────────────────────────────────────────────────────
   cargo-audit:
     name: Cargo Audit
     runs-on: ubuntu-latest
@@ -33,7 +32,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  # ─── Cargo Deny ───────────────────────────────────────────────────────
   cargo-deny:
     name: Cargo Deny
     runs-on: ubuntu-latest
@@ -43,13 +41,8 @@ jobs:
       - name: Install cargo-deny
         run: cargo install cargo-deny
       - name: Check advisories, licenses, duplicates
-<<<<<<< HEAD
         run: cargo deny check -c rust/deny.toml
-=======
-        run: cargo deny check
->>>>>>> origin/main
 
-  # ─── Gitleaks Secret Detection ────────────────────────────────────────
   gitleaks:
     name: Gitleaks
     runs-on: ubuntu-latest
@@ -61,7 +54,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ─── CodeQL SAST ──────────────────────────────────────────────────────
   codeql:
     name: CodeQL
     runs-on: ubuntu-latest
@@ -78,7 +70,6 @@ jobs:
           languages: ${{ matrix.language }}
       - uses: github/codeql-action/analyze@v3
 
-  # ─── Python Security (bandit) ─────────────────────────────────────────
   python-security:
     name: Python Security
     runs-on: ubuntu-latest
@@ -92,10 +83,7 @@ jobs:
       - name: Run bandit
         run: bandit -r python/src -ll
         continue-on-error: true
-<<<<<<< HEAD
-=======
 
-  # ─── OSV-Scanner (Rust lockfile; repo does not commit Cargo.lock) ───────
   osv-scanner:
     name: OSV Scanner (Cargo.lock)
     runs-on: ubuntu-latest
@@ -128,4 +116,3 @@ jobs:
       - name: OSV table (on vulnerability findings)
         if: failure() && steps.osv.outcome == 'failure'
         run: osv-scanner scan -L Cargo.lock --format table
->>>>>>> origin/main
