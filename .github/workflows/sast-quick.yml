@@ -33,6 +33,7 @@ jobs:
         with:
           sarif_file: semgrep.sarif
           category: semgrep
+        continue-on-error: true
 
   secrets:
     name: Secret Scanning
@@ -65,5 +66,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: licensefinder/license_finder_action@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Run LicenseFinder
+        run: |
+          gem install license_finder
+          license_finder
         continue-on-error: true
