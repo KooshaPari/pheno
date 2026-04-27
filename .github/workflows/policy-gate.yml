@@ -23,12 +23,14 @@ jobs:
         env:
           HEAD_REF: ${{ github.head_ref }}
           BASE_REF: ${{ github.base_ref }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
           set -euo pipefail
 
           echo "HEAD_REF=$HEAD_REF"
           echo "BASE_REF=$BASE_REF"
+          echo "PR_HEAD_SHA=$PR_HEAD_SHA"
           echo "PR_LABELS=$PR_LABELS"
 
           if [[ "$HEAD_REF" == fix/* ]]; then
@@ -42,7 +44,7 @@ jobs:
           fi
 
           git fetch origin "$BASE_REF" --depth=100 || true
-          MERGES=$(git rev-list --merges "origin/$BASE_REF..HEAD" || true)
+          MERGES=$(git rev-list --merges "origin/$BASE_REF..$PR_HEAD_SHA" || true)
           if [[ -n "$MERGES" ]]; then
             echo "ERROR: merge commits detected in PR diff range:"
             echo "$MERGES"
