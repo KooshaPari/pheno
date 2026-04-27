@@ -1,7 +1,7 @@
 name: Tag Automation
 
 # Delegates to phenoShared reusable workflow.
-# See: https://github.com/KooshaPari/phenoShared/blob/main/.github/workflows/reusable/tag-automation.yml
+# See: https://github.com/KooshaPari/phenoShared/blob/main/.github/workflows/tag-automation.yml
 
 on:
   push:
