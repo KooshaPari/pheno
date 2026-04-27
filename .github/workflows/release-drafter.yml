@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release-drafter:
-    uses: KooshaPari/phenoShared/.github/workflows/reusable-release-drafter.yml@main
+    uses: KooshaPari/phenoShared/.github/workflows/reusable-release-drafter.yml@051ecbc901964f3c7ad137b03bc62c7d3bef5d01
     permissions:
       contents: write
       pull-requests: write

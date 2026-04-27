@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   analyze:
-    uses: KooshaPari/phenoShared/.github/workflows/codeql.yml@main
+    uses: KooshaPari/phenoShared/.github/workflows/reusable/codeql.yml@051ecbc901964f3c7ad137b03bc62c7d3bef5d01
     permissions:
       contents: read
       actions: read
