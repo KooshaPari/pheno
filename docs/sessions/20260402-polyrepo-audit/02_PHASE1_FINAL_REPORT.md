@@ -176,7 +176,7 @@ Security alerts are not regular review comments and require UI dismissal.
 |------|---------|
 | `docs/stabilization/STRATEGY.md` | 538-line stabilization strategy |
 | `AgilePlus/kitty-specs/021-polyrepo-ecosystem-stabilization/` | Master spec with 48 tasks |
-| `projects/INDEX.md` | Shelf-level project index |
+| shelf inventory index | Shelf-level project index retained in the audit record |
 | `docs/sessions/20260402-polyrepo-audit/` | Complete audit documentation |
 | `WORKTREES.md` | Worktree discipline rules |
 | `docs/sessions/20260402-polyrepo-audit/01_PHASE1_COMPLETION.md` | This report |

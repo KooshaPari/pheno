@@ -336,7 +336,7 @@ deployed-repo/
 4. Enable debug logging in workflows for troubleshooting
 
 **For missing Tier 2 repos:**
-1. Search repo inventory (projects/INDEX.md)
+1. Search repo inventory in the local workspace root
 2. Check alternate directories (worktrees, nested paths)
 3. Confirm if repos are archived/deprecated
 4. Re-run deployment script if locations change

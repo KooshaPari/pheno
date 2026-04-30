@@ -44,12 +44,12 @@ Batch 16 audit and remediation added AgilePlus scaffolding to 20+ repositories a
 
 ## Non-Git Repos (Needs Manual Review)
 
-These repos are not git repositories and contain placeholder content:
+These repos are not git repositories and contain scaffold content:
 
 - **phenotype-hub**: Has AGENTS.md, ARCHIVED.md, CHANGELOG.md - appears archived
 - **clikit**: Has SECURITY.md, TEST_COVERAGE_MATRIX.md - orphaned files
-- **kits**: Has .editorconfig, .github, .pre-commit-config.yaml - placeholder files
-- **zen**: Has .editorconfig, .github, .pre-commit-config.yaml - placeholder files
+- **kits**: Has .editorconfig, .github, .pre-commit-config.yaml - scaffold files
+- **zen**: Has .editorconfig, .github, .pre-commit-config.yaml - scaffold files
 
 **Action**: Manual review needed to determine if these should be removed or kept as worktree targets.
 
