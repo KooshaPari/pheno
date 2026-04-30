@@ -2,7 +2,7 @@
 version = "0.2.0"
 edition = "2021"
 license = "MIT"
-rust-version = "1.75"
+rust-version = "1.86"
 authors = ["Phenotype Team"]
 repository = "https://github.com/KooshaPari/phenotype-shared"
 description = "Phenotype Infrastructure Kit"
