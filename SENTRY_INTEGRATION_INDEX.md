@@ -253,9 +253,9 @@ Follow `/docs/checklists/SENTRY_DEPLOYMENT_VERIFICATION.md`:
 | 2026-03-29 | SDK configurations verified | ✅ Complete |
 | 2026-03-31 | Workflows deployed | ✅ Complete |
 | 2026-03-31 | Documentation complete | ✅ Complete |
-| TBD | Secrets configured | ⏳ Pending |
-| TBD | GitHub integration enabled | ⏳ Pending |
-| TBD | Alert rules created | ⏳ Pending |
+| 2026-04-29 | Secrets configured | ⏳ Pending |
+| 2026-04-29 | GitHub integration enabled | ⏳ Pending |
+| 2026-04-29 | Alert rules created | ⏳ Pending |
 | ~2026-04-07 | Manual verification done | ⏳ Pending |
 | ~2026-04-07 | Production ready | ⏳ Pending |
 

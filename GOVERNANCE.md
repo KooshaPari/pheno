@@ -61,7 +61,7 @@ when:
 ## Project Lifecycle
 
 ### Active Projects
-Listed in `projects/INDEX.md` with status `active`.
+Tracked in the project's `README.md` and `STATUS.md` with status `active`.
 Regular development, owned by the shelf owner.
 
 ### Maintenance Projects
@@ -69,8 +69,8 @@ Listed with status `maintenance`.
 Minimal changes, bug fixes only, no new features.
 
 ### Archived Projects
-Listed with status `archived` in `projects/INDEX.md`.
-Actual code lives in `.archive/`.
+Tracked with status `archived` in the project's `STATUS.md`.
+Archived code lives in `.archive/`.
 Can be restored to active if needed.
 
 ### Deletion

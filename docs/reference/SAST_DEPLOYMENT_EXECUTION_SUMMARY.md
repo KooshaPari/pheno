@@ -285,9 +285,8 @@ Six Tier 2 repos not found in `/Users/kooshapari/CodeProjects/Phenotype/repos/`:
    find /Users/kooshapari/CodeProjects -name "phenotype-design" -type d
    ```
 
-2. Check repos inventory:
-   - `/Users/kooshapari/CodeProjects/Phenotype/repos/projects/INDEX.md`
-   - Verify if repos are active or archived
+2. Check repos inventory by searching the local workspace root and repo READMEs
+   - Verify whether the repos are active, archived, or nested in another worktree
 
 3. If found in alternate locations, update deployment script paths
 

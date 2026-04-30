@@ -19,7 +19,7 @@ Security vulnerabilities should **never** be reported via public GitHub issues.
 
 ### 2. Report Privately
 
-Email security concerns to: **security@phenotype.dev**
+Email security concerns to: **security@kooshapari.com**
 
 Include the following information:
 - Description of the vulnerability

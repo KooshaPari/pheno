@@ -13,8 +13,8 @@ Each project is a standalone git repo; the shelf is their shared home.
 
 ### Finding a project
 ```bash
-ls projects/INDEX.md   # Master project list with descriptions
-cat projects/INDEX.md   # Find your project
+find . -maxdepth 1 -mindepth 1 -type d | sort
+cat README.md          # Read the target project README first
 ```
 
 ### Working on a project
@@ -42,18 +42,16 @@ Projects are organized into functional categories at the top level:
 | `platforms/` | Platform-as-product projects |
 
 Note: Not all projects are yet in these categories — the reorganization is ongoing.
-Use `projects/INDEX.md` for the authoritative list.
+Use the target project's `README.md` and `CLAUDE.md` for the authoritative list.
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `projects/INDEX.md` | Master project catalog |
+| `README.md` | Shelf overview and project pointers |
 | `AGENTS.md` | Agent interaction rules |
 | `GOVERNANCE.md` | Shelf governance |
 | `CLAUDE.md` | Claude Code settings |
-| `WORKSTORES.md` | Worktree management guide |
-| `REPOS_INDEX.md` | Detailed shelf index |
 
 ## Architecture
 
@@ -75,7 +73,7 @@ repos/                          # ← Shelf root (YOU ARE HERE)
 
 ## Agent Workflow
 
-1. **Identify the project** — Check `projects/INDEX.md` or ask the user
+1. **Identify the project** — Check the target project `README.md` or ask the user
 2. **Navigate to project** — `cd <project-name>`
 3. **Read project rules** — Check for `CLAUDE.md` or `AGENTS.md` in project
 4. **Do the work** — Follow shelf rules in `AGENTS.md`
@@ -98,4 +96,4 @@ their correct locations:
 - Shelf-level issues: Ask here
 - Project-specific issues: `cd <project>` and check that project's docs
 - Architecture decisions: `cat docs/adr/INDEX.md`
-- General questions: Check `projects/INDEX.md` first
+- General questions: Check the target project `README.md` first

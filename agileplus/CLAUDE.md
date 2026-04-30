@@ -8,7 +8,7 @@ project repositories. Think of it like a `/opt` or `~/code` directory, but
 versioned and synced as a polyrepo (repo of repos).
 
 **NOT AgilePlus.** AgilePlus is one of ~30 projects inside this shelf.
-See `projects/INDEX.md` for the full catalog.
+See `README.md` for the full shelf overview.
 
 ## Structure
 
@@ -29,9 +29,8 @@ repos/                          # ← YOU ARE HERE (shelf root)
 ├── scripts/                    # Cross-project utility scripts
 ├── governance/                 # Governance tooling (policy, scoring)
 ├── projects/                   # Project catalog & metadata
-│   └── INDEX.md               #   Master project list
-├── WORKSTORES.md               # Worktree management guide
-└── REPOS_INDEX.md              # Detailed shelf index
+├── README.md                   # Shelf overview and project pointers
+└── CLAUDE.md                   # Project-specific instructions
 ```
 
 ## Agent Rules
@@ -46,13 +45,13 @@ rules for this shelf. Key points:
 
 ## Project Index
 
-See `projects/INDEX.md` for the full catalog of all projects in this shelf.
+See `README.md` for the shelf overview and target project docs.
 
 ## Quick Reference
 
 | What you need | Where to look |
 |---------------|---------------|
-| Project list | `projects/INDEX.md` |
+| Project list | `README.md` |
 | Governance rules | `AGENTS.md` |
 | Architecture decisions | `docs/adr/` |
 | Cross-project scripts | `scripts/` |
