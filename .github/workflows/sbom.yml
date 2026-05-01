@@ -34,7 +34,7 @@ jobs:
         run: bash scripts/ci/generate-workspace-sboms.sh . sbom-out
 
       - name: Upload SBOM bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: cyclonedx-sbom-workspace
           path: sbom-out/cyclonedx-sbom-*.json
