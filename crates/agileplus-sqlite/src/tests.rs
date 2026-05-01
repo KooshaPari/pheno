@@ -1,4 +1,2 @@
-#[path = "lib/tests/mod.rs"]
-mod tests_impl;
-
-use crate::SqliteStorageAdapter;
+// Integration tests are in the tests/ directory at the crate root
+// This file is intentionally empty - see tests/ directory

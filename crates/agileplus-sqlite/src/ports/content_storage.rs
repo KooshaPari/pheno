@@ -2,7 +2,7 @@
 //!
 //! Traceability: WP06-T031
 
-use crate::ports::adapter::SqliteStorageAdapter;
+use crate::SqliteStorageAdapter;
 use crate::repository::{backlog, features, work_packages};
 
 use agileplus_domain::{

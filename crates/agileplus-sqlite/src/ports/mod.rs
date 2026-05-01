@@ -1,16 +1,12 @@
-//! AgilePlus SQLite adapter ports module.
+//! SQLite adapter port trait implementations.
 //!
-//! This module organizes the SQLite adapter implementation into separate files.
-//!
-//! - `adapter.rs` - Core `SqliteStorageAdapter` struct definition
-//! - `storage_port.rs` - `StoragePort` trait implementation
-//! - `content_storage.rs` - `ContentStoragePort` trait implementation
+//! This module provides the `StoragePort` and `ContentStoragePort` trait
+//! implementations for the `SqliteStorageAdapter`.
 //!
 //! Traceability: WP06
+//!
+//! - `storage_port.rs` - `StoragePort` trait implementation
+//! - `content_storage.rs` - `ContentStoragePort` trait implementation
 
-pub mod adapter;
-pub mod content_storage;
 pub mod storage_port;
-
-// Re-export the adapter type for convenience
-pub use adapter::SqliteStorageAdapter;
+pub mod content_storage;
