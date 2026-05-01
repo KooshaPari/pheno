@@ -4,6 +4,7 @@
 //! Traceability: WP06
 
 pub mod migrations;
+pub mod ports;
 pub mod rebuild;
 pub mod repository;
 
