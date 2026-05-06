@@ -1,4 +1,8 @@
 {
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": null,
+  "installCommand": null,
   "redirects": [
     { "source": "/portfolio", "destination": "/", "permanent": true },
     { "source": "/work", "destination": "/projects", "permanent": true },
