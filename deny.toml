@@ -23,7 +23,7 @@ allow = [
 ]
 [bans]
 multiple-versions = "warn"
-wildcards = "warn"
+wildcards = "deny"
 highlight = "all"
 workspace-default-features = "warn"
 [sources]
