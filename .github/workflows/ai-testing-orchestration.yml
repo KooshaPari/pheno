@@ -87,7 +87,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v7
 
       - name: Run Tests (Bun + uv)
         run: |
