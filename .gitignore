@@ -214,3 +214,9 @@ PHENOTYPE_ERROR_CORE_EXTRACTION_REPORT.md
 
 # Rust build artifacts
 /target
+
+# ===== Standard auto-generated hygiene ignores (do not edit manually) =====
+.env.*
+target/
+coverage/
+# ===== End standard hygiene ignores =====

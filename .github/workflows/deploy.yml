@@ -16,7 +16,7 @@ permissions:
   contents: read
 jobs:
   deploy:
-    uses: KooshaPari/phenoShared/.github/workflows/vitepress-pages.yml@main
+    uses: KooshaPari/phenoShared/.github/workflows/vitepress-pages.yml@4b820a6d1eca7884e692e4ec4edf2b59732809cd
     with:
       concurrency_group: pheno-vitepress-pages
     permissions:
