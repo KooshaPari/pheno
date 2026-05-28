@@ -22,22 +22,22 @@ env:
 jobs:
   cargo-audit:
     name: Cargo Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       checks: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: rustsec/audit-check@e5517072e87f198d9533967ae13d97c11b6040059366f33c96575abad1ee0dba8212993eecbe998
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   cargo-deny:
     name: Cargo Deny
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8  # v6.0.0
       - name: Install cargo-deny
         run: cargo install cargo-deny
       - name: Check advisories, licenses, duplicates
@@ -45,18 +45,18 @@ jobs:
 
   gitleaks:
     name: Gitleaks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc
+      - uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc  # v2.4.9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   codeql:
     name: CodeQL
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       security-events: write
@@ -64,18 +64,18 @@ jobs:
       matrix:
         language: [cpp, python]
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: github/codeql-action/init@7c1e4cf0b20d7c1872b26569c00ba908797a59bf
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: github/codeql-action/init@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/analyze@7c1e4cf0b20d7c1872b26569c00ba908797a59bf
+      - uses: github/codeql-action/analyze@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
 
   python-security:
     name: Python Security
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: "3.14"
       - name: Install bandit
@@ -86,13 +86,13 @@ jobs:
 
   osv-scanner:
     name: OSV Scanner (Cargo.lock)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8  # v6.0.0
       - name: Generate Cargo.lock for scanning
         run: cargo generate-lockfile
       - name: Install OSV-Scanner
@@ -109,7 +109,7 @@ jobs:
       - name: Upload OSV SARIF to GitHub Code Scanning
         if: always()
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@7c1e4cf0b20d7c1872b26569c00ba908797a59bf
+        uses: github/codeql-action/upload-sarif@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
         with:
           sarif_file: osv-results.sarif
           category: osv-cargo-lock

@@ -65,6 +65,7 @@ members = [
   "crates/phenotype-time",
   "crates/phenotype-validation",
 ]
+
 [workspace.dependencies]
 # Core
 serde = { version = "1", features = ["derive"] }
@@ -72,10 +73,15 @@ serde_json = "1"
 thiserror = "2"
 anyhow = "1"
 dirs = "5"
-async-trait = "0.1"
-chrono = { version = "0.4", features = ["serde"] }
-uuid = { version = "1", features = ["v4", "serde"] }
+axum = "0.7"
+axum-extra = "0.9"
+clap = { version = "4", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
+tonic = "0.12"
+tonic-build = "0.12"
+async-trait = "0.1"
+
 dashmap = "5"
 parking_lot = "0.12"
 lru = "0.12"
@@ -118,12 +124,10 @@ phenotype-event-sourcing = { path = "crates/phenotype-event-sourcing" }
 phenotype-git-core = { path = "crates/phenotype-git-core" }
 phenotype-health = { path = "crates/phenotype-health" }
 phenotype-http-client-core = { path = "crates/phenotype-http-client-core" }
-phenotype-infrastructure = { path = "crates/phenotype-infrastructure" }
 phenotype-iter = { path = "crates/phenotype-iter" }
 phenotype-logging = { path = "crates/phenotype-logging" }
 phenotype-macros = { path = "crates/phenotype-macros" }
 phenotype-mcp = { path = "crates/phenotype-mcp" }
-phenotype-mock = { path = "crates/phenotype-mock" }
 phenotype-policy-engine = { path = "crates/phenotype-policy-engine" }
 phenotype-port-traits = { path = "crates/phenotype-port-traits" }
 phenotype-ports-canonical = { path = "crates/phenotype-ports-canonical" }
@@ -140,21 +144,17 @@ phenotype-test-infra = { path = "crates/phenotype-test-infra" }
 phenotype-testing = { path = "crates/phenotype-testing" }
 phenotype-time = { path = "crates/phenotype-time" }
 phenotype-validation = { path = "crates/phenotype-validation" }
+agileplus-error-core = { path = "crates/agileplus-error-core" }
+agileplus-telemetry = { path = "crates/agileplus-telemetry" }
 
-# External utilities
-axum = "0.7"
-axum-extra = "0.9"
-clap = { version = "4", features = ["derive"] }
-figment = "0.10"
 futures-util = "0.3"
 http-body-util = "0.1"
 hyper = "1"
 opentelemetry = { version = "0.24", features = ["trace"] }
+opentelemetry-otlp = { version = "0.17", features = ["grpc-tonic", "tls"] }
 opentelemetry_sdk = { version = "0.24", features = ["trace"] }
 reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
-rusqlite = { version = "0.32", features = ["bundled"] }
-tokio-test = "0.4"
-tokio-util = "0.7"
+
 tower = "0.4"
 tower-http = { version = "0.5", features = ["trace"] }
 tracing-actix-web = "4"

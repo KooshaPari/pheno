@@ -27,23 +27,23 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
       with:
         fetch-depth: ${{ inputs.checkout-depth }}
 
     - name: Setup Rust toolchain
-      uses: dtolnay/rust-toolchain@${{ inputs.rust-version }}
+      uses: dtolnay/rust-toolchain@5b842231ba77f5c045dba54ac5560fed2db780e2  # v6.0.0
       with:
         components: ${{ inputs.rust-components }}
 
     - name: Cache Rust dependencies
-      uses: Swatinem/rust-cache@v2
+      uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
       with:
         workspaces: ${{ inputs.workspace }}
 
     - name: Setup protoc
       if: inputs.setup-protoc == 'true'
-      uses: arduino/setup-protoc@v3
+      uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
       with:
         version: "28.x"
         repo-token: ${{ github.token }}
