@@ -40,7 +40,7 @@ runs:
   steps:
     - name: Cargo Audit
       if: inputs.cargo-audit == 'true'
-      uses: rustsec/audit-check@c19371144df3bb44fab255c43d04cbc2ab54d1c4.0.0
+      uses: rustsec/audit-check@v2.0.0
       with:
         token: ${{ github.token }}
 
