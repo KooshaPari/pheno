@@ -20,7 +20,7 @@ jobs:
   cargo-deny:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
       - name: Install cargo-deny
         run: cargo install cargo-deny
       - name: Run cargo-deny
@@ -30,7 +30,7 @@ jobs:
   fossa:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
       - name: Install FOSSA
         run: |
           curl -sSfL https://raw.githubusercontent.com/fossa-foss/fossa-cli/master/install.sh | sh

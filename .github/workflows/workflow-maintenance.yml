@@ -21,7 +21,7 @@ jobs:
   validate-workflows:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
 
       - name: List workflows
         run: |
@@ -46,7 +46,7 @@ jobs:
   security-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v4
 
       - name: Check for secrets in workflows
         run: |

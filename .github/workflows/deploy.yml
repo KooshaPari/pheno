@@ -10,6 +10,10 @@ on:
 
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     uses: KooshaPari/phenoShared/.github/workflows/vitepress-pages.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87
