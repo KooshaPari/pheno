@@ -63,3 +63,10 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           echo "Dry run: Would publish $LANGUAGE package version $VERSION to $REGISTRY"
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+

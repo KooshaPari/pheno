@@ -8,6 +8,10 @@ on: [pull_request_review]
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   gate:
-    uses: KooshaPari/phenoShared/.github/workflows/self-merge-gate.yml@main
+    uses: KooshaPari/phenoShared/.github/workflows/self-merge-gate.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87

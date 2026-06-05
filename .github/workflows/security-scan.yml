@@ -117,3 +117,10 @@ jobs:
         if: failure() && steps.osv.outcome == 'failure'
         working-directory: ${{ inputs.workspace }}
         run: osv-scanner scan -L Cargo.lock --format table
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+

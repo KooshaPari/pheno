@@ -91,3 +91,10 @@ jobs:
           gitleaks: 'false'
           python-bandit: 'false'
           working-directory: ${{ inputs.workspace }}
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+

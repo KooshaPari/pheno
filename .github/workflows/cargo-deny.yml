@@ -29,3 +29,10 @@ jobs:
         uses: EmbarkStudios/cargo-deny-action@v2
         with:
           rust-version: stable
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
