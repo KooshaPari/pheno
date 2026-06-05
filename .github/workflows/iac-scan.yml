@@ -1,4 +1,14 @@
 name: IaC Scanning
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -8,10 +18,6 @@ on:
       - '**.json'
   schedule:
     - cron: '0 0 * * *'
-
-permissions:
-  contents: read
-
 jobs:
   tfsec:
     runs-on: ubuntu-latest

@@ -32,6 +32,13 @@ on:
         required: false
         default: true
         type: boolean
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   build:

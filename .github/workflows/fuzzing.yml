@@ -1,4 +1,14 @@
 name: Fuzzing
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -7,10 +17,6 @@ on:
       - '**.go'
   schedule:
     - cron: '0 0 * * *'
-
-permissions:
-  contents: read
-
 jobs:
   cargo-fuzz:
     runs-on: ubuntu-latest

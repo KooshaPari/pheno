@@ -33,6 +33,13 @@ on:
         required: false
         default: '.'
         type: string
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   security:

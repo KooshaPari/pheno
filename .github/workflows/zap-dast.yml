@@ -1,4 +1,14 @@
 name: ZAP DAST
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -14,10 +24,6 @@ on:
       - 'src/**'
       - '.github/workflows/zap-dast.yml'
   workflow_dispatch:
-
-permissions:
-  contents: read
-
 jobs:
   zap:
     runs-on: ubuntu-latest

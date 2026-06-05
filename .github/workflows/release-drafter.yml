@@ -1,12 +1,18 @@
 name: Release Drafter
-
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+on:
+  push:
+    branches: [main]
 jobs:
   release-drafter:
     uses: KooshaPari/phenoShared/.github/workflows/reusable-release-drafter.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits

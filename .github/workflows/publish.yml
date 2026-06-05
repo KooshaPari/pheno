@@ -27,6 +27,13 @@ on:
         required: false
       CARGO_TOKEN:
         required: false
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   publish:

@@ -1,4 +1,14 @@
 name: Spec Validation (specs/main)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -11,10 +21,6 @@ on:
     paths:
       - FUNCTIONAL_REQUIREMENTS.md
       - docs/reference/SPEC_BRANCH_WORKFLOW.md
-
-permissions:
-  contents: read
-
 jobs:
   validate-specs:
     runs-on: ubuntu-latest

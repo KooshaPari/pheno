@@ -28,6 +28,13 @@ on:
         required: false
         default: 'cargo test --workspace'
         type: string
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   quality:

@@ -1,12 +1,18 @@
 name: Alert sync issues
 on:
-  schedule:
-    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
 jobs:
   sync:
     uses: KooshaPari/phenoShared/.github/workflows/alert-sync-issues.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits

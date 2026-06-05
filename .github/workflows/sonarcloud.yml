@@ -1,13 +1,19 @@
 name: SonarCloud
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
     branches:
       - main
-
-permissions:
-  contents: read
-
 jobs:
   sonar:
     runs-on: ubuntu-latest

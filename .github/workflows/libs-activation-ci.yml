@@ -1,15 +1,21 @@
 name: CI - libs activation
 on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
   push:
     paths:
       - 'libs/**'
   pull_request:
     paths:
       - 'libs/**'
-
-permissions:
-  contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest

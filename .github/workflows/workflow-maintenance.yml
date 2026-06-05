@@ -1,4 +1,14 @@
 name: Workflow Maintenance CI
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -9,10 +19,6 @@ on:
       - '.github/workflows/*.yml'
   schedule:
     - cron: '0 2 * * 0'
-
-permissions:
-  contents: read
-
 jobs:
   validate-workflows:
     runs-on: ubuntu-latest

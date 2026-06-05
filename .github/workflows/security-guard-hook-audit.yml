@@ -1,4 +1,14 @@
 name: Security Guard (Hooks)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   pull_request:
@@ -6,10 +16,6 @@ on:
   push:
     branches:
       - "**"
-
-permissions:
-  contents: read
-
 jobs:
   guard:
     uses: KooshaPari/phenoShared/.github/workflows/security-guard-hook-audit.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits

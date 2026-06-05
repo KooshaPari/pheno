@@ -1,4 +1,14 @@
 name: Cross-Project Testing Orchestration
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   workflow_dispatch:
@@ -10,10 +20,6 @@ on:
         type: string
   schedule:
     - cron: '0 5 * * 0'  # Weekly cross-project
-
-permissions:
-  contents: read
-
 jobs:
   orchestration:
     name: Test Orchestration
