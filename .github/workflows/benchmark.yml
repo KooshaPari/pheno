@@ -1,10 +1,9 @@
 name: Benchmarks
-on:
-  workflow_dispatch:
-
 permissions:
   contents: read
 
+on:
+  workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -39,7 +38,7 @@ jobs:
       - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ github.token }}
       - name: Check for benches directory
         id: check-benches
         run: |
@@ -58,6 +57,6 @@ jobs:
         with:
           tool: 'cargo'
           output-file-path: target/criterion/output.txt
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
           auto-push: true
         continue-on-error: true

@@ -4,9 +4,6 @@ on:
   pull_request:
   push:
     branches: [main]
-
-permissions:
-  contents: read
   security-events: write
   pull-requests: write
 
@@ -74,3 +71,10 @@ jobs:
           gem install license_finder
           license_finder
         continue-on-error: true
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+

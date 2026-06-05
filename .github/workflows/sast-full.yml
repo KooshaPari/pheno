@@ -4,9 +4,6 @@ on:
   schedule:
     - cron: "0 2 * * *"
   workflow_dispatch:
-
-permissions:
-  contents: read
   security-events: write
 
 jobs:
@@ -84,3 +81,10 @@ jobs:
           path: ./
           extra_args: --only-verified --fail
         continue-on-error: true
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+

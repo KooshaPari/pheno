@@ -34,9 +34,6 @@ on:
         required: false
       CARGO_TOKEN:
         required: false
-
-permissions:
-  contents: read
 jobs:
   gate-check:
     uses: ./.github/workflows/gate-check.yml
@@ -57,3 +54,10 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+

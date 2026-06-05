@@ -7,15 +7,17 @@ on:
       - "docs/**"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
-
-permissions:
-  contents: read
 jobs:
   deploy:
     uses: KooshaPari/phenoShared/.github/workflows/vitepress-pages.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits
     with:
       concurrency_group: pheno-vitepress-pages
-    permissions:
-      contents: read
       pages: write
       id-token: write
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
