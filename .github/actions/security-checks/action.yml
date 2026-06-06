@@ -62,7 +62,7 @@ runs:
 
     - name: Gitleaks Secret Detection
       if: inputs.gitleaks == 'true'
-      uses: gitleaks/gitleaks-action@v2
+      uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v4
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
