@@ -43,7 +43,7 @@ jobs:
       - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ github.token }}
       - name: Install cross
         if: matrix.use_cross
         run: cargo install cross
@@ -159,7 +159,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "./release-assets/*"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           draft: false
           prerelease: false
           generateReleaseNotes: true

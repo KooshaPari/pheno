@@ -1,5 +1,9 @@
 name: Example - Using Reusable Workflows
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # This is an example workflow demonstrating how to use the reusable workflows
 # defined in .github/workflows/
 
