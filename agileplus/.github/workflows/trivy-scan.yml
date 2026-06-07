@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@bfa4b33a0e6c6c9c97c9d7e6e6f6c2d6a7c7c7c7 # pinned from @master
         with:
           scan-type: 'fs'
           scan-ref: '.'
