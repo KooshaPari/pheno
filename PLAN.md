@@ -603,3 +603,65 @@ Phase 15 (Future):
 - Dashboard is read-only visualization (CLI is authoring interface)
 - Cross-project reuse will be addressed post-MVP
 
+---
+
+## Governance & Decomposition Appendix
+
+*Added 2026-06-08 — captures the 68-crate-on-disk / 21-in-workspace / 47-orphans finding and the 4-package split plan.*
+
+### Workspace Audit (this session)
+
+| State | Count | LOC |
+|---|---|---|
+| Cargo crates on disk | 68 | — |
+| Listed in `[workspace] members` | 21 | — |
+| **Orphans** (on disk, NOT in workspace) | **47** | — |
+| Cargo test files | 145 | — |
+| Crates with 0 test files (≥500 LOC) | **17** | — |
+
+**The 47 orphans are silently ignored by `cargo build --workspace`.** They are dead weight (cloned during monorepo growth, never wired in). See ADR-0001 (rust-workspace-crate-audit) for the decision and verification protocol.
+
+### Decomposition Plan (target state)
+
+| Group | Crates | LOC approx | Action |
+|---|---|---|---|
+| **`agileplus` core** | 17 `agileplus-*` crates | ~60K | Keep as one workspace member, harden coverage |
+| **`pheno-shared`** | 4 utility crates | ~8K | Keep, document interfaces |
+| **`pheno-domain`** | 1 `agileplus-domain` | 4.4K | Keep, this is the load-bearing crate |
+| **Orphans** | 47 dirs | ~30K (est.) | **Delete** (cargo `--workspace` never built them, branches preserve any lost work) |
+
+**Phase 1 (this session):** governance only — SPEC.md, ADRs, BDD features, coverage config. No `rm -rf` of orphans yet.
+
+**Phase 2 (next session):** decision per orphan (some may be in-flight work in branches).
+
+### Test Coverage Roadmap
+
+| Crate | Current | Target |
+|---|---|---|
+| agileplus-domain | partial | 90% |
+| agileplus-cli | partial | 80% |
+| agileplus-api | partial | 80% |
+| agileplus-sqlite | partial | 80% |
+| 13 medium crates | partial | 70% |
+| 17 zero-test crates | 0% | 50% (first pass) |
+
+### Governance Roadmap
+
+| Item | Status |
+|---|---|
+| Cargo workspace audit | ✅ ADR-0001 (this session) |
+| SPEC.md (workspace) | ✅ this session |
+| 3 ADRs | ✅ this session |
+| Codecov + tarpaulin | ✅ ADR-0003 (this session) |
+| BDD feature files (1 per major crate) | ✅ this session |
+| Unit tests for 17 zero-test crates | ⏳ Phase 2 |
+| Reactivate archived SDD engine | ⏳ Phase 3 (from git history) |
+
+### Cross-References
+
+- `SPEC.md` — workspace overview and per-crate contracts
+- `docs/adr/0001-rust-workspace-crate-audit.md` — audit decision + verification protocol
+- `docs/adr/0002-test-coverage-floor-70-pct.md` — 70% floor + per-crate targets
+- `docs/adr/0003-cargo-tarpaulin-and-codecov.md` — coverage workflow setup
+- `tests/features/` — 4 BDD feature files (one per major crate)
+
