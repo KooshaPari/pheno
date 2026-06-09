@@ -15,17 +15,17 @@ pub struct AssertionError {
 /// Assertion helpers trait
 pub trait Assertion {
     type Item;
-    
+
     /// Assert that the value is equal to expected
     fn assert_eq(&self, expected: &Self::Item, msg: &str) -> AssertionResult;
-    
+
     /// Assert that the value is not equal to expected
     fn assert_ne(&self, unexpected: &Self::Item, msg: &str) -> AssertionResult;
 }
 
 impl<T: PartialEq + std::fmt::Debug> Assertion for T {
     type Item = T;
-    
+
     fn assert_eq(&self, expected: &T, msg: &str) -> AssertionResult {
         if self != expected {
             return Err(AssertionError {
@@ -34,7 +34,7 @@ impl<T: PartialEq + std::fmt::Debug> Assertion for T {
         }
         Ok(())
     }
-    
+
     fn assert_ne(&self, unexpected: &T, msg: &str) -> AssertionResult {
         if self == unexpected {
             return Err(AssertionError {
@@ -86,7 +86,11 @@ pub fn assert_err<T, E>(res: &Result<T, E>, msg: &str) -> AssertionResult {
 }
 
 /// Assert that a vector contains an element
-pub fn assert_contains<T: PartialEq + std::fmt::Debug>(vec: &[T], item: &T, msg: &str) -> AssertionResult {
+pub fn assert_contains<T: PartialEq + std::fmt::Debug>(
+    vec: &[T],
+    item: &T,
+    msg: &str,
+) -> AssertionResult {
     if !vec.contains(item) {
         return Err(AssertionError {
             message: format!("{}: expected vector to contain {:?}", msg, item),
@@ -99,10 +103,7 @@ pub fn assert_contains<T: PartialEq + std::fmt::Debug>(vec: &[T], item: &T, msg:
 pub fn assert_matches(haystack: &str, needle: &str, msg: &str) -> AssertionResult {
     if !haystack.contains(needle) {
         return Err(AssertionError {
-            message: format!(
-                "{}: expected '{}' to contain '{}'",
-                msg, haystack, needle
-            ),
+            message: format!("{}: expected '{}' to contain '{}'", msg, haystack, needle),
         });
     }
     Ok(())

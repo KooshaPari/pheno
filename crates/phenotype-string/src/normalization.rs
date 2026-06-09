@@ -4,6 +4,7 @@
 
 /// Unicode normalization form
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum NormalizationForm {
     /// NFC - Canonical Decomposition followed by Canonical Composition
     NFC,

@@ -211,7 +211,10 @@ impl ProjectHealth {
 
     /// Get summary of all findings
     pub fn all_findings(&self) -> Vec<&Finding> {
-        self.dimensions.values().flat_map(|d| d.findings.iter()).collect()
+        self.dimensions
+            .values()
+            .flat_map(|d| d.findings.iter())
+            .collect()
     }
 }
 

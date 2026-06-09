@@ -303,7 +303,7 @@ mod tests {
     fn test_batch_basic() {
         let data = vec![1, 2, 3, 4, 5];
         let batches: Vec<_> = data.into_iter().batch(|&x| x < 4).collect();
-        assert!(batches.len() >= 1);
+        assert!(!batches.is_empty());
         assert_eq!(batches[0], vec![1, 2, 3]);
     }
 
@@ -326,7 +326,7 @@ mod tests {
     fn test_batch_alternating() {
         let data = vec![1, 3, 2, 4];
         let batches: Vec<_> = data.into_iter().batch(|&x| x % 2 == 1).collect();
-        assert!(batches.len() >= 1);
+        assert!(!batches.is_empty());
     }
 
     #[test]
@@ -370,6 +370,6 @@ mod tests {
     fn test_composition_window_then_chunk() {
         let data = vec![1, 2, 3, 4];
         let result: Vec<_> = data.into_iter().window(2).flatten().chunk(2).collect();
-        assert!(result.len() > 0);
+        assert!(!result.is_empty());
     }
 }
