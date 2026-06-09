@@ -10,6 +10,7 @@ description = "Phenotype Infrastructure Kit"
 [workspace]
 resolver = "2"
 members = [
+    "crates/agileplus-nats",
     "crates/phenotype-async-traits",
     "crates/phenotype-cache-adapter",
     "crates/phenotype-contract",

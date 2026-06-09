@@ -6,16 +6,14 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-phenotype-error-core = { path = "../phenotype-error-core" }
 phenotype-health = { path = "../phenotype-health" }
-agileplus-domain = { path = "../agileplus-domain" }
-serde .workspace = true
-serde_json .workspace = true
-thiserror .workspace = true
-tokio .workspace = true
-chrono .workspace = true
-async-trait = "0.1"
-uuid = { version = "1", features = ["v4"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+chrono.workspace = true
+async-trait.workspace = true
+uuid.workspace = true
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["full", "macros"] }
