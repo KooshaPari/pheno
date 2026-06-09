@@ -1,4 +1,5 @@
 name: Fuzzing
+permissions: read-all
 
 on:
   push:

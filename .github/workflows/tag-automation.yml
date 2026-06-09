@@ -1,4 +1,5 @@
 name: Tag Automation
+permissions: read-all
 
 # Delegates to phenoShared reusable workflow.
 # See: https://github.com/KooshaPari/phenoShared/blob/main/.github/workflows/tag-automation.yml

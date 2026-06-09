@@ -1,4 +1,5 @@
 name: ZAP DAST
+permissions: read-all
 
 on:
   push:

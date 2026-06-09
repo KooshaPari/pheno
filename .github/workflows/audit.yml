@@ -1,4 +1,5 @@
 name: Audit Workspace
+permissions: read-all
 
 on:
   workflow_call:
