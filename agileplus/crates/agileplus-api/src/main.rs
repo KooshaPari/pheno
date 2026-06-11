@@ -11,11 +11,19 @@ use agileplus_git::GitVcsAdapter;
 use agileplus_sqlite::SqliteStorageAdapter;
 use agileplus_telemetry::{TelemetryAdapter, config::TelemetryConfig};
 use anyhow::{Context, Result, anyhow};
+use tracing::level_filters::LevelFilter;
 use tracing::warn;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let config = load_runtime_config()?;
+    let log_level = config
+        .telemetry
+        .log_level
+        .parse::<LevelFilter>()
+        .unwrap_or(LevelFilter::INFO);
+    agileplus_telemetry::tracing_init::init_tracing("agileplus-api", log_level);
+
     ensure_database_parent(&config.core.database_path)?;
     let addr = bind_address(&config)?;
 

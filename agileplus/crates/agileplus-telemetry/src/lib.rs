@@ -17,6 +17,7 @@ pub mod config;
 pub mod logs;
 pub mod metrics;
 pub mod traces;
+pub mod tracing_init;
 
 use agileplus_domain::ports::observability::{LogEntry, LogLevel, ObservabilityPort, SpanContext};
 use opentelemetry::global;
