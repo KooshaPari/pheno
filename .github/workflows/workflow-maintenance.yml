@@ -1,4 +1,5 @@
 name: Workflow Maintenance CI
+permissions: read-all
 
 on:
   push:

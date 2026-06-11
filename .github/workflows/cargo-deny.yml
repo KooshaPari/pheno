@@ -1,4 +1,5 @@
 name: cargo-deny
+permissions: read-all
 
 on:
   workflow_dispatch:

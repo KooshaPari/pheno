@@ -1,4 +1,5 @@
 name: Publish Package
+permissions: read-all
 
 on:
   workflow_call:

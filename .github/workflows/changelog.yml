@@ -1,4 +1,5 @@
 name: Generate Changelog
+permissions: read-all
 
 on:
   workflow_call:

@@ -1,4 +1,5 @@
 name: Rust Quality Gate
+permissions: read-all
 
 on:
   workflow_call:

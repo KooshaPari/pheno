@@ -1,4 +1,5 @@
 name: IaC Scanning
+permissions: read-all
 
 on:
   push:
