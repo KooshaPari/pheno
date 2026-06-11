@@ -5,6 +5,8 @@
 > - Branch protection: 1 reviewer required, no force-push
 > - Authority: phenotype-org-governance/SUPERSEDED.md
 
+[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/KooshaPari/pheno?label=OpenSSF%20Scorecard)](https://securityscorecards.dev/viewer/?uri=github.com/KooshaPari/pheno)
+
 # repos — CodeProjects/Phenotype organizational shelf
 
 This is the **repos shelf**: a polyrepo containing ~30 independent projects
