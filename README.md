@@ -4,6 +4,7 @@
 > - cargo-audit: rustsec/audit-check@v2 weekly
 > - Branch protection: 1 reviewer required, no force-push
 > - Authority: phenotype-org-governance/SUPERSEDED.md
+> - Release process: release-plz opens release PRs on main, updates CHANGELOG via cliff.toml, and publishes merged release PRs to crates.io.
 
 [![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/KooshaPari/pheno?label=OpenSSF%20Scorecard)](https://securityscorecards.dev/viewer/?uri=github.com/KooshaPari/pheno)
 
@@ -30,6 +31,11 @@ cat README.md          # Read the target project README first
 ```bash
 cd <project-name>      # e.g., cd heliosCLI
 git status             # Verify you're in the right place
+```
+
+### License inventory
+```bash
+cargo deny list --layout crate --format json > cargo-deny-license-inventory.json
 ```
 
 ### Creating a worktree
