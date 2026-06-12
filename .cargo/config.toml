@@ -1,5 +1,6 @@
 [build]
 incremental = true
+rustc-wrapper = ".cargo/rustc-wrapper.sh"
 
 [profile.dev]
 # Enable incremental compilation for faster dev builds
