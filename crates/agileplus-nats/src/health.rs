@@ -2,6 +2,9 @@
 //!
 //! Integrates with phenotype-health for unified health reporting.
 
+use std::future::Future;
+use std::pin::Pin;
+
 pub use phenotype_health::{HealthChecker, HealthStatus};
 
 /// Connection state of the event bus.
@@ -33,15 +36,14 @@ impl NatsHealthChecker {
     }
 }
 
-#[async_trait::async_trait]
 impl HealthChecker for NatsHealthChecker {
     fn name(&self) -> &str {
         &self.name
     }
 
-    async fn check(&self) -> HealthStatus {
-        // Actual check would query NATS connection state
-        // For now, returns Unknown - implementors should override
-        HealthStatus::Unknown
+    fn check(&self) -> Pin<Box<dyn Future<Output = HealthStatus> + Send + '_>> {
+        // Actual check would query NATS connection state.
+        // For now, returns Unknown - implementors should override.
+        Box::pin(async move { HealthStatus::Unknown })
     }
 }
