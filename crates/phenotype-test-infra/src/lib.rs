@@ -6,11 +6,11 @@
 //! - Assertion helpers
 //! - Test utilities for async and sync code
 
+pub mod assertions;
 pub mod bdd;
 pub mod fixtures;
-pub mod assertions;
 
 // Re-export commonly used types
+pub use assertions::Assertion;
 pub use bdd::TestContext;
 pub use fixtures::TempDirFixture;
-pub use assertions::Assertion;

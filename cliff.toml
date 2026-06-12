@@ -1,11 +1,11 @@
-# git-cliff configuration for phenotype-shared (Phenotype Rust workspace monorepo)
+# git-cliff configuration for pheno (Phenotype Rust workspace monorepo)
 # https://git-cliff.org/docs/configuration
 
 [changelog]
 header = """
 # Changelog
 
-All notable changes to AgilePlus are documented here.
+All notable changes to pheno are documented here.
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
@@ -40,7 +40,7 @@ conventional_commits = true
 filter_unconventional = false
 split_commits = false
 commit_preprocessors = [
-  { pattern = '\(#(\d+)\)', replace = "([#${1}](https://github.com/KooshaPari/agileplus/issues/${1}))" },
+  { pattern = '\(#(\d+)\)', replace = "([#${1}](https://github.com/KooshaPari/phenotype-shared/issues/${1}))" },
 ]
 commit_parsers = [
   { message = "^feat", group = "Features" },

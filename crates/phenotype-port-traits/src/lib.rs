@@ -34,7 +34,7 @@ mod tests {
     #[test]
     fn result_ok() {
         let val: Result<i32> = Ok(42);
-        assert_eq!(val.unwrap(), 42);
+        assert!(matches!(val, Ok(42)));
     }
 
     #[test]

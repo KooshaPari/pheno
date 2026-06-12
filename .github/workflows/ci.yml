@@ -44,6 +44,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
         with:
+          components: llvm-tools-preview
+        with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
@@ -147,14 +149,16 @@ jobs:
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install tarpaulin
-        run: cargo install cargo-tarpaulin
+      - name: Install cargo-llvm-cov
+        run: cargo install cargo-llvm-cov --locked
       - name: Generate coverage
-        run: cargo tarpaulin --workspace --out xml --output-dir coverage
+        run: |
+          mkdir -p coverage
+          cargo llvm-cov --workspace --lcov --output-path coverage/lcov.info
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6
         with:
-          files: ./coverage/cobertura.xml
+          files: ./coverage/lcov.info
           flags: rust
           fail_ci_if_error: false
           verbose: true

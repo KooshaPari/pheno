@@ -215,3 +215,9 @@ PHENOTYPE_ERROR_CORE_EXTRACTION_REPORT.md
 # Rust build artifacts (added 2026-06-08)
 target/
 pheno-wtrees/
+
+# --- Org standard additions ---
+coverage/
+.astro/
+_stub/bin/
+_stub/obj/
