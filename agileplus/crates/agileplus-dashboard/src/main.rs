@@ -5,10 +5,11 @@ use axum::Router;
 use tokio::net::TcpListener;
 use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 use tracing::info;
+use tracing::level_filters::LevelFilter;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt().init();
+    agileplus_telemetry::tracing_init::init_tracing("agileplus-dashboard", LevelFilter::INFO);
 
     let port = std::env::var("AGILEPLUS_DASHBOARD_PORT")
         .ok()

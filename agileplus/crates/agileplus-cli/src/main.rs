@@ -17,6 +17,7 @@ use agileplus_cli::commands::{
 use agileplus_git::GitVcsAdapter;
 use agileplus_sqlite::SqliteStorageAdapter;
 use agileplus_subcmds::{DashboardArgs, PlatformArgs, run_dashboard, run_platform};
+use tracing::level_filters::LevelFilter;
 
 mod agent_stub;
 use agent_stub::StubAgentAdapter;
@@ -79,15 +80,11 @@ async fn main() {
 
     // Configure logging based on verbosity
     let log_level = match cli.verbose {
-        0 => tracing::Level::INFO,
-        1 => tracing::Level::DEBUG,
-        _ => tracing::Level::TRACE,
+        0 => LevelFilter::INFO,
+        1 => LevelFilter::DEBUG,
+        _ => LevelFilter::TRACE,
     };
-    tracing_subscriber::fmt()
-        .with_max_level(log_level)
-        .with_target(false)
-        .compact()
-        .init();
+    agileplus_telemetry::tracing_init::init_tracing("agileplus-cli", log_level);
 
     if let Err(e) = run(cli).await {
         eprintln!("Error: {e:#}");
