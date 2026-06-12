@@ -55,20 +55,23 @@ jobs:
       - uses: ./.github/actions/setup-env
         with:
           rust-version: nightly
+          rust-components: llvm-tools-preview
           setup-protoc: ${{ inputs.setup-protoc }}
           workspace: ${{ inputs.workspace }}
 
-      - name: Install tarpaulin
-        run: cargo install cargo-tarpaulin
+      - name: Install cargo-llvm-cov
+        run: cargo install cargo-llvm-cov --locked
 
       - name: Generate coverage
         working-directory: ${{ inputs.workspace }}
-        run: cargo tarpaulin --workspace --out xml --output-dir coverage
+        run: |
+          mkdir -p coverage
+          cargo llvm-cov --workspace --lcov --output-path coverage/lcov.info --fail-under-lines ${{ inputs.coverage-threshold }}
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6
         with:
-          files: ${{ inputs.workspace }}/coverage/cobertura.xml
+          files: ${{ inputs.workspace }}/coverage/lcov.info
           flags: rust
           fail_ci_if_error: false
 

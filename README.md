@@ -38,6 +38,14 @@ git status             # Verify you're in the right place
 cargo deny list --layout crate --format json > cargo-deny-license-inventory.json
 ```
 
+### Rust coverage
+```bash
+rustup component add llvm-tools-preview
+cargo install cargo-llvm-cov --locked
+./scripts/rust-coverage.sh
+# LCOV output: coverage/lcov.info
+```
+
 ### Creating a worktree
 ```bash
 git worktree add .worktrees/my-feature -b my-feature
