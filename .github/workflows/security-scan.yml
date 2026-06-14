@@ -35,10 +35,13 @@ on:
         default: '.'
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   security:
     name: Security Checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       checks: write
@@ -61,7 +64,7 @@ jobs:
 
   codeql:
     name: CodeQL Analysis
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       security-events: write
@@ -69,15 +72,15 @@ jobs:
       matrix:
         language: [cpp, python, ruby]
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
-      - uses: github/codeql-action/init@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
+      - uses: github/codeql-action/init@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/analyze@v4
+      - uses: github/codeql-action/analyze@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
 
   osv-scanner:
     name: OSV Scanner
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       security-events: write
@@ -109,7 +112,7 @@ jobs:
       - name: Upload OSV SARIF
         if: always()
         continue-on-error: true
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
         with:
           sarif_file: ${{ inputs.workspace }}/osv-results.sarif
           category: osv-cargo-lock

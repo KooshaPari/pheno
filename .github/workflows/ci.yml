@@ -21,15 +21,15 @@ jobs:
   # ─── Proto Lint & Breaking ─────────────────────────────────────────
   buf:
     name: Buf Lint & Breaking
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 0
-      - uses: bufbuild/buf-action@fd21066df7214747548607aaa45548ba2b9bc1ff
+      - uses: bufbuild/buf-action@91da6f6a1a2c877c182debad24ca0a8a9d848be7  # v1
         with:
           lint: true
           format: true
@@ -39,18 +39,16 @@ jobs:
   # ─── Rust Quality ──────────────────────────────────────────────────
   rust-check:
     name: Rust Quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
-        with:
-          components: llvm-tools-preview
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
         with:
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -65,14 +63,14 @@ jobs:
 
   rust-build:
     name: Rust Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -81,14 +79,14 @@ jobs:
 
   rust-msrv:
     name: Rust MSRV (stable)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@71b39e394e9a9c97c5b54ec8371f4b66b8e25b8e
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8  # v6.0.0
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -98,13 +96,13 @@ jobs:
   # ─── Rust Security & Dep Audit ─────────────────────────────────────
   rust-audit:
     name: Rust Security Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       checks: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: rustsec/audit-check@e5517072e87f198d9533967ae13d97c11b6040059366f33c96575abad1ee0dba8212993eecbe998
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install cargo-deny
@@ -114,15 +112,15 @@ jobs:
 
   rust-extras:
     name: Rust Extras (machete, semver, typos)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -133,19 +131,19 @@ jobs:
       - name: Semver compatibility check
         run: cd rust && cargo semver-checks check-release || true
       - name: Typo check
-        uses: crate-ci/typos@v1
+        uses: crate-ci/typos@bcd7f67b2ec857a4009c6502c2b4fdb5be2bb31b  # main
 
   # ─── Rust Coverage ────────────────────────────────────────────────
   rust-coverage:
     name: Rust Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -156,7 +154,7 @@ jobs:
           mkdir -p coverage
           cargo llvm-cov --workspace --lcov --output-path coverage/lcov.info
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354  # v6.0.1
         with:
           files: ./coverage/lcov.info
           flags: rust
@@ -168,14 +166,14 @@ jobs:
   # ─── Core Workspace ───────────────────────────────────────────────
   core-check:
     name: Core Workspace Quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
         with:
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -190,12 +188,12 @@ jobs:
 
   core-build:
     name: Core Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -204,12 +202,12 @@ jobs:
 
   core-msrv:
     name: Core MSRV (1.86)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@1.86.0
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@4a76a4951e2b37e999824e644cd130c67037ee2b  # v6.0.0
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -218,12 +216,12 @@ jobs:
 
   core-docs:
     name: Core Documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
-      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: dtolnay/rust-toolchain@395ad3262231945c25e8478fd5baf05154b1d79fb842231ba77f5c045dba54ac5560fed2db780e2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
+      - uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b  # v3.0.0
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -232,9 +230,9 @@ jobs:
 
   domain-deps-lint:
     name: Domain Zero-Dep Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - name: Validate domain crate dependencies
         run: |
           ALLOWED="serde serde_json chrono sha2 thiserror toml dirs-next zeroize keyring agileplus-plugin-core"
@@ -250,10 +248,10 @@ jobs:
   # ─── Python Quality ────────────────────────────────────────────────
   python-check:
     name: Python Quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: "3.14"
       - name: Install uv
@@ -269,10 +267,10 @@ jobs:
 
   python-install:
     name: Python Install
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:
           python-version: "3.14"
       - name: Install uv
@@ -283,25 +281,25 @@ jobs:
   # ─── Config Lint ───────────────────────────────────────────────────
   config-lint:
     name: Config Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - name: Install taplo
         run: cargo install taplo-cli
       - name: TOML format check
         run: taplo format --check Cargo.toml rust/Cargo.toml python/pyproject.toml
       - name: actionlint
-        uses: reviewdog/action-actionlint@v1
+        uses: reviewdog/action-actionlint@e0207a28405ecad11953ba625a95d92f7889572a
 
   # ─── Commit Lint ───────────────────────────────────────────────────
   commit-lint:
     name: Conventional Commits
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 0
-      - uses: wagoid/commitlint-github-action@v6
+      - uses: wagoid/commitlint-github-action@f133a0d95090ef2609192b4a21f54e20af819ea9  # v6
         with:
           configFile: .commitlintrc.yml

@@ -1,5 +1,8 @@
 name: Workflow Maintenance CI
-permissions: read-all
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -16,9 +19,9 @@ permissions:
 
 jobs:
   validate-workflows:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
 
       - name: List workflows
         run: |
@@ -41,9 +44,9 @@ jobs:
           done
 
   security-checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
 
       - name: Check for secrets in workflows
         run: |

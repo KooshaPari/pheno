@@ -29,11 +29,11 @@ import (
 //   - "host" (optional) — Docker daemon host (e.g., "unix:///var/run/docker.sock" or "tcp://localhost:2375")
 //
 // If neither is provided, the provider auto-detects:
-//   1. Docker default: /var/run/docker.sock
-//   2. Podman default: /run/user/$UID/podman/podman.sock
-//   3. OrbStack: ~/.orbstack/run/docker.sock
-//   4. Lima: ~/.lima/default/sock/docker.sock
-//   5. Standard DOCKER_HOST env var
+//  1. Docker default: /var/run/docker.sock
+//  2. Podman default: /run/user/$UID/podman/podman.sock
+//  3. OrbStack: ~/.orbstack/run/docker.sock
+//  4. Lima: ~/.lima/default/sock/docker.sock
+//  5. Standard DOCKER_HOST env var
 type LocalProvider struct {
 	credentials Credentials
 	metadata    ProviderMetadata
@@ -524,7 +524,7 @@ func (p *LocalProvider) GetActualCost(ctx context.Context, resource *Resource, t
 // autoDetectSocket attempts to find a Docker/Podman socket on the system.
 func autoDetectSocket() (string, string, error) {
 	candidates := []string{
-		"/var/run/docker.sock",                          // Docker default
+		"/var/run/docker.sock", // Docker default
 	}
 
 	// Add Podman user socket
@@ -586,18 +586,18 @@ func (p *LocalProvider) containerToResource(c types.ContainerJSON) *Resource {
 	}
 
 	res := &Resource{
-		ID:         c.ID[:12],
-		Name:       strings.TrimPrefix(c.Name, "/"),
-		Type:       ResourceTypeComputeContainer,
-		Provider:   "local",
-		Region:     "localhost",
-		Status:     state,
+		ID:           c.ID[:12],
+		Name:         strings.TrimPrefix(c.Name, "/"),
+		Type:         ResourceTypeComputeContainer,
+		Provider:     "local",
+		Region:       "localhost",
+		Status:       state,
 		HealthStatus: p.dockerStateToHealth(c.State.Status, c.State.Health),
-		Tags:       c.Config.Labels,
+		Tags:         c.Config.Labels,
 		Metadata: map[string]any{
-			"image":      c.Config.Image,
-			"full_id":    c.ID,
-			"exit_code":  c.State.ExitCode,
+			"image":     c.Config.Image,
+			"full_id":   c.ID,
+			"exit_code": c.State.ExitCode,
 		},
 		CreatedAt: createdAt,
 		StartedAt: startedAt,

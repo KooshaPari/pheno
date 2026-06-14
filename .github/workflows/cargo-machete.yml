@@ -1,5 +1,8 @@
 name: cargo-machete
-permissions: read-all
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   push:
@@ -11,9 +14,12 @@ on:
     - cron: '47 6 * * 4'  # weekly Thursday
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   machete:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
-      - uses: bnjbvr/cargo-machete@main
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  ## v4.3.1
+      - uses: bnjbvr/cargo-machete@5cab879e5357f06fb126e7e53048e2f11620f856  # v0.9.2

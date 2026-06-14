@@ -6,14 +6,14 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum NormalizationForm {
-    /// NFC - Canonical Decomposition followed by Canonical Composition
-    NFC,
-    /// NFD - Canonical Decomposition
-    NFD,
-    /// NFKC - Compatibility Decomposition followed by Canonical Composition
-    NFKC,
-    /// NFKD - Compatibility Decomposition
-    NFKD,
+    /// Nfc - Canonical Decomposition followed by Canonical Composition
+    Nfc,
+    /// Nfd - Canonical Decomposition
+    Nfd,
+    /// Nfkc - Compatibility Decomposition followed by Canonical Composition
+    Nfkc,
+    /// Nfkd - Compatibility Decomposition
+    Nfkd,
 }
 
 /// Normalize a string to the specified Unicode normalization form
@@ -24,7 +24,7 @@ pub enum NormalizationForm {
 /// use phenotype_string::normalization::{normalize, NormalizationForm};
 ///
 /// let text = "café";
-/// let normalized = normalize(text, NormalizationForm::NFC).unwrap();
+/// let normalized = normalize(text, NormalizationForm::Nfc).unwrap();
 /// assert_eq!(normalized, text);
 /// ```
 pub fn normalize(text: &str, _form: NormalizationForm) -> crate::Result<String> {
@@ -41,7 +41,7 @@ pub fn normalize(text: &str, _form: NormalizationForm) -> crate::Result<String> 
 /// use phenotype_string::normalization::{is_normalized, NormalizationForm};
 ///
 /// let text = "Hello";
-/// assert!(is_normalized(text, NormalizationForm::NFC).unwrap());
+/// assert!(is_normalized(text, NormalizationForm::Nfc).unwrap());
 /// ```
 pub fn is_normalized(_text: &str, _form: NormalizationForm) -> crate::Result<bool> {
     // Stub implementation - always returns true
@@ -56,13 +56,13 @@ mod tests {
     #[test]
     fn test_normalize() {
         let text = "Hello, World!";
-        let normalized = normalize(text, NormalizationForm::NFC).unwrap();
+        let normalized = normalize(text, NormalizationForm::Nfc).unwrap();
         assert_eq!(normalized, text);
     }
 
     #[test]
     fn test_is_normalized() {
         let text = "Hello";
-        assert!(is_normalized(text, NormalizationForm::NFC).unwrap());
+        assert!(is_normalized(text, NormalizationForm::Nfc).unwrap());
     }
 }

@@ -223,9 +223,6 @@
 [submodule "repos/phenotype-replication-engine"]
 	path = repos/phenotype-replication-engine
 	url = https://github.com/KooshaPari/phenotype-replication-engine.git
-[submodule "sharecli"]
-	path = sharecli
-	url = https://github.com/KooshaPari/sharecli.git
 [submodule "template-domain-service-api"]
 	path = template-domain-service-api
 	url = https://github.com/KooshaPari/template-domain-service-api.git

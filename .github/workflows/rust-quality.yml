@@ -30,10 +30,13 @@ on:
         default: 'cargo test --workspace'
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   quality:
     name: Quality Checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: ./.github/actions/setup-env
         with:
@@ -51,7 +54,7 @@ jobs:
 
   coverage:
     name: Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: ./.github/actions/setup-env
         with:
@@ -70,7 +73,7 @@ jobs:
           cargo llvm-cov --workspace --lcov --output-path coverage/lcov.info --fail-under-lines ${{ inputs.coverage-threshold }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354  # v6.0.1
         with:
           files: ${{ inputs.workspace }}/coverage/lcov.info
           flags: rust
@@ -78,7 +81,7 @@ jobs:
 
   security:
     name: Security Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       checks: write

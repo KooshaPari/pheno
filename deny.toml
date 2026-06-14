@@ -21,4 +21,30 @@ allow = [
     "Apache-2.0",
     "BSD-3-Clause",
     "MIT",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Unicode-DFS-2016",
+    "Zlib",
+    "0BSD",
+    "BlueOak-1.0.0",
+    "CDLA-Permissive-2.0",
+    "Unlicense",
+    "WTFPL",
+]
+[bans]
+multiple-versions = "warn"
+wildcards = "warn"
+highlight = "all"
+workspace-default-features = "warn"
+[sources]
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+unknown-git = "deny"
+
+[advisories]
+ignore = [
+    # NOTE: The following advisories were previously ignored but are NOT applicable to this workspace:
+    # - RUSTSEC-2025-0134: async-nats/rustls-pemfile not used
+    # - RUSTSEC-2026-0049: rustls-webpki not used
+    # - RUSTSEC-2026-0002: lru not used in this workspace
+    # - RUSTSEC-2025-0140: git2 not used (phenotype-git-core uses git2 directly)
 ]

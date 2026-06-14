@@ -1,4 +1,8 @@
 name: SAST Quick Check
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 on:
   pull_request:
@@ -13,12 +17,12 @@ permissions:
 jobs:
   semgrep:
     name: Semgrep Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
 
-      - uses: returntocorp/semgrep-action@v1
+      - uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d  # v1
         with:
           config: >-
             p/security-audit
@@ -28,7 +32,7 @@ jobs:
           generateSarif: true
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@7c1e4cf0b20d7c1872b26569c00ba908797a59bf  # v4.36.0
         if: always()
         with:
           sarif_file: semgrep.sarif
@@ -37,14 +41,14 @@ jobs:
 
   secrets:
     name: Secret Scanning
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
         with:
           fetch-depth: 0
 
-      - uses: trufflesecurity/trufflehog@3fc0c2aa6648d54242e4af6fbfde0701796e4fb0  # was: @main
+      - uses: trufflesecurity/trufflehog@5f47aad1c2df34f7c6230784ce9a5a659922f479  # main
         with:
           path: ./
           extra_args: --only-verified --fail
@@ -52,21 +56,21 @@ jobs:
 
   lint-rust:
     name: Rust Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8  # v6.0.0
         with:
           components: clippy
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae  # v2.0.0
       - run: cargo clippy --all-targets --all-features -- -D warnings
 
   license-check:
     name: License Compliance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.1.1
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1 # v4.1.1
+      - uses: ruby/setup-ruby@97ecb7b512899eb71ab1bf2310a624c6f1589ac6  # v1.99.0
         with:
           ruby-version: "3.3"
       - name: Run LicenseFinder
