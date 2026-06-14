@@ -1,104 +1,99 @@
-//! Duration utilities for working with std::time::Duration.
+//! Duration extension traits and utilities.
 
-use chrono::Duration as ChronoDuration;
 use std::time::Duration;
 
-/// Extension trait for std::time::Duration.
+/// Duration extension trait for convenience methods.
 pub trait DurationExt {
-    /// Format as human-readable string (e.g. "1h 30m").
+    /// Create a Duration from the given number of seconds.
+    fn seconds(s: u64) -> Duration;
+
+    /// Create a Duration from the given number of minutes.
+    fn minutes(m: u64) -> Duration;
+
+    /// Create a Duration from the given number of hours.
+    fn hours(h: u64) -> Duration;
+
+    /// Create a Duration from the given number of days.
+    fn days(d: u64) -> Duration;
+
+    /// Create a Duration from the given number of milliseconds.
+    fn millis(ms: u64) -> Duration;
+
+    /// Format as human-readable string (e.g., "5m 30s").
     fn format_human(&self) -> String;
-
-    /// Format as compact string (e.g. "1h30m").
-    fn format_compact(&self) -> String;
-
-    /// Convert to chrono::Duration.
-    fn to_chrono(&self) -> Option<ChronoDuration>;
-
-    /// Convert from chrono::Duration.
-    fn from_chrono(duration: ChronoDuration) -> Option<Duration>;
-
-    /// Check if duration is zero.
-    fn is_zero(&self) -> bool;
-
-    /// Check if duration is positive.
-    fn is_positive(&self) -> bool;
-
-    /// Check if duration is negative.
-    fn is_negative(&self) -> bool;
-
-    /// Clamp duration between min and max.
-    fn clamp(&self, min: Duration, max: Duration) -> Duration;
 }
 
 impl DurationExt for Duration {
+    fn seconds(s: u64) -> Duration {
+        Duration::from_secs(s)
+    }
+
+    fn minutes(m: u64) -> Duration {
+        Duration::from_secs(m * 60)
+    }
+
+    fn hours(h: u64) -> Duration {
+        Duration::from_secs(h * 3600)
+    }
+
+    fn days(d: u64) -> Duration {
+        Duration::from_secs(d * 86400)
+    }
+
+    fn millis(ms: u64) -> Duration {
+        Duration::from_millis(ms)
+    }
+
     fn format_human(&self) -> String {
-        let secs = self.as_secs();
-        let hours = secs / 3600;
-        let mins = (secs % 3600) / 60;
-        let secs = secs % 60;
+        let total_secs = self.as_secs();
+        let days = total_secs / 86400;
+        let hours = (total_secs % 86400) / 3600;
+        let minutes = (total_secs % 3600) / 60;
+        let seconds = total_secs % 60;
 
+        let mut parts = Vec::new();
+        if days > 0 {
+            parts.push(format!("{}d", days));
+        }
         if hours > 0 {
-            format!("{}h {}m {}s", hours, mins, secs)
-        } else if mins > 0 {
-            format!("{}m {}s", mins, secs)
-        } else {
-            format!("{}s", secs)
+            parts.push(format!("{}h", hours));
         }
-    }
-
-    fn format_compact(&self) -> String {
-        let secs = self.as_secs();
-        let hours = secs / 3600;
-        let mins = (secs % 3600) / 60;
-        let secs = secs % 60;
-
-        if hours > 0 {
-            format!("{}h{}m{}s", hours, mins, secs)
-        } else if mins > 0 {
-            format!("{}m{}s", mins, secs)
-        } else {
-            format!("{}s", secs)
+        if minutes > 0 {
+            parts.push(format!("{}m", minutes));
         }
-    }
-
-    fn to_chrono(&self) -> Option<ChronoDuration> {
-        ChronoDuration::from_std(*self).ok()
-    }
-
-    fn from_chrono(duration: ChronoDuration) -> Option<Duration> {
-        duration.to_std().ok()
-    }
-
-    fn is_zero(&self) -> bool {
-        self.as_secs() == 0 && self.subsec_nanos() == 0
-    }
-
-    fn is_positive(&self) -> bool {
-        !self.is_zero()
-    }
-
-    fn is_negative(&self) -> bool {
-        false
-    }
-
-    fn clamp(&self, min: Duration, max: Duration) -> Duration {
-        if *self < min {
-            min
-        } else if *self > max {
-            max
-        } else {
-            *self
+        if seconds > 0 || parts.is_empty() {
+            parts.push(format!("{}s", seconds));
         }
+
+        parts.join(" ")
     }
 }
 
-/// Duration-related constants.
+/// Well-known duration constants for common use cases.
 pub mod constants {
     use std::time::Duration;
 
+    /// One second.
+    pub const SECOND: Duration = Duration::from_secs(1);
+
+    /// One minute (60 seconds).
+    pub const MINUTE: Duration = Duration::from_secs(60);
+
+    /// One hour (3600 seconds).
+    pub const HOUR: Duration = Duration::from_secs(3600);
+
+    /// One day (86400 seconds).
+    pub const DAY: Duration = Duration::from_secs(86400);
+
+    /// One week (604800 seconds).
+    pub const WEEK: Duration = Duration::from_secs(604800);
+
     // Cache TTLs
-    /// 5 minutes - short-lived cache entries.
-    pub const CACHE_TTL_SHORT: Duration = Duration::from_secs(300);
+    /// 30 seconds - short-lived cache entries.
+    pub const CACHE_TTL_SHORT: Duration = Duration::from_secs(30);
+
+    /// 5 minutes - medium-lived cache entries.
+    pub const CACHE_TTL_MEDIUM: Duration = Duration::from_secs(300);
 
     /// 15 minutes - long-lived cache entries.
     pub const CACHE_TTL_LONG: Duration = Duration::from_secs(900);
@@ -134,33 +129,4 @@ pub mod constants {
 
     /// Exponential backoff max (60 seconds).
     pub const BACKOFF_MAX: Duration = Duration::from_secs(60);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn format_compact_hours_minutes_seconds() {
-        let duration = Duration::from_secs(3661);
-        assert_eq!(duration.format_compact(), "1h1m1s");
-    }
-
-    #[test]
-    fn format_compact_minutes_seconds() {
-        let duration = Duration::from_secs(125);
-        assert_eq!(duration.format_compact(), "2m5s");
-    }
-
-    #[test]
-    fn format_compact_seconds_only() {
-        let duration = Duration::from_secs(45);
-        assert_eq!(duration.format_compact(), "45s");
-    }
-
-    #[test]
-    fn format_compact_zero() {
-        let duration = Duration::ZERO;
-        assert_eq!(duration.format_compact(), "0s");
-    }
 }
