@@ -1,7 +1,11 @@
 # Security Policy
 
 ## Reporting a Vulnerability
-If you discover a security vulnerability, please report it responsibly:
-1. Do not open a public GitHub issue.
-2. Email the maintainers.
-3. Allow time for assessment before public disclosure.
+
+If you discover a security vulnerability in this project, please report it responsibly.
+
+**Please do not open public issues for security vulnerabilities.**
+
+Instead, report security issues by emailing the maintainers directly. We will investigate and respond as soon as possible.
+
+Thank you for helping keep this project secure.
