@@ -1,39 +1,11 @@
 # Traceability Matrix
 
-A lightweight mapping of key requirements/features to source files and tests.
+Top-level requirements mapped to implementation source and test coverage.
 
 | Requirement | Source | Test | Status |
-|-------------|--------|------|--------|
-| CLI command dispatch (cycle, plan, implement, validate, retrospective, module) | `crates/agileplus-cli/src/commands/*/mod.rs` | `crates/agileplus-cli/src/commands/*/tests.rs` | 🟡 Partial |
-| REST API types & serialization | `crates/agileplus-api-types/src/` | `crates/agileplus-contract-tests/tests/` | 🟡 Partial |
-| REST API handlers & routing | `crates/agileplus-api/src/` | `crates/agileplus-integration-tests/tests/` | 🟡 Partial |
-| Domain models (entities, value objects) | `crates/agileplus-domain/src/` | `crates/agileplus-domain/tests/` | 🟡 Partial |
-| Event bus / async messaging | `crates/agileplus-events/src/` | `crates/agileplus-events/tests/` | 🟡 Partial |
-| Git repository introspection | `crates/agileplus-git/src/` | `crates/agileplus-git/tests/` | 🟡 Partial |
-| GitHub PR/issue integration | `crates/agileplus-github/src/` | `crates/agileplus-github/tests/` | 🟡 Partial |
-| SQLite persistence adapter | `crates/agileplus-sqlite/src/` | `crates/agileplus-sqlite/tests/` | 🟡 Partial |
-| NATS messaging adapter | `crates/agileplus-nats/src/` | `crates/agileplus-nats/tests/` | 🟡 Partial |
-| P2P networking layer | `crates/agileplus-p2p/src/` | `crates/agileplus-p2p/tests/` | 🟡 Partial |
-| Telemetry & metrics | `crates/agileplus-telemetry/src/` | `crates/agileplus-telemetry/tests/` | 🟡 Partial |
-| Caching layer | `crates/agileplus-cache/src/` | `crates/agileplus-cache/tests/` | 🟡 Partial |
-| Triage / auto-review agents | `crates/agileplus-triage/src/` | `crates/agileplus-triage/tests/` | 🟡 Partial |
-| Phenotype core traits | `crates/phenotype-core/src/` | `crates/phenotype-core/tests/` | 🟡 Partial |
-| Python SDK (`pheno-core`) | `python/pheno-core/src/` | `python/tests/` | 🟡 Partial |
-| Agent dispatch (Claude Code, Codex, PR loop) | `agileplus-agents/crates/agileplus-agent-dispatch/src/` | `agileplus-agents/crates/agileplus-agent-review/tests/` | 🟡 Partial |
-| MCP server (Python) | `agileplus-mcp/src/` | `agileplus-mcp/tests/` | 🟡 Partial |
-| BDD / E2E integration tests | `tests/bdd/`, `tests/integration/` | `tests/bdd/`, `tests/integration/` | 🟡 Partial |
-| Contract tests (OpenAPI / gRPC) | `tests/contracts/`, `crates/agileplus-contract-tests/` | `tests/contracts/`, `crates/agileplus-contract-tests/tests/` | 🟡 Partial |
-| SBOM generation | `sbom/` | `tests/integration/sbom*` | 🟡 Partial |
-| CI/CD orchestration | `.github/workflows/` | `.github/workflows/ai-testing-orchestration.yml` | 🟡 Partial |
-
-## Legend
-
-- 🟢 Complete — source and tests aligned, passing in CI
-- 🟡 Partial — source exists, tests incomplete or not yet wired in CI
-- 🔴 Missing — requirement identified, no implementation or tests yet
-
-## Notes
-
-- This matrix is intentionally minimal; the monorepo contains 40+ crates/packages.
-- For granular per-crate traceability, see individual `README.md` files under `crates/*/README.md`.
-- Integration/consolidate branch: focus is on unifying test harnesses and aligning contract tests across the workspace.
+|---|---|---|---|
+| Cryptographic hashing & encryption (SHA-256, Blake3, AES-GCM, PBKDF2, HMAC) | `src/lib.rs`, `src/hash.rs`, `src/encryption.rs`, `src/keys.rs`, `src/signatures.rs` | `cargo test` in workspace root; unit tests in `src/hash.rs`, `src/encryption.rs` | ✅ Implemented |
+| Event sourcing with aggregate snapshots & event store | `crates/phenotype-event-sourcing/src/lib.rs` | `cargo test -p phenotype-event-sourcing` | ✅ Implemented |
+| Policy engine with rule evaluation & enforcement | `crates/phenotype-policy-engine/src/lib.rs` | `cargo test -p phenotype-policy-engine` | ✅ Implemented |
+| Compliance scanning & security aggregation | `crates/phenotype-compliance-scanner/src/lib.rs`, `crates/phenotype-security-aggregator/src/lib.rs` | `cargo test -p phenotype-compliance-scanner -p phenotype-security-aggregator` | ✅ Implemented |
+| Project registry & canonical port traits | `crates/phenotype-project-registry/src/lib.rs`, `crates/phenotype-port-traits/src/lib.rs`, `crates/phenotype-ports-canonical/src/lib.rs` | `cargo test -p phenotype-project-registry -p phenotype-port-traits -p phenotype-ports-canonical` | ✅ Implemented |
