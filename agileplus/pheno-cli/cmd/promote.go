@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/KooshaPari/pheno-cli/internal/adapters"
 	"github.com/KooshaPari/pheno-cli/internal/config"
 	"github.com/KooshaPari/pheno-cli/internal/detect"
 	"github.com/KooshaPari/pheno-cli/internal/publish"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -72,8 +72,8 @@ func runPromote(cmd *cobra.Command, args []string) error {
 
 	// Promote all detected packages
 	for _, d := range detected {
-		adapter := getAdapter(d.Registry)
-		if adapter == nil {
+		adapter, err := adapters.GetAdapter(d.Registry)
+		if err != nil {
 			return fmt.Errorf("no adapter available for registry: %s", d.Registry)
 		}
 

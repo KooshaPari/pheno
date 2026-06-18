@@ -33,7 +33,7 @@ use thiserror::Error;
 // ---------------------------------------------------------------------------
 
 /// Errors originating from the HTTP / transport boundary.
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Clone, Serialize, Deserialize)]
 pub enum ApiError {
     #[error("bad request: {0}")]
     BadRequest(String),
@@ -89,12 +89,18 @@ impl ApiError {
     }
 }
 
+impl Default for ApiError {
+    fn default() -> Self {
+        Self::Internal("default error".into())
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Domain / business-logic layer
 // ---------------------------------------------------------------------------
 
 /// Errors from domain logic: validation, invariant violations, state issues.
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Clone, Serialize, Deserialize)]
 pub enum DomainError {
     #[error("validation failed: {0}")]
     Validation(String),
@@ -126,7 +132,7 @@ pub enum DomainError {
 // ---------------------------------------------------------------------------
 
 /// Errors from persistence adapters.
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Clone, Serialize, Deserialize)]
 pub enum RepositoryError {
     #[error("record not found: {entity} {id}")]
     NotFound { entity: String, id: String },
@@ -238,6 +244,73 @@ pub enum StorageError {
 
     #[error("{0}")]
     Other(String),
+}
+
+impl Clone for StorageError {
+    fn clone(&self) -> Self {
+        match self {
+            Self::Io(err) => Self::Io(std::io::Error::new(err.kind(), err.to_string())),
+            Self::NotFound(msg) => Self::NotFound(msg.clone()),
+            Self::PermissionDenied(msg) => Self::PermissionDenied(msg.clone()),
+            Self::CapacityExceeded(msg) => Self::CapacityExceeded(msg.clone()),
+            Self::Connection(msg) => Self::Connection(msg.clone()),
+            Self::Other(msg) => Self::Other(msg.clone()),
+        }
+    }
+}
+
+impl Serialize for StorageError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        #[derive(Serialize)]
+        enum StorageErrorSer {
+            Io(String),
+            NotFound(String),
+            PermissionDenied(String),
+            CapacityExceeded(String),
+            Connection(String),
+            Other(String),
+        }
+        let ser = match self {
+            Self::Io(err) => StorageErrorSer::Io(err.to_string()),
+            Self::NotFound(msg) => StorageErrorSer::NotFound(msg.clone()),
+            Self::PermissionDenied(msg) => StorageErrorSer::PermissionDenied(msg.clone()),
+            Self::CapacityExceeded(msg) => StorageErrorSer::CapacityExceeded(msg.clone()),
+            Self::Connection(msg) => StorageErrorSer::Connection(msg.clone()),
+            Self::Other(msg) => StorageErrorSer::Other(msg.clone()),
+        };
+        ser.serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for StorageError {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        enum StorageErrorDe {
+            Io(String),
+            NotFound(String),
+            PermissionDenied(String),
+            CapacityExceeded(String),
+            Connection(String),
+            Other(String),
+        }
+        let de = StorageErrorDe::deserialize(deserializer)?;
+        Ok(match de {
+            StorageErrorDe::Io(msg) => {
+                Self::Io(std::io::Error::new(std::io::ErrorKind::Other, msg))
+            }
+            StorageErrorDe::NotFound(msg) => Self::NotFound(msg),
+            StorageErrorDe::PermissionDenied(msg) => Self::PermissionDenied(msg),
+            StorageErrorDe::CapacityExceeded(msg) => Self::CapacityExceeded(msg),
+            StorageErrorDe::Connection(msg) => Self::Connection(msg),
+            StorageErrorDe::Other(msg) => Self::Other(msg),
+        })
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -428,6 +501,17 @@ mod tests {
         let result: Result<(), &str> = Err("boom");
         let ctx = result.context("loading config");
         assert_eq!(ctx.unwrap_err(), "loading config: boom");
+    }
+
+    #[test]
+    fn api_error_serde_roundtrip() {
+        let err = ApiError::NotFound {
+            resource: "user".into(),
+            id: "42".into(),
+        };
+        let json = serde_json::to_string(&err).unwrap();
+        let roundtrip: ApiError = serde_json::from_str(&json).unwrap();
+        assert!(matches!(roundtrip, ApiError::NotFound { ref resource, ref id } if resource == "user" && id == "42"));
     }
 
     #[test]
