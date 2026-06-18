@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/KooshaPari/pheno-cli/internal/adapters"
 	"github.com/KooshaPari/pheno-cli/internal/config"
 	"github.com/KooshaPari/pheno-cli/internal/detect"
 	"github.com/KooshaPari/pheno-cli/internal/publish"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
@@ -60,8 +60,8 @@ func runPublish(cmd *cobra.Command, args []string) error {
 			continue
 		}
 
-		adapter := getAdapter(d.Registry)
-		if adapter == nil {
+		adapter, err := adapters.GetAdapter(d.Registry)
+		if err != nil {
 			if dryRun {
 				fmt.Printf("Warning: No adapter available for %s\n", d.Registry)
 				continue
@@ -98,12 +98,4 @@ func runPublish(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// getAdapter returns a RegistryAdapter for the given registry.
-func getAdapter(reg adapters.Registry) adapters.RegistryAdapter {
-	switch reg {
-	case adapters.RegistryNPM:
-		return &adapters.NpmAdapter{}
-	default:
-		return nil
-	}
-}
+
