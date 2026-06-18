@@ -59,6 +59,9 @@ pub enum ApiError {
     #[error("internal: {0}")]
     Internal(String),
 
+    #[error("platform error: {0}")]
+    Platform(String),
+
     #[error(transparent)]
     Domain(#[from] DomainError),
 
@@ -78,6 +81,7 @@ impl ApiError {
             Self::RateLimited => 429,
             Self::Timeout => 504,
             Self::Internal(_) => 500,
+            Self::Platform(_) => 500,
             Self::Domain(_) => 422,
             Self::Repository(_) => 500,
         }
@@ -85,7 +89,7 @@ impl ApiError {
 
     /// Whether the caller should retry.
     pub fn is_retryable(&self) -> bool {
-        matches!(self, Self::RateLimited | Self::Timeout | Self::Internal(_))
+        matches!(self, Self::RateLimited | Self::Timeout | Self::Internal(_) | Self::Platform(_))
     }
 }
 
@@ -385,6 +389,14 @@ mod tests {
         assert!(ApiError::Timeout.is_retryable());
         assert!(ApiError::Internal("boom".into()).is_retryable());
         assert!(!ApiError::BadRequest("nope".into()).is_retryable());
+    }
+
+    #[test]
+    fn api_error_platform_returns_500() {
+        let err = ApiError::Platform("CGEventSource failed".into());
+        assert_eq!(err.status_code(), 500);
+        assert!(err.is_retryable());
+        assert!(err.to_string().contains("CGEventSource failed"));
     }
 
     #[test]
