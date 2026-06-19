@@ -81,7 +81,6 @@ phenotype-crypto = { path = "crates/phenotype-crypto" }
 phenotype-error-core = { path = "crates/phenotype-error-core" }
 phenotype-error-macros = { path = "crates/phenotype-error-macros" }
 phenotype-errors = { path = "crates/phenotype-errors" }
-phenotype-event-bus = { path = "crates/phenotype-event-bus" }
 phenotype-event-sourcing = { path = "crates/phenotype-event-sourcing" }
 phenotype-git-core = { path = "crates/phenotype-git-core" }
 phenotype-health = { path = "crates/phenotype-health" }
