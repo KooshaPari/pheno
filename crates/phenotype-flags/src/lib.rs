@@ -243,18 +243,14 @@ mod tests {
 
     #[test]
     fn test_last_write_wins() {
-        let flags = FlagSet::new()
-            .with("key", true)
-            .with("key", false);
+        let flags = FlagSet::new().with("key", true).with("key", false);
 
         assert!(!flags.is_enabled("key"));
     }
 
     #[test]
     fn test_snapshot_sorted() {
-        let flags = FlagSet::new()
-            .with("zeta", true)
-            .with("alpha", false);
+        let flags = FlagSet::new().with("zeta", true).with("alpha", false);
 
         let snap: BTreeMap<String, bool> = flags.snapshot();
         let keys: Vec<&String> = snap.keys().collect();
