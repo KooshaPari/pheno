@@ -27,6 +27,8 @@ members = [
     "crates/phenotype-iter",
     "crates/phenotype-policy-engine",
     "crates/phenotype-port-traits",
+    "crates/phenotype-ports-canonical",
+    "crates/phenotype-process",
     "crates/phenotype-rate-limit",
     "crates/phenotype-retry",
     "crates/phenotype-state-machine",

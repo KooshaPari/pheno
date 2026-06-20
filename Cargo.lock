@@ -3,17 +3,6 @@
 version = 3
 
 [[package]]
-name = "agileplus-graph"
-version = "0.2.0"
-dependencies = [
- "async-trait",
- "serde",
- "serde_json",
- "thiserror 2.0.18",
- "tokio",
-]
-
-[[package]]
 name = "agileplus-nats"
 version = "0.2.0"
 dependencies = [
@@ -1351,6 +1340,22 @@ dependencies = [
  "thiserror 2.0.18",
  "tokio",
  "uuid",
+]
+
+[[package]]
+name = "phenotype-ports-canonical"
+version = "0.2.0"
+dependencies = [
+ "serde",
+ "thiserror 2.0.18",
+]
+
+[[package]]
+name = "phenotype-process"
+version = "0.2.0"
+dependencies = [
+ "serde",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
