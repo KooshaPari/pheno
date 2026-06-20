@@ -10,4 +10,4 @@ permissions:
 
 jobs:
   gate:
-    uses: KooshaPari/phenoShared/.github/workflows/self-merge-gate.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits
+    uses: KooshaPari/phenoShared/.github/workflows/self-merge-gate.yml@d1f40cb9482add27c57925be5085cabe2c20d8be # pinned from @ref; org SHA may shift on new commits
