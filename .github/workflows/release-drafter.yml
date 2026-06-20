@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release-drafter:
-    uses: KooshaPari/phenoShared/.github/workflows/reusable-release-drafter.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits
+    uses: KooshaPari/phenoShared/.github/workflows/reusable-release-drafter.yml@95d74795c77f7c554be2b5e42e8e3378cdab77bf # pinned from @ref; org SHA may shift on new commits
     permissions:
       contents: write
       pull-requests: write
