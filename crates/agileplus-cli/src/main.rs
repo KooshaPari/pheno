@@ -15,6 +15,7 @@ use agileplus_cli::commands::{
     ship::ShipArgs, specify::SpecifyArgs, triage::TriageArgs, validate::ValidateArgs,
 };
 use agileplus_git::GitVcsAdapter;
+use phenotype_observability::{self, SERVICE_NAME};
 use agileplus_sqlite::SqliteStorageAdapter;
 use agileplus_subcmds::{DashboardArgs, PlatformArgs, run_dashboard, run_platform};
 
@@ -75,6 +76,13 @@ enum Commands {
 
 #[tokio::main]
 async fn main() {
+    let otlp_endpoint = phenotype_observability::otlp_endpoint();
+    let mut attrs = std::collections::HashMap::new();
+    attrs.insert("service".to_string(), SERVICE_NAME.to_string());
+    attrs.insert("otlp_endpoint".to_string(), otlp_endpoint.clone());
+    phenotype_observability::emit_span("phenotype.start", attrs).await;
+    tracing::info!(service = SERVICE_NAME, otlp_endpoint = %otlp_endpoint, "phenotype fleet starting");
+
     let cli = Cli::parse();
 
     // Configure logging based on verbosity
