@@ -3,6 +3,17 @@
 version = 3
 
 [[package]]
+name = "agileplus-graph"
+version = "0.2.0"
+dependencies = [
+ "async-trait",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+]
+
+[[package]]
 name = "agileplus-nats"
 version = "0.2.0"
 dependencies = [
@@ -1217,6 +1228,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "phenotype-cost-core"
+version = "0.2.0"
+dependencies = [
+ "serde",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "phenotype-error-core"
 version = "0.2.0"
 dependencies = [
@@ -1262,6 +1281,10 @@ dependencies = [
  "tokio",
  "uuid",
 ]
+
+[[package]]
+name = "phenotype-git-core"
+version = "0.2.0"
 
 [[package]]
 name = "phenotype-health"

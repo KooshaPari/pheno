@@ -16,10 +16,12 @@ members = [
     "crates/phenotype-casbin-wrapper",
     "crates/phenotype-contract",
     "crates/phenotype-contracts",
+    "crates/phenotype-cost-core",
     "crates/phenotype-error-core",
     "crates/phenotype-error-macros",
     "crates/phenotype-errors",
     "crates/phenotype-event-sourcing",
+    "crates/phenotype-git-core",
     "crates/phenotype-health",
     "crates/phenotype-http-client-core",
     "crates/phenotype-iter",
@@ -70,6 +72,7 @@ ulid = "1"
 
 # Phenotype internal crates
 arc-swap = "1"
+agileplus-graph = { path = "crates/agileplus-graph" }
 phenotype-async-traits = { path = "crates/phenotype-async-traits" }
 phenotype-bdd = { path = "crates/phenotype-bdd" }
 phenotype-cache-adapter = { path = "crates/phenotype-cache-adapter" }
