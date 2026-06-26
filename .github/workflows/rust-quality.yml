@@ -70,7 +70,7 @@ jobs:
           cargo llvm-cov --workspace --lcov --output-path coverage/lcov.info --fail-under-lines ${{ inputs.coverage-threshold }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           files: ${{ inputs.workspace }}/coverage/lcov.info
           flags: rust
