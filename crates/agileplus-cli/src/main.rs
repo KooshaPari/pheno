@@ -4,7 +4,6 @@
 //! Traceability: WP11-T060, T065 / WP12-T072
 
 use std::path::PathBuf;
-use std::process;
 
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
@@ -14,6 +13,7 @@ use agileplus_cli::commands::{
     plan::PlanArgs, queue::QueueArgs, research::ResearchArgs, retrospective::RetrospectiveArgs,
     ship::ShipArgs, specify::SpecifyArgs, triage::TriageArgs, validate::ValidateArgs,
 };
+use agileplus_cli::error::{CliError, ErrorCategory, OutputMode};
 use agileplus_git::GitVcsAdapter;
 use phenotype_observability::{self, SERVICE_NAME};
 use agileplus_sqlite::SqliteStorageAdapter;
@@ -74,8 +74,13 @@ enum Commands {
     Platform(PlatformArgs),
 }
 
-#[tokio::main]
-async fn main() {
+fn main() {
+    let output_mode = OutputMode::from_env();
+    let rt = tokio::runtime::Runtime::new().expect("failed to create tokio runtime");
+    rt.block_on(async_main(output_mode));
+}
+
+async fn async_main(output_mode: OutputMode) {
     let otlp_endpoint = phenotype_observability::otlp_endpoint();
     let mut attrs = std::collections::HashMap::new();
     attrs.insert("service".to_string(), SERVICE_NAME.to_string());
@@ -98,8 +103,13 @@ async fn main() {
         .init();
 
     if let Err(e) = run(cli).await {
-        eprintln!("Error: {e:#}");
-        process::exit(1);
+        // Log the full error chain for observability (visible with -v).
+        tracing::error!("Command failed: {e:#}");
+        // Structured error envelope: typed category + recovery hint.
+        // For full diagnostics, use -v or RUST_LOG, or set AGILEPLUS_OUTPUT=json
+        // for machine-readable output.
+        let cli_err = CliError::from_anyhow(&e);
+        cli_err.exit(output_mode);
     }
 }
 

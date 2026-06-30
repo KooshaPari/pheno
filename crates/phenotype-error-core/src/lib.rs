@@ -89,7 +89,10 @@ impl ApiError {
 
     /// Whether the caller should retry.
     pub fn is_retryable(&self) -> bool {
-        matches!(self, Self::RateLimited | Self::Timeout | Self::Internal(_) | Self::Platform(_))
+        matches!(
+            self,
+            Self::RateLimited | Self::Timeout | Self::Internal(_) | Self::Platform(_)
+        )
     }
 }
 
@@ -523,7 +526,9 @@ mod tests {
         };
         let json = serde_json::to_string(&err).unwrap();
         let roundtrip: ApiError = serde_json::from_str(&json).unwrap();
-        assert!(matches!(roundtrip, ApiError::NotFound { ref resource, ref id } if resource == "user" && id == "42"));
+        assert!(
+            matches!(roundtrip, ApiError::NotFound { ref resource, ref id } if resource == "user" && id == "42")
+        );
     }
 
     #[test]
