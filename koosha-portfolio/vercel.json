@@ -1,4 +1,12 @@
 {
+  "version": 2,
+  "name": "koosha-portfolio",
+  "buildCommand": "bun install && bun run build",
+  "outputDirectory": "dist",
+  "framework": "astro",
+  "installCommand": "bun install",
+  "devCommand": "bun run dev",
+  "regions": ["iad1"],
   "redirects": [
     { "source": "/portfolio", "destination": "/", "permanent": true },
     { "source": "/work", "destination": "/projects", "permanent": true },
