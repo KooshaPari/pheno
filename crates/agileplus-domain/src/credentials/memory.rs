@@ -65,8 +65,7 @@ impl CredentialStore for InMemoryCredentialStore {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::credentials::file::FileCredentialStore;
-    use crate::credentials::keys::API_KEYS;
+    use crate::credentials::keys;
     use crate::credentials::store;
 
     #[test]
@@ -94,7 +93,7 @@ mod tests {
     #[test]
     fn validate_api_key_single() {
         let store = InMemoryCredentialStore::new();
-        store.set("agileplus", API_KEYS, "secret-key-abc").unwrap();
+        store.set("agileplus", keys::API_KEYS, "secret-key-abc").unwrap();
         assert!(store.validate_api_key("secret-key-abc").unwrap());
         assert!(!store.validate_api_key("wrong-key").unwrap());
     }
@@ -103,7 +102,7 @@ mod tests {
     fn validate_api_key_multiple() {
         let store = InMemoryCredentialStore::new();
         store
-            .set("agileplus", API_KEYS, "key-one, key-two, key-three")
+            .set("agileplus", keys::API_KEYS, "key-one, key-two, key-three")
             .unwrap();
         assert!(store.validate_api_key("key-two").unwrap());
         assert!(!store.validate_api_key("key-four").unwrap());
@@ -113,16 +112,6 @@ mod tests {
     fn validate_api_key_no_keys_stored() {
         let store = InMemoryCredentialStore::new();
         assert!(!store.validate_api_key("anything").unwrap());
-    }
-
-    #[test]
-    fn file_store_set_get() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "tok", "abc123").unwrap();
-        assert!(path.exists());
-        assert_eq!(store.get("svc", "tok").unwrap(), "abc123");
     }
 
     #[test]

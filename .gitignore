@@ -81,6 +81,7 @@ mcp_backup/
 .DS_Store
 Thumbs.db
 *.tmp
+*.bak
 
 # Logs
 *.log
