@@ -35,3 +35,19 @@ ci: lint test audit unused
 # Generate docs
 docs:
     cargo doc --no-deps --workspace
+
+# Generate coverage report (requires cargo-llvm-cov: cargo install cargo-llvm-cov --locked)
+coverage:
+    mkdir -p coverage
+    cargo llvm-cov --workspace --lcov --output-path coverage/lcov.info --fail-under-lines 85
+    @echo "Coverage report: coverage/lcov.info"
+
+# Generate coverage report without failing (for local dev iteration)
+coverage-local:
+    mkdir -p coverage
+    cargo llvm-cov --workspace --html --output-dir coverage/html
+    @echo "HTML report: coverage/html/index.html"
+
+# Generate coverage + open HTML in default browser
+coverage-open: coverage-local
+    open coverage/html/index.html

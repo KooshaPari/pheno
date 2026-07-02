@@ -1,21 +1,15 @@
-## Summary
+# PR Description — ADAPTED
 
-Adds `From` conversions for `EventStoreError` to enable the `?` operator with standard error types.
+**Status:** 🔄 ADAPTED (context changed)
+**Original intent:** Add `EventStoreError` with `derive_more::From` impls
+**Reality:** pheno uses `EventSourcingError` (not `EventStoreError`), which already has manual `From` impls
 
-## Changes
+## Changes in actual code vs forge intent
+- `EventStoreError` type does not exist in pheno
+- Equivalent type `EventSourcingError` already has `From` impls (manual)
+- `derive_more` was added via PR_DESC_1; `EventSourcingError` can be simplified to use `derive_more::From` in a future PR
+- No action taken — the manual `From` impls work correctly and `derive_more` deps are already added
 
-- `From<serde_json::Error>` for `EventStoreError` - enables `?` with JSON operations
-- `From<std::io::Error>` for `EventStoreError` - enables `?` with I/O operations
-- `From<T: Into<String>>` for `EventStoreError::InvalidInput` - convenient error creation
-
-## Motivation
-
-Reduces boilerplate by enabling the `?` operator instead of verbose `map_err` calls.
-
-## Testing
-
-- [x] `cargo check -p phenotype-event-sourcing` passes
-
-## Notes
-
-Part of stacked PR series. Depends on #94 (workspace dependencies).
+## Recommendation
+- When Eventra's `EventStoreError` is upstreamed into pheno via `phenotype-event-contracts` dep, use workspace `derive_more`
+- For now, `EventSourcingError` stays as-is
