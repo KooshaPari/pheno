@@ -10,7 +10,7 @@ use std::path::PathBuf;
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 
-use agileplus_domain::domain::audit::{AuditEntry, hash_entry};
+use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
 

@@ -9,7 +9,7 @@ use agileplus_domain::{
 use git2::build::CheckoutBuilder;
 use git2::{BranchType, MergeAnalysis, Repository, Signature};
 
-use crate::{GitVcsAdapter, git_err};
+use crate::{git_err, GitVcsAdapter};
 
 /// Create a new branch from a base ref (branch name, tag, or commit SHA).
 pub(crate) fn create_branch(

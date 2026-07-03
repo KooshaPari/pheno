@@ -24,7 +24,7 @@ use agileplus_domain::{
     error::DomainError,
 };
 use chrono::Utc;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 use crate::GitVcsAdapter;
 

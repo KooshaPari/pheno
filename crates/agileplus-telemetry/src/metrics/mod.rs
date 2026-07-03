@@ -11,8 +11,8 @@ use std::{
 
 use chrono::{DateTime, Utc};
 use opentelemetry::{
-    KeyValue,
     metrics::{Counter, Gauge, Histogram, Meter},
+    KeyValue,
 };
 
 // ---------------------------------------------------------------------------

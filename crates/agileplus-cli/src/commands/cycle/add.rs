@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 
 use agileplus_domain::domain::cycle::CycleFeature;
 use agileplus_domain::error::DomainError;

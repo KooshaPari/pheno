@@ -507,8 +507,7 @@ mod tests {
             summary: "demo-feature WP01: agent dispatched".to_string(),
             progress: 0.5,
             ownership_bracket: Some(
-                "[pheno:✓, AgilePlus:✓, Substrate:✓, Tracaera:◐, phenotype-registry:✓]"
-                    .to_string(),
+                "[pheno:✓, AgilePlus:✓, Substrate:✓, Tracaera:◐, phenotype-registry:✓]".to_string(),
             ),
         })
         .unwrap();

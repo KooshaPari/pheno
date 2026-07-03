@@ -143,32 +143,26 @@ mod tests {
     #[test]
     fn checkout_main_allowed_in_canonical() {
         let guard = canonical_guard();
-        assert!(
-            guard
-                .check_checkout(Path::new("/repo/main"), "main")
-                .is_ok()
-        );
+        assert!(guard
+            .check_checkout(Path::new("/repo/main"), "main")
+            .is_ok());
     }
 
     #[test]
     fn checkout_feature_blocked_in_canonical() {
         let guard = canonical_guard();
-        assert!(
-            guard
-                .check_checkout(Path::new("/repo/main"), "feature/foo")
-                .is_err()
-        );
+        assert!(guard
+            .check_checkout(Path::new("/repo/main"), "feature/foo")
+            .is_err());
     }
 
     #[test]
     fn checkout_feature_allowed_in_worktree() {
         let guard = canonical_guard();
         // /repo/worktree is NOT in canonical_paths, so allowed
-        assert!(
-            guard
-                .check_checkout(Path::new("/repo/worktree"), "feature/foo")
-                .is_ok()
-        );
+        assert!(guard
+            .check_checkout(Path::new("/repo/worktree"), "feature/foo")
+            .is_ok());
     }
 
     #[test]
@@ -206,11 +200,9 @@ mod tests {
             canonical_paths: vec![PathBuf::from("/repo/main")],
         };
         let guard = GitGuard::new(config);
-        assert!(
-            guard
-                .check_checkout(Path::new("/repo/main"), "feature/x")
-                .is_ok()
-        );
+        assert!(guard
+            .check_checkout(Path::new("/repo/main"), "feature/x")
+            .is_ok());
         assert!(guard.check_rebase(Path::new("/repo/main")).is_ok());
         assert!(guard.check_force_push(Path::new("/repo/main")).is_ok());
         assert!(guard.check_hard_reset(Path::new("/repo/main")).is_ok());

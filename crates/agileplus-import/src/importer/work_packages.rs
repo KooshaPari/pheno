@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 use chrono::Utc;
 
 use agileplus_domain::domain::work_package::{DependencyType, WorkPackage, WpDependency, WpState};

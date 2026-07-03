@@ -10,10 +10,10 @@ pub mod replay;
 pub mod snapshot;
 pub mod store;
 
-pub use hash::{HashError, compute_hash, verify_chain};
+pub use hash::{compute_hash, verify_chain, HashError};
 pub use query::{EventQuery, QueryError};
-pub use replay::{Aggregate, ReplayError, replay_events, replay_events_since};
-pub use snapshot::{SnapshotConfig, SnapshotError, SnapshotStore, should_snapshot};
+pub use replay::{replay_events, replay_events_since, Aggregate, ReplayError};
+pub use snapshot::{should_snapshot, SnapshotConfig, SnapshotError, SnapshotStore};
 pub use store::{EventError, EventStore};
 
 #[derive(Debug, thiserror::Error)]

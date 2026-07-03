@@ -2,9 +2,9 @@
 //!
 //! Traceability: WP15-T086
 
-use axum::Json;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
+use axum::Json;
 use serde_json::json;
 
 pub use phenotype_error_core::ApiError;
@@ -33,7 +33,10 @@ impl IntoResponse for ApiResponse {
             ApiError::Timeout => (StatusCode::GATEWAY_TIMEOUT, "timeout".to_string()),
             ApiError::Internal(msg) => {
                 tracing::error!("internal API error: {msg}");
-                (StatusCode::INTERNAL_SERVER_ERROR, "internal server error".to_string())
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "internal server error".to_string(),
+                )
             }
             ApiError::Domain(domain_err) => {
                 tracing::error!("domain error: {domain_err}");
@@ -41,7 +44,10 @@ impl IntoResponse for ApiResponse {
             }
             ApiError::Repository(repo_err) => {
                 tracing::error!("repository error: {repo_err}");
-                (StatusCode::INTERNAL_SERVER_ERROR, "data access error".to_string())
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "data access error".to_string(),
+                )
             }
         };
         (status, Json(json!({"error": message}))).into_response()
@@ -50,13 +56,13 @@ impl IntoResponse for ApiResponse {
 
 impl From<agileplus_domain::error::DomainError> for ApiError {
     fn from(e: agileplus_domain::error::DomainError) -> Self {
-        use phenotype_error_core::DomainError;
         use agileplus_domain::error::DomainError as AgileDomainError;
-        
+        use phenotype_error_core::DomainError;
+
         match e {
-            AgileDomainError::NotFound(msg) => ApiError::NotFound { 
-                resource: "entity".to_string(), 
-                id: msg 
+            AgileDomainError::NotFound(msg) => ApiError::NotFound {
+                resource: "entity".to_string(),
+                id: msg,
             },
             AgileDomainError::Conflict(msg) => ApiError::Conflict(msg),
             AgileDomainError::InvalidTransition { from, to, .. } => {

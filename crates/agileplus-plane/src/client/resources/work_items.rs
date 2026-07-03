@@ -1,7 +1,7 @@
 use anyhow::Context;
 use reqwest::Method;
 
-use super::{PlaneClient, PlaneIssue, PlaneWorkItem, PlaneWorkItemResponse, transport};
+use super::{transport, PlaneClient, PlaneIssue, PlaneWorkItem, PlaneWorkItemResponse};
 
 impl PlaneClient {
     /// Create a work item in Plane.so.

@@ -12,12 +12,12 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use agileplus_api::{AppState, create_router};
+use agileplus_api::{create_router, AppState};
 use agileplus_domain::config::AppConfig;
+use agileplus_domain::credentials::keys as cred_keys;
 use agileplus_domain::credentials::CredentialStore;
 use agileplus_domain::credentials::InMemoryCredentialStore;
-use agileplus_domain::credentials::keys as cred_keys;
-use agileplus_domain::domain::audit::{AuditEntry, hash_entry};
+use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::backlog::{
     BacklogFilters, BacklogItem, BacklogPriority, BacklogStatus,
 };
@@ -31,12 +31,12 @@ use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::domain::sync_mapping::SyncMapping;
 use agileplus_domain::domain::work_package::{WorkPackage, WpDependency, WpState};
 use agileplus_domain::error::DomainError;
-use agileplus_domain::ports::ContentStoragePort;
 use agileplus_domain::ports::observability::{LogEntry, ObservabilityPort, SpanContext};
 use agileplus_domain::ports::storage::StoragePort;
 use agileplus_domain::ports::vcs::{
     ConflictInfo, FeatureArtifacts, MergeResult, VcsPort, WorktreeInfo,
 };
+use agileplus_domain::ports::ContentStoragePort;
 use axum::http::StatusCode;
 use axum_test::TestServer;
 use chrono::Utc;
@@ -506,7 +506,13 @@ impl StoragePort for MockStorage {
     }
 
     async fn get_project_by_slug(&self, slug: &str) -> Result<Option<Project>, DomainError> {
-        let found = self.projects.lock().unwrap().iter().find(|p| p.slug == slug).cloned();
+        let found = self
+            .projects
+            .lock()
+            .unwrap()
+            .iter()
+            .find(|p| p.slug == slug)
+            .cloned();
         Ok(found)
     }
 }

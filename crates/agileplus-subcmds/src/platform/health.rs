@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 
 use crate::platform::types::{OverallStatus, PlatformHealth, ServiceHealth, ServiceStatus};
 

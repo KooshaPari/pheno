@@ -14,11 +14,11 @@ pub mod error;
 pub mod replication;
 pub mod vector_clock;
 
-pub use device::{DeviceNode, DeviceStore, InMemoryDeviceStore, get_local_device, register_device};
+pub use device::{get_local_device, register_device, DeviceNode, DeviceStore, InMemoryDeviceStore};
+#[cfg(unix)]
+pub use discovery::{discover_peers, PeerInfo, PeerStatus};
 #[cfg(not(unix))]
 pub use discovery::{PeerInfo, PeerStatus};
-#[cfg(unix)]
-pub use discovery::{PeerInfo, PeerStatus, discover_peers};
 pub use error::{ConnectionError, PeerDiscoveryError, SyncError};
-pub use replication::{EventBatch, ReplicationResult, replicate_events};
-pub use vector_clock::{SyncResult, SyncVector, sync_with_peer};
+pub use replication::{replicate_events, EventBatch, ReplicationResult};
+pub use vector_clock::{sync_with_peer, SyncResult, SyncVector};

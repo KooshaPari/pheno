@@ -156,11 +156,9 @@ mod tests {
     fn detects_missing_sections() {
         let spec = "# Spec\nno sections here";
         let violations = validate_spec_consistency(spec, &dummy_constitution());
-        assert!(
-            violations
-                .iter()
-                .any(|v| v.severity == ViolationSeverity::Error)
-        );
+        assert!(violations
+            .iter()
+            .any(|v| v.severity == ViolationSeverity::Error));
     }
 
     #[test]

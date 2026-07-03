@@ -1,6 +1,6 @@
 use chrono::Utc;
 
-use agileplus_domain::domain::audit::{AuditEntry, hash_entry};
+use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::feature::Feature;
 use agileplus_domain::domain::state_machine::FeatureState;
 

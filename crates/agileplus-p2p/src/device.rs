@@ -23,9 +23,9 @@ use uuid::Uuid;
 
 #[cfg(unix)]
 use crate::discovery::tailscale_socket_path;
-use crate::error::{ConnectionError, RepositoryError};
 #[cfg(unix)]
 use crate::error::PeerDiscoveryError;
+use crate::error::{ConnectionError, RepositoryError};
 
 /// Persistent identity for one AgilePlus node in the tailnet.
 #[derive(Debug, Clone, Serialize, Deserialize)]

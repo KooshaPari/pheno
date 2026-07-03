@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use agileplus_domain::{error::DomainError, ports::WorktreeInfo};
 use git2::WorktreeAddOptions;
 
-use crate::{GitVcsAdapter, git_err};
+use crate::{git_err, GitVcsAdapter};
 
 /// Worktree directory name relative to repo root.
 fn worktree_name(feature_slug: &str, wp_id: &str) -> String {
