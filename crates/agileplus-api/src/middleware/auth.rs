@@ -17,7 +17,7 @@ use tracing::warn;
 
 use agileplus_domain::credentials::CredentialStore;
 
-use crate::error::ApiError;
+use crate::error::{ApiError, ApiResponse};
 
 /// Paths that do not require authentication.
 const PUBLIC_PATHS: &[&str] = &["/health", "/info", "/webhooks"];
@@ -31,7 +31,7 @@ pub async fn validate_api_key(
     headers: HeaderMap,
     request: Request,
     next: Next,
-) -> Result<Response, ApiError> {
+) -> Result<Response, ApiResponse> {
     let path = request.uri().path().to_string();
 
     // Always allow public endpoints (health, info, webhooks).
@@ -61,9 +61,9 @@ pub async fn validate_api_key(
                 )
             })?
     } else {
-        return Err(ApiError::Unauthorized(
+        return Err(ApiResponse::from(ApiError::Unauthorized(
             "Missing API key (X-API-Key header or ?api_key= param required)".to_string(),
-        ));
+        )));
     };
 
     let valid = creds
@@ -74,7 +74,9 @@ pub async fn validate_api_key(
         // Log only a truncated hint for identification — never the raw key.
         let key_hint: String = api_key.chars().take(4).chain(['*'; 8]).collect();
         warn!(key_hint, "API authentication failed for key hint");
-        return Err(ApiError::Unauthorized("Invalid API key".to_string()));
+        return Err(ApiResponse::from(ApiError::Unauthorized(
+            "Invalid API key".to_string(),
+        )));
     }
 
     Ok(next.run(request).await)

@@ -14,7 +14,7 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, ApiResponse};
 use crate::responses::GovernanceResponse;
 use crate::state::AppState;
 
@@ -33,7 +33,7 @@ where
 pub async fn get_governance<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
-) -> Result<Json<GovernanceResponse>, ApiError>
+) -> Result<Json<GovernanceResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -43,17 +43,15 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let contract = state
         .storage
         .get_latest_governance_contract(feature.id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| {
-            ApiError::NotFound(format!("No governance contract for feature '{slug}'"))
-        })?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("governance-contract", slug.clone()))?;
 
     Ok(Json(GovernanceResponse::from(contract)))
 }
@@ -65,7 +63,7 @@ where
 pub async fn trigger_validate<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
-) -> Result<Json<Value>, ApiError>
+) -> Result<Json<Value>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -75,24 +73,22 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let contract = state
         .storage
         .get_latest_governance_contract(feature.id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| {
-            ApiError::NotFound(format!("No governance contract for feature '{slug}'"))
-        })?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("governance-contract", slug.clone()))?;
 
     // Get evidence for all WPs in this feature
     let wps = state
         .storage
         .list_wps_by_feature(feature.id)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     let mut total_rules = 0usize;
     let mut satisfied_rules = 0usize;
@@ -106,7 +102,7 @@ where
                 .storage
                 .get_evidence_by_fr(&req.fr_id)
                 .await
-                .map_err(ApiError::from)?;
+                .map_err(domain_error)?;
             let wp_ids: std::collections::HashSet<i64> = wps.iter().map(|w| w.id).collect();
             if evidence
                 .iter()

@@ -20,7 +20,7 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, ApiError, ApiResponse};
 use crate::responses::WorkPackageResponse;
 use crate::state::AppState;
 
@@ -55,7 +55,7 @@ where
 pub async fn get_work_package<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Json<WorkPackageResponse>, ApiError>
+) -> Result<Json<WorkPackageResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -65,8 +65,8 @@ where
         .storage
         .get_work_package(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("WorkPackage {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("work-package", id.to_string()))?;
 
     Ok(Json(WorkPackageResponse::from(wp)))
 }
@@ -75,7 +75,7 @@ where
 pub async fn list_work_packages<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
-) -> Result<Json<Vec<WorkPackageResponse>>, ApiError>
+) -> Result<Json<Vec<WorkPackageResponse>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -85,14 +85,14 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let wps = state
         .storage
         .list_wps_by_feature(feature.id)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     Ok(Json(
         wps.into_iter().map(WorkPackageResponse::from).collect(),
@@ -111,7 +111,7 @@ pub async fn create_work_package<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
     Json(body): Json<CreateWpRequest>,
-) -> Result<(StatusCode, Json<WorkPackageResponse>), ApiError>
+) -> Result<(StatusCode, Json<WorkPackageResponse>), ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -121,8 +121,8 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let now = Utc::now();
     let wp = WorkPackage {
@@ -148,7 +148,7 @@ where
         .storage
         .create_work_package(&wp)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     let created = WorkPackage { id, ..wp };
     Ok((
         StatusCode::CREATED,
@@ -168,7 +168,7 @@ pub async fn update_work_package<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
     Json(body): Json<UpdateWpRequest>,
-) -> Result<Json<WorkPackageResponse>, ApiError>
+) -> Result<Json<WorkPackageResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -178,8 +178,8 @@ where
         .storage
         .get_work_package(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("WorkPackage {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("work-package", id.to_string()))?;
 
     let updated = WorkPackage {
         title: body.title.unwrap_or(wp.title.clone()),
@@ -211,7 +211,7 @@ pub async fn transition_work_package<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
     Json(body): Json<WpTransitionRequest>,
-) -> Result<Json<WpTransitionResponse>, ApiError>
+) -> Result<Json<WpTransitionResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -221,22 +221,22 @@ where
         .storage
         .get_work_package(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("WorkPackage {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("work-package", id.to_string()))?;
 
     let target = parse_wp_state(&body.target_state)?;
     if !wp.state.can_transition_to(target) {
-        return Err(ApiError::Conflict(format!(
+        return Err(ApiResponse::from(ApiError::Conflict(format!(
             "invalid transition {:?} -> {:?}",
             wp.state, target
-        )));
+        ))));
     }
 
     let from_state = format!("{:?}", wp.state).to_lowercase();
     app.storage
         .update_wp_state(id, target)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     Ok(Json(WpTransitionResponse {
         wp_id: id,

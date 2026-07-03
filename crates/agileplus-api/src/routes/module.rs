@@ -20,7 +20,7 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, template_error, ApiResponse};
 use crate::state::AppState;
 
 /// A flattened tree node for JSON and template rendering.
@@ -56,7 +56,7 @@ where
 /// Traces to: FR-D01, FR-D04
 async fn list_modules<S, V, O>(
     State(app): State<AppState<S, V, O>>,
-) -> Result<Json<Vec<Module>>, ApiError>
+) -> Result<Json<Vec<Module>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -66,7 +66,7 @@ where
         .storage
         .list_root_modules()
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(modules))
 }
 
@@ -74,7 +74,7 @@ where
 async fn get_module<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Json<ModuleWithFeatures>, ApiError>
+) -> Result<Json<ModuleWithFeatures>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -84,8 +84,8 @@ where
         .storage
         .get_module_with_features(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("module {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("module", id.to_string()))?;
     Ok(Json(mwf))
 }
 
@@ -93,7 +93,7 @@ where
 async fn get_module_tree<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Json<Vec<ModuleTreeNode>>, ApiError>
+) -> Result<Json<Vec<ModuleTreeNode>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -102,7 +102,7 @@ where
     let mut nodes = Vec::new();
     flatten_tree(id, 0, app.storage.as_ref(), &mut nodes)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(nodes))
 }
 
@@ -110,7 +110,7 @@ where
 /// Traces to: FR-D01, FR-D04
 pub async fn module_tree_page<S, V, O>(
     State(app): State<AppState<S, V, O>>,
-) -> Result<Html<String>, ApiError>
+) -> Result<Html<String>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -120,17 +120,15 @@ where
         .storage
         .list_root_modules()
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     let mut nodes = Vec::new();
     for root in &roots {
         flatten_tree(root.id, 0, app.storage.as_ref(), &mut nodes)
             .await
-            .map_err(ApiError::from)?;
+            .map_err(domain_error)?;
     }
     let tmpl = ModuleTreeTemplate { nodes };
-    let rendered = tmpl
-        .render()
-        .map_err(|e| ApiError::Template(e.to_string()))?;
+    let rendered = tmpl.render().map_err(|e| template_error(e.to_string()))?;
     Ok(Html(rendered))
 }
 

@@ -11,10 +11,10 @@ use axum::{Json, Router};
 use serde::{Deserialize, Serialize};
 
 use agileplus_domain::ports::{
-    WorktreeInfo, observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
+    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort, WorktreeInfo,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, ApiError, ApiResponse};
 use crate::state::AppState;
 
 pub fn routes<S, V, O>() -> Router<AppState<S, V, O>>
@@ -33,13 +33,13 @@ where
 
 pub async fn list_worktrees<S, V, O>(
     State(state): State<AppState<S, V, O>>,
-) -> Result<Json<Vec<WorktreeInfo>>, ApiError>
+) -> Result<Json<Vec<WorktreeInfo>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
     O: ObservabilityPort + Send + Sync + 'static,
 {
-    let worktrees = state.vcs.list_worktrees().await.map_err(ApiError::from)?;
+    let worktrees = state.vcs.list_worktrees().await.map_err(domain_error)?;
     Ok(Json(worktrees))
 }
 
@@ -52,7 +52,7 @@ pub struct AddWorktreeRequest {
 pub async fn add_worktree<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<AddWorktreeRequest>,
-) -> Result<(StatusCode, Json<WorktreeInfo>), ApiError>
+) -> Result<(StatusCode, Json<WorktreeInfo>), ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -62,7 +62,7 @@ where
         .vcs
         .create_worktree(&body.feature_slug, &body.wp_id)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     let branch = path
         .file_name()
         .and_then(|name| name.to_str())
@@ -85,7 +85,7 @@ pub struct RemoveWorktreeRequest {
 pub async fn remove_worktree<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<RemoveWorktreeRequest>,
-) -> Result<Json<ActionResponse>, ApiError>
+) -> Result<Json<ActionResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -95,7 +95,7 @@ where
         .vcs
         .cleanup_worktree(std::path::Path::new(&body.path))
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(ActionResponse {
         message: format!("Removed worktree {}", body.path),
     }))
