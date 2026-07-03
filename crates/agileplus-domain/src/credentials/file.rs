@@ -269,82 +269,107 @@ mod tests {
         TEST_LOCK.get_or_init(|| Mutex::new(()))
     }
 
+    fn with_env_override<F>(value: Option<&str>, f: F)
+    where
+        F: FnOnce(),
+    {
+        let _guard = test_lock().lock().unwrap();
+        let previous = std::env::var(ENV_PASSPHRASE).ok();
+        unsafe {
+            // SAFETY: guarded by test_lock, so env access is serialized in this test module.
+            match value {
+                Some(passphrase) if !passphrase.is_empty() => {
+                    std::env::set_var(ENV_PASSPHRASE, passphrase);
+                }
+                _ => {
+                    std::env::remove_var(ENV_PASSPHRASE);
+                }
+            }
+        }
+        f();
+        unsafe {
+            match previous {
+                Some(previous) => std::env::set_var(ENV_PASSPHRASE, previous),
+                None => std::env::remove_var(ENV_PASSPHRASE),
+            }
+        }
+    }
+
     /// Helper: set the passphrase env var for the duration of a test.
     fn with_passphrase<F>(passphrase: &str, f: F)
     where
         F: FnOnce(),
     {
-        let _guard = test_lock().lock().unwrap();
-        unsafe {
-            // SAFETY: single-threaded test, no concurrent env access
-            if passphrase.is_empty() {
-                std::env::remove_var(ENV_PASSPHRASE);
-            } else {
-                std::env::set_var(ENV_PASSPHRASE, passphrase);
-            }
-        }
-        f();
-        unsafe {
-            std::env::remove_var(ENV_PASSPHRASE);
-        }
+        with_env_override(Some(passphrase), f);
+    }
+
+    fn with_plaintext_mode<F>(f: F)
+    where
+        F: FnOnce(),
+    {
+        with_env_override(None, f);
     }
 
     // ── Plaintext (no passphrase) tests ──────────────────────────────
 
     #[test]
     fn file_store_set_get_plaintext() {
-        let _guard = test_lock().lock().unwrap();
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "tok", "abc123").unwrap();
-        assert!(path.exists());
-        assert_eq!(store.get("svc", "tok").unwrap(), "abc123");
-        // File should be plaintext JSON
-        let content = std::fs::read_to_string(&path).unwrap();
-        assert!(
-            content.starts_with('{'),
-            "expected plaintext JSON, got: {content:?}"
-        );
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            store.set("svc", "tok", "abc123").unwrap();
+            assert!(path.exists());
+            assert_eq!(store.get("svc", "tok").unwrap(), "abc123");
+            // File should be plaintext JSON
+            let content = std::fs::read_to_string(&path).unwrap();
+            assert!(
+                content.starts_with('{'),
+                "expected plaintext JSON, got: {content:?}"
+            );
+        });
     }
 
     #[test]
     fn file_store_delete() {
-        let _guard = test_lock().lock().unwrap();
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "tok", "abc123").unwrap();
-        store.delete("svc", "tok").unwrap();
-        assert!(matches!(
-            store.get("svc", "tok"),
-            Err(CredentialError::NotFound(_))
-        ));
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            store.set("svc", "tok", "abc123").unwrap();
+            store.delete("svc", "tok").unwrap();
+            assert!(matches!(
+                store.get("svc", "tok"),
+                Err(CredentialError::NotFound(_))
+            ));
+        });
     }
 
     #[test]
     fn file_store_list_keys() {
-        let _guard = test_lock().lock().unwrap();
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "a", "1").unwrap();
-        store.set("svc", "b", "2").unwrap();
-        let mut keys = store.list_keys("svc").unwrap();
-        keys.sort();
-        assert_eq!(keys, vec!["a", "b"]);
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            store.set("svc", "a", "1").unwrap();
+            store.set("svc", "b", "2").unwrap();
+            let mut keys = store.list_keys("svc").unwrap();
+            keys.sort();
+            assert_eq!(keys, vec!["a", "b"]);
+        });
     }
 
     #[test]
     fn file_store_not_found() {
-        let _guard = test_lock().lock().unwrap();
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        assert!(matches!(
-            store.get("svc", "missing"),
-            Err(CredentialError::NotFound(_))
-        ));
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            assert!(matches!(
+                store.get("svc", "missing"),
+                Err(CredentialError::NotFound(_))
+            ));
+        });
     }
 
     // ── Encrypted (with passphrase) tests ────────────────────────────

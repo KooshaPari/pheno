@@ -2,6 +2,7 @@ use super::*;
 
 fn make_args(since: Option<&str>, event_type: Option<&str>, actor: Option<&str>) -> EventsArgs {
     EventsArgs {
+        source: None,
         feature: None,
         since: since.map(str::to_string),
         event_type: event_type.map(str::to_string),
@@ -58,10 +59,10 @@ fn test_filter_no_filters() {
 #[test]
 fn test_filter_by_actor() {
     let events = load_events_stub();
-    let args = make_args(None, None, Some("agileplus"));
+    let args = make_args(None, None, Some("spec-kitty"));
     let result = filter_events(&events, &args);
     assert_eq!(result.len(), 1);
-    assert_eq!(result[0].actor, "agileplus");
+    assert_eq!(result[0].actor, "spec-kitty");
 }
 
 #[test]
@@ -93,7 +94,7 @@ fn test_render_table_nonempty() {
     let events = load_events_stub();
     let out = render_table(&events[..1]);
     assert!(out.contains("feature_created"));
-    assert!(out.contains("agileplus"));
+    assert!(out.contains("spec-kitty"));
 }
 
 #[test]
@@ -120,6 +121,7 @@ fn test_render_jsonl() {
 #[test]
 fn test_run_events_table_does_not_err() {
     let args = EventsArgs {
+        source: None,
         feature: None,
         since: None,
         event_type: None,
@@ -134,6 +136,7 @@ fn test_run_events_table_does_not_err() {
 #[test]
 fn test_run_events_json_does_not_err() {
     let args = EventsArgs {
+        source: None,
         feature: None,
         since: None,
         event_type: None,
