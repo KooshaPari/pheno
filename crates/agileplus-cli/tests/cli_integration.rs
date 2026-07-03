@@ -795,8 +795,7 @@ fn no_git_repo_shows_helpful_error() {
 fn write_traceability_fixture(repo_dir: &TempDir, include_test_marker: bool) {
     let spec_dir = repo_dir
         .path()
-        .join("docs")
-        .join("specs")
+        .join("kitty-specs")
         .join("trace-feature");
     std::fs::create_dir_all(&spec_dir).expect("create spec dir");
     std::fs::write(
