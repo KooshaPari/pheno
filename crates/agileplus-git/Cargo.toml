@@ -7,7 +7,7 @@ rust-version.workspace = true
 
 [dependencies]
 agileplus-domain = { path = "../agileplus-domain" }
-git2 = { version = "0.20", features = ["vendored-libgit2"] }
+git2 = { version = "0.21", features = ["vendored-libgit2"] }
 gix = { version = "0.83", default-features = false, features = ["sha1", "worktree-stream", "revision"] }
 notify = "8"
 async-nats = "0.46"

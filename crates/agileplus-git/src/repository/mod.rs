@@ -36,7 +36,7 @@ pub(crate) fn checkout_branch(
     let refname = branch
         .get()
         .name()
-        .ok_or_else(|| DomainError::Vcs("invalid branch ref name".into()))?
+        .map_err(git_err)?
         .to_string();
     repo.set_head(&refname).map_err(git_err)?;
     repo.checkout_head(Some(CheckoutBuilder::new().force()))

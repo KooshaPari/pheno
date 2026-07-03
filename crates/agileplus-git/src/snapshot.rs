@@ -48,7 +48,7 @@ impl GitSnapshot {
         let branch = if is_detached {
             None
         } else {
-            head.shorthand().map(|s| s.to_string())
+            head.shorthand().ok().map(|s| s.to_string())
         };
 
         // Get dirty files
@@ -96,7 +96,10 @@ impl GitSnapshot {
 
         // Linked worktrees
         if let Ok(wt_names) = repo.worktrees() {
-            for name in wt_names.iter().flatten() {
+            for name in wt_names.iter() {
+                let Some(name) = name.ok().flatten() else {
+                    continue;
+                };
                 if let Ok(wt) = repo.find_worktree(name) {
                     let wt_path = wt.path().to_path_buf();
                     if let Ok(wt_repo) = git2::Repository::open(&wt_path) {
@@ -108,7 +111,7 @@ impl GitSnapshot {
                             .unwrap_or_default();
                         let wt_branch = wt_head
                             .as_ref()
-                            .and_then(|h| h.shorthand().map(|s| s.to_string()));
+                            .and_then(|h| h.shorthand().ok().map(|s| s.to_string()));
                         worktrees.push(WorktreeInfo {
                             path: wt_path,
                             branch: wt_branch,

@@ -112,7 +112,6 @@ phenotype-compliance-scanner = { path = "crates/phenotype-compliance-scanner" }
 phenotype-contract = { path = "crates/phenotype-contract" }
 phenotype-contracts = { path = "crates/phenotype-contracts" }
 phenotype-core = { path = "crates/phenotype-core" }
-pheno-tracing = { path = "../pheno-tracing" }
 phenotype-cost-core = { path = "crates/phenotype-cost-core" }
 phenotype-error-core = { path = "crates/phenotype-error-core" }
 phenotype-error-macros = { path = "crates/phenotype-error-macros" }

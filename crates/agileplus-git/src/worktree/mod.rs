@@ -51,9 +51,7 @@ pub(crate) fn create_worktree(
     };
 
     let branch_ref = branch.get();
-    let _refname = branch_ref
-        .name()
-        .ok_or_else(|| DomainError::Vcs("invalid branch ref name".into()))?;
+    let _refname = branch_ref.name().map_err(git_err)?;
 
     let mut opts = WorktreeAddOptions::new();
     opts.reference(Some(branch_ref));
@@ -74,8 +72,9 @@ pub(crate) fn list_worktrees(adapter: &GitVcsAdapter) -> Result<Vec<WorktreeInfo
     let mut result = Vec::new();
     for name_bytes in names.iter() {
         let name = match name_bytes {
-            Some(n) => n,
-            None => continue,
+            Ok(Some(n)) => n,
+            Ok(None) => continue,
+            Err(_) => continue,
         };
 
         let wt = match repo.find_worktree(name) {
@@ -120,7 +119,7 @@ fn wt_branch_name(wt_name: &str, wt_path: &Path) -> String {
     // Open the worktree repo to read its HEAD.
     if let Ok(wt_repo) = git2::Repository::open(wt_path) {
         if let Ok(head) = wt_repo.head() {
-            if let Some(shorthand) = head.shorthand() {
+            if let Ok(shorthand) = head.shorthand() {
                 return shorthand.to_string();
             }
         }
@@ -153,8 +152,9 @@ pub(crate) fn cleanup_worktree(
     let mut found_name: Option<String> = None;
     for name_bytes in names.iter() {
         let name = match name_bytes {
-            Some(n) => n,
-            None => continue,
+            Ok(Some(n)) => n,
+            Ok(None) => continue,
+            Err(_) => continue,
         };
         if let Ok(wt) = repo.find_worktree(name) {
             let wt_canonical =

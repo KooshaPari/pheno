@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
           fetch-depth: 0
+          submodules: recursive
       - uses: bufbuild/buf-action@fd21066df7214747548607aaa45548ba2b9bc1ff
         with:
           lint: true
@@ -42,11 +43,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
         with:
-          components: llvm-tools-preview
-        with:
-          components: rustfmt, clippy
+          components: rustfmt, clippy, llvm-tools-preview
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           workspaces: rust
@@ -68,6 +69,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
@@ -84,6 +87,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@71b39e394e9a9c97c5b54ec8371f4b66b8e25b8e
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
@@ -104,6 +109,8 @@ jobs:
       checks: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -118,6 +125,8 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
@@ -141,6 +150,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
@@ -171,6 +182,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
         with:
           components: rustfmt, clippy
@@ -193,6 +206,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
       - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
@@ -235,6 +250,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - name: Validate domain crate dependencies
         run: |
           ALLOWED="serde serde_json chrono sha2 thiserror toml dirs-next zeroize keyring agileplus-plugin-core"
@@ -253,6 +270,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: "3.14"
@@ -272,6 +291,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: "3.14"
@@ -286,6 +307,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          submodules: recursive
       - name: Install taplo
         run: cargo install taplo-cli
       - name: TOML format check
@@ -302,6 +325,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
         with:
           fetch-depth: 0
+          submodules: recursive
       - uses: wagoid/commitlint-github-action@v6
         with:
           configFile: .commitlintrc.yml

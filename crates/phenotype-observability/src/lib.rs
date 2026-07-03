@@ -1,25 +1,59 @@
-//! Phenotype fleet observability substrate — thin re-export of pheno-tracing (ADR-012, ADR-036).
+//! Phenotype fleet observability substrate.
 //!
-//! Provides OTLP tracing and metrics via the `pheno-tracing` port-driven API.
-//! Consumers build a `TraceOperation` and submit to a `TracePort`
-//! (`StdoutAdapter` for local dev, OTLP collector adapter for production).
-//!
-//! ## Quickstart
-//!
-//! ```no_run
-//! use phenotype_observability::{emit_span, otlp_endpoint, SERVICE_NAME};
-//!
-//! let mut attrs = std::collections::HashMap::new();
-//! attrs.insert("op".to_string(), "init".to_string());
-//! emit_span("phenotype.init", attrs);
-//! ```
+//! Self-contained tracing helpers for local spans and cockpit emission.
 
-use pheno_tracing::{
-    adapters::StdoutAdapter,
-    port::{SpanId, SpanKind, TraceId, TraceOperation, TracePort},
-};
 use std::collections::HashMap;
 use std::sync::Arc;
+
+pub use tracing::{debug, error, info, instrument, span, trace, warn};
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct TraceId(pub String);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct SpanId(pub String);
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SpanKind {
+    Internal,
+    Client,
+    Server,
+    Producer,
+    Consumer,
+}
+
+#[derive(Debug, Clone)]
+pub struct TraceOperation {
+    pub trace_id: TraceId,
+    pub span_id: SpanId,
+    pub parent_span_id: Option<SpanId>,
+    pub kind: SpanKind,
+    pub name: String,
+    pub attributes: HashMap<String, String>,
+}
+
+#[async_trait::async_trait]
+pub trait TracePort: Send + Sync {
+    async fn submit(&self, op: TraceOperation);
+    async fn flush(&self) -> Result<(), String>;
+}
+
+#[derive(Debug, Default, Clone, Copy)]
+pub struct StdoutAdapter;
+
+#[async_trait::async_trait]
+impl TracePort for StdoutAdapter {
+    async fn submit(&self, op: TraceOperation) {
+        println!(
+            "[TRACE] trace={} span={} kind={:?}",
+            op.trace_id.0, op.name, op.kind
+        );
+    }
+
+    async fn flush(&self) -> Result<(), String> {
+        Ok(())
+    }
+}
 
 pub const SERVICE_NAME: &str = "phenotype";
 pub const DEFAULT_OTLP_ENDPOINT: &str = "http://localhost:4317";
@@ -60,7 +94,7 @@ pub fn next_trace_id() -> String {
 
 pub async fn submit_span(op: TraceOperation) {
     let port: Arc<dyn TracePort> = Arc::new(StdoutAdapter);
-    let _ = port.submit(op).await;
+    port.submit(op).await;
     let _ = port.flush().await;
 }
 
@@ -76,5 +110,3 @@ pub async fn emit_span(name: &str, attributes: HashMap<String, String>) {
     );
     submit_span(op).await;
 }
-
-pub use pheno_tracing::compat::{debug, error, info, instrument, span, trace, warn};

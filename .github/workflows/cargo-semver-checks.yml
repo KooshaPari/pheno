@@ -11,4 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
+        with:
+          submodules: recursive
       - uses: obi1kenobi/cargo-semver-checks-action@v2
