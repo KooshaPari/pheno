@@ -4,23 +4,24 @@
 //! Traceability: WP11-T060, T065 / WP12-T072
 
 use std::path::PathBuf;
+use std::process;
 
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 
+use agileplus_cli::agent_runtime::ConfiguredAgentAdapter;
 use agileplus_cli::commands::{
-    branch::BranchArgs, cycle::CycleArgs, implement::ImplementArgs, module::ModuleArgs,
+    branch::BranchArgs, cycle::CycleArgs, hooks::HooksArgs, implement::ImplementArgs,
+    init::InitArgs, mcp::McpArgs, migrate_artifacts::MigrateArtifactsArgs, module::ModuleArgs,
     plan::PlanArgs, queue::QueueArgs, research::ResearchArgs, retrospective::RetrospectiveArgs,
-    ship::ShipArgs, specify::SpecifyArgs, triage::TriageArgs, validate::ValidateArgs,
+    ship::ShipArgs, specify::SpecifyArgs, tracaera::TracaeraArgs, triage::TriageArgs,
+    validate::ValidateArgs,
 };
-use agileplus_cli::error::{CliError, ErrorCategory, OutputMode};
 use agileplus_git::GitVcsAdapter;
-use phenotype_observability::{self, SERVICE_NAME};
 use agileplus_sqlite::SqliteStorageAdapter;
-use agileplus_subcmds::{DashboardArgs, PlatformArgs, run_dashboard, run_platform};
-
-mod agent_stub;
-use agent_stub::StubAgentAdapter;
+use agileplus_subcmds::{
+    run_dashboard, run_events, run_platform, DashboardArgs, EventsArgs, PlatformArgs,
+};
 
 /// Spec-driven development engine.
 #[derive(Parser)]
@@ -44,6 +45,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Initialize AgilePlus project layout and config.
+    Init(InitArgs),
     /// Manage cycles (time-boxed delivery units).
     Cycle(CycleArgs),
     /// Branch management: create, checkout, delete, list, and sync.
@@ -70,24 +73,22 @@ enum Commands {
     Module(ModuleArgs),
     /// Open or configure the web dashboard.
     Dashboard(DashboardArgs),
+    /// Query AgilePlus and Substrate event streams.
+    Events(EventsArgs),
     /// Manage platform services (up, down, status, logs).
     Platform(PlatformArgs),
+    /// Install, verify, and remove AgilePlus hooks.
+    Hooks(HooksArgs),
+    /// Generate MCP host configuration.
+    Mcp(McpArgs),
+    /// Normalize brownfield artifacts into docs-native locations.
+    MigrateArtifacts(MigrateArtifactsArgs),
+    /// Export trace graph snapshots for Tracaera.
+    Tracaera(TracaeraArgs),
 }
 
-fn main() {
-    let output_mode = OutputMode::from_env();
-    let rt = tokio::runtime::Runtime::new().expect("failed to create tokio runtime");
-    rt.block_on(async_main(output_mode));
-}
-
-async fn async_main(output_mode: OutputMode) {
-    let otlp_endpoint = phenotype_observability::otlp_endpoint();
-    let mut attrs = std::collections::HashMap::new();
-    attrs.insert("service".to_string(), SERVICE_NAME.to_string());
-    attrs.insert("otlp_endpoint".to_string(), otlp_endpoint.clone());
-    phenotype_observability::emit_span("phenotype.start", attrs).await;
-    tracing::info!(service = SERVICE_NAME, otlp_endpoint = %otlp_endpoint, "phenotype fleet starting");
-
+#[tokio::main]
+async fn main() {
     let cli = Cli::parse();
 
     // Configure logging based on verbosity
@@ -103,22 +104,23 @@ async fn async_main(output_mode: OutputMode) {
         .init();
 
     if let Err(e) = run(cli).await {
-        // Log the full error chain for observability (visible with -v).
-        tracing::error!("Command failed: {e:#}");
-        // Structured error envelope: typed category + recovery hint.
-        // For full diagnostics, use -v or RUST_LOG, or set AGILEPLUS_OUTPUT=json
-        // for machine-readable output.
-        let cli_err = CliError::from_anyhow(&e);
-        cli_err.exit(output_mode);
+        eprintln!("Error: {e:#}");
+        process::exit(1);
     }
 }
 
 async fn run(cli: Cli) -> Result<()> {
     // Triage command doesn't need full storage/VCS setup
     match cli.command {
+        Commands::Init(args) => return agileplus_cli::commands::init::run_init(args).await,
         Commands::Triage(args) => return agileplus_cli::commands::triage::run_triage(args).await,
         Commands::Dashboard(args) => return run_dashboard(args),
+        Commands::Events(args) => return run_events(args),
         Commands::Platform(args) => return run_platform(args),
+        Commands::Mcp(args) => return agileplus_cli::commands::mcp::run_mcp(args).await,
+        Commands::MigrateArtifacts(args) => {
+            return agileplus_cli::commands::migrate_artifacts::run_migrate_artifacts(args).await;
+        }
         _ => {}
     }
 
@@ -147,6 +149,10 @@ async fn run(cli: Cli) -> Result<()> {
     let storage = SqliteStorageAdapter::new(&cli.db)
         .with_context(|| format!("opening database at {}", cli.db.display()))?;
 
+    if let Commands::Tracaera(args) = cli.command {
+        return agileplus_cli::commands::tracaera::run(args, &storage).await;
+    }
+
     // Initialise VCS adapter
     let vcs = match cli.repo {
         Some(ref path) => {
@@ -156,8 +162,7 @@ async fn run(cli: Cli) -> Result<()> {
             .context("Not inside a git repository. Run agileplus from your project root.")?,
     };
 
-    // Stub agent adapter (replaced by agileplus-agents when WP08 is available)
-    let agent = StubAgentAdapter;
+    let agent = ConfiguredAgentAdapter::from_env();
 
     match cli.command {
         Commands::Branch(args) => {
@@ -184,6 +189,9 @@ async fn run(cli: Cli) -> Result<()> {
         Commands::Validate(args) => {
             agileplus_cli::commands::validate::run_validate(args, &storage, &vcs).await?;
         }
+        Commands::Hooks(args) => {
+            agileplus_cli::commands::hooks::run_hooks(args, &vcs).await?;
+        }
         Commands::Ship(args) => {
             agileplus_cli::commands::ship::run_ship(args, &storage, &vcs).await?;
         }
@@ -191,8 +199,13 @@ async fn run(cli: Cli) -> Result<()> {
             agileplus_cli::commands::retrospective::run_retrospective(args, &storage, &vcs).await?;
         }
         Commands::Triage(_)
+        | Commands::Init(_)
         | Commands::Module(_)
+        | Commands::Tracaera(_)
+        | Commands::Mcp(_)
+        | Commands::MigrateArtifacts(_)
         | Commands::Dashboard(_)
+        | Commands::Events(_)
         | Commands::Platform(_) => unreachable!("handled above"),
     }
 

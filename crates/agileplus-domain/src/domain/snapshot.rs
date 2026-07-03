@@ -3,8 +3,12 @@
 //! Traceability: FR-022 / WP01-T002
 
 use chrono::{DateTime, Utc};
-use phenotype_migrations::Versioned;
 use serde::{Deserialize, Serialize};
+
+pub trait Versioned {
+    fn version(&self) -> String;
+    fn set_version(&mut self, v: String);
+}
 
 /// A snapshot of an entity's current state at a given event sequence.
 ///

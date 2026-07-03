@@ -1,4 +1,4 @@
-use agileplus_domain::domain::audit::{AuditChain, AuditEntry, hash_entry};
+use agileplus_domain::domain::audit::{hash_entry, AuditChain, AuditEntry};
 use chrono::Utc;
 use proptest::prelude::*;
 

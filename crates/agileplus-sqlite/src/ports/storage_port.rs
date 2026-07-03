@@ -3,7 +3,9 @@
 //! Traceability: WP06-T030
 
 use crate::ports::adapter::SqliteStorageAdapter;
-use crate::repository::{audit, cycles, features, governance, metrics, modules, projects, sync_mappings, work_packages};
+use crate::repository::{
+    audit, cycles, features, governance, metrics, modules, projects, sync_mappings, work_packages,
+};
 
 use agileplus_domain::{
     domain::{
@@ -20,7 +22,6 @@ use agileplus_domain::{
     ports::StoragePort,
 };
 
-#[allow(clippy::async_yield_iter)]
 #[async_trait::async_trait]
 impl StoragePort for SqliteStorageAdapter {
     // -- Feature CRUD --
@@ -231,32 +232,50 @@ impl StoragePort for SqliteStorageAdapter {
 
     // -- Cycle CRUD (T008) --
 
-    async fn create_cycle(&self, cycle: &agileplus_domain::domain::cycle::Cycle) -> Result<i64, DomainError> {
+    async fn create_cycle(
+        &self,
+        cycle: &agileplus_domain::domain::cycle::Cycle,
+    ) -> Result<i64, DomainError> {
         let conn = self.lock()?;
         cycles::create_cycle(&conn, cycle)
     }
 
-    async fn get_cycle(&self, id: i64) -> Result<Option<agileplus_domain::domain::cycle::Cycle>, DomainError> {
+    async fn get_cycle(
+        &self,
+        id: i64,
+    ) -> Result<Option<agileplus_domain::domain::cycle::Cycle>, DomainError> {
         let conn = self.lock()?;
         cycles::get_cycle(&conn, id)
     }
 
-    async fn update_cycle_state(&self, id: i64, state: agileplus_domain::domain::cycle::CycleState) -> Result<(), DomainError> {
+    async fn update_cycle_state(
+        &self,
+        id: i64,
+        state: agileplus_domain::domain::cycle::CycleState,
+    ) -> Result<(), DomainError> {
         let conn = self.lock()?;
         cycles::update_cycle_state(&conn, id, state)
     }
 
-    async fn list_cycles_by_state(&self, state: agileplus_domain::domain::cycle::CycleState) -> Result<Vec<agileplus_domain::domain::cycle::Cycle>, DomainError> {
+    async fn list_cycles_by_state(
+        &self,
+        state: agileplus_domain::domain::cycle::CycleState,
+    ) -> Result<Vec<agileplus_domain::domain::cycle::Cycle>, DomainError> {
         let conn = self.lock()?;
         cycles::list_cycles_by_state(&conn, state)
     }
 
-    async fn list_cycles_by_module(&self, module_id: i64) -> Result<Vec<agileplus_domain::domain::cycle::Cycle>, DomainError> {
+    async fn list_cycles_by_module(
+        &self,
+        module_id: i64,
+    ) -> Result<Vec<agileplus_domain::domain::cycle::Cycle>, DomainError> {
         let conn = self.lock()?;
         cycles::list_cycles_by_module(&conn, module_id)
     }
 
-    async fn list_all_cycles(&self) -> Result<Vec<agileplus_domain::domain::cycle::Cycle>, DomainError> {
+    async fn list_all_cycles(
+        &self,
+    ) -> Result<Vec<agileplus_domain::domain::cycle::Cycle>, DomainError> {
         let conn = self.lock()?;
         cycles::list_all_cycles(&conn)
     }
@@ -285,7 +304,10 @@ impl StoragePort for SqliteStorageAdapter {
         modules::untag_feature_from_module(&conn, module_id, feature_id)
     }
 
-    async fn add_feature_to_cycle(&self, entry: &agileplus_domain::domain::cycle::CycleFeature) -> Result<(), DomainError> {
+    async fn add_feature_to_cycle(
+        &self,
+        entry: &agileplus_domain::domain::cycle::CycleFeature,
+    ) -> Result<(), DomainError> {
         let conn = self.lock()?;
         cycles::add_feature_to_cycle(&conn, entry)
     }
@@ -333,12 +355,18 @@ impl StoragePort for SqliteStorageAdapter {
         sync_mappings::delete_sync_mapping(&conn, entity_type, entity_id)
     }
 
-    async fn create_project(&self, project: &agileplus_domain::domain::project::Project) -> Result<i64, DomainError> {
+    async fn create_project(
+        &self,
+        project: &agileplus_domain::domain::project::Project,
+    ) -> Result<i64, DomainError> {
         let conn = self.lock()?;
         projects::create_project(&conn, project)
     }
 
-    async fn get_project_by_slug(&self, slug: &str) -> Result<Option<agileplus_domain::domain::project::Project>, DomainError> {
+    async fn get_project_by_slug(
+        &self,
+        slug: &str,
+    ) -> Result<Option<agileplus_domain::domain::project::Project>, DomainError> {
         let conn = self.lock()?;
         projects::get_project_by_slug(&conn, slug)
     }

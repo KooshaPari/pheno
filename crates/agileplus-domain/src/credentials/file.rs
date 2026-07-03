@@ -67,11 +67,12 @@ impl FileCredentialStore {
 
     /// Encrypt `plaintext` bytes with AES-256-GCM using a key derived from
     /// the passphrase env-var. Returns `(salt, nonce, ciphertext)`.
-    fn encrypt(plaintext: &[u8]) -> Result<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>), CredentialError> {
-        let passphrase = Self::passphrase()
-            .ok_or_else(|| CredentialError::Encryption(
-                format!("{ENV_PASSPHRASE} not set, cannot encrypt"),
-            ))?;
+    fn encrypt(
+        plaintext: &[u8],
+    ) -> Result<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>), CredentialError> {
+        let passphrase = Self::passphrase().ok_or_else(|| {
+            CredentialError::Encryption(format!("{ENV_PASSPHRASE} not set, cannot encrypt"))
+        })?;
 
         let mut salt = [0u8; SALT_LEN];
         OsRng.fill_bytes(&mut salt);
@@ -93,11 +94,14 @@ impl FileCredentialStore {
 
     /// Decrypt `ciphertext` using the key derived from the passphrase env-var
     /// with the given `salt` and `nonce`.
-    fn decrypt(ciphertext: &[u8], salt: &[u8; SALT_LEN], nonce: &[u8; NONCE_LEN]) -> Result<Vec<u8>, CredentialError> {
-        let passphrase = Self::passphrase()
-            .ok_or_else(|| CredentialError::Encryption(
-                format!("{ENV_PASSPHRASE} not set, cannot decrypt"),
-            ))?;
+    fn decrypt(
+        ciphertext: &[u8],
+        salt: &[u8; SALT_LEN],
+        nonce: &[u8; NONCE_LEN],
+    ) -> Result<Vec<u8>, CredentialError> {
+        let passphrase = Self::passphrase().ok_or_else(|| {
+            CredentialError::Encryption(format!("{ENV_PASSPHRASE} not set, cannot decrypt"))
+        })?;
 
         let key = Self::derive_key(passphrase.as_bytes(), salt);
 
@@ -196,7 +200,9 @@ impl FileCredentialStore {
 
     /// Encrypt raw bytes if a passphrase is configured. Returns `None` if
     /// the passphrase env-var is not set (plaintext mode).
-    fn try_encrypt(raw: &[u8]) -> Result<Option<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>)>, CredentialError> {
+    fn try_encrypt(
+        raw: &[u8],
+    ) -> Result<Option<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>)>, CredentialError> {
         if Self::passphrase().is_some() {
             let (salt, nonce, ciphertext) = Self::encrypt(raw)?;
             Ok(Some((salt, nonce, ciphertext)))

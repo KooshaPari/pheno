@@ -8,7 +8,7 @@ rust-version.workspace = true
 [dependencies]
 phenotype-error-core = { path = "../phenotype-error-core" }
 agileplus-domain = { path = "../agileplus-domain" }
-agileplus-dashboard = { path = "../agileplus-dashboard" }
+agileplus-dashboard = { path = "../../agileplus/crates/agileplus-dashboard" }
 axum.workspace = true
 axum-extra = { version = "0.10", features = ["typed-header"] }
 tower = { version = "0.5", features = ["limit", "timeout"] }
@@ -38,4 +38,3 @@ tokio = { version = "1", features = ["full"] }
 axum-test = "19"
 tempfile = "3"
 chrono = { version = "0.4", features = ["serde"] }
-

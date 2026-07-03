@@ -78,44 +78,36 @@ impl EventQuery {
         events
             .iter()
             .filter(|e| {
-                if let Some(ref et) = self.entity_type
-                    && e.entity_type != *et
+                if self
+                    .entity_type
+                    .as_ref()
+                    .is_some_and(|et| e.entity_type != *et)
                 {
                     return false;
                 }
-                if let Some(id) = self.entity_id
-                    && e.entity_id != id
+                if self.entity_id.is_some_and(|id| e.entity_id != id) {
+                    return false;
+                }
+                if self
+                    .event_type
+                    .as_ref()
+                    .is_some_and(|et| e.event_type != *et)
                 {
                     return false;
                 }
-                if let Some(ref et) = self.event_type
-                    && e.event_type != *et
-                {
+                if self.actor.as_ref().is_some_and(|a| e.actor != *a) {
                     return false;
                 }
-                if let Some(ref a) = self.actor
-                    && e.actor != *a
-                {
+                if self.from_time.is_some_and(|from| e.timestamp < from) {
                     return false;
                 }
-                if let Some(from) = self.from_time
-                    && e.timestamp < from
-                {
+                if self.to_time.is_some_and(|to| e.timestamp > to) {
                     return false;
                 }
-                if let Some(to) = self.to_time
-                    && e.timestamp > to
-                {
+                if self.from_sequence.is_some_and(|from| e.sequence < from) {
                     return false;
                 }
-                if let Some(from) = self.from_sequence
-                    && e.sequence < from
-                {
-                    return false;
-                }
-                if let Some(to) = self.to_sequence
-                    && e.sequence > to
-                {
+                if self.to_sequence.is_some_and(|to| e.sequence > to) {
                     return false;
                 }
                 true

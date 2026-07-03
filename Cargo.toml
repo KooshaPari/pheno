@@ -9,8 +9,29 @@ description = "Phenotype Infrastructure Kit"
 
 [workspace]
 resolver = "2"
+
 members = [
+    "crates/agileplus-api",
+    "agileplus/crates/agileplus-dashboard",
+    "crates/agileplus-benchmarks",
+    "crates/agileplus-cache",
+    "crates/agileplus-cli",
+    "crates/agileplus-domain",
+    "crates/agileplus-events",
+    "crates/agileplus-git",
+    "crates/agileplus-github",
+    "crates/agileplus-graph",
+    "crates/agileplus-grpc",
+    "crates/agileplus-import",
+    "crates/agileplus-integration-tests",
     "crates/agileplus-nats",
+    "crates/agileplus-p2p",
+    "crates/agileplus-plane",
+    "crates/agileplus-sqlite",
+    "crates/agileplus-subcmds",
+    "crates/agileplus-sync",
+    "crates/agileplus-telemetry",
+    "crates/agileplus-triage",
     "crates/phenotype-async-traits",
     "crates/phenotype-cache-adapter",
     "crates/phenotype-casbin-wrapper",
@@ -21,11 +42,13 @@ members = [
     "crates/phenotype-error-macros",
     "crates/phenotype-errors",
     "crates/phenotype-event-sourcing",
+    "crates/phenotype-flags",
     "crates/phenotype-git-core",
     "crates/phenotype-health",
     "crates/phenotype-http-client-core",
     "crates/phenotype-iter",
     "crates/phenotype-logging",
+    "crates/phenotype-macros",
     "crates/phenotype-policy-engine",
     "crates/phenotype-port-traits",
     "crates/phenotype-ports-canonical",
@@ -39,7 +62,6 @@ members = [
     "crates/phenotype-test-infra",
     "crates/phenotype-time",
     "crates/phenotype-validation",
-    "crates/phenotype-flags",
 ]
 [workspace.dependencies]
 # Core
@@ -52,6 +74,8 @@ async-trait = "0.1"
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 tokio = { version = "1", features = ["full"] }
+tonic = "0.12"
+tonic-build = "0.12"
 dashmap = "5"
 parking_lot = "0.12"
 lru = "0.12"
@@ -88,7 +112,6 @@ phenotype-contract = { path = "crates/phenotype-contract" }
 phenotype-contracts = { path = "crates/phenotype-contracts" }
 phenotype-core = { path = "crates/phenotype-core" }
 phenotype-cost-core = { path = "crates/phenotype-cost-core" }
-phenotype-crypto = { path = "crates/phenotype-crypto" }
 phenotype-error-core = { path = "crates/phenotype-error-core" }
 phenotype-error-macros = { path = "crates/phenotype-error-macros" }
 phenotype-errors = { path = "crates/phenotype-errors" }
@@ -102,7 +125,6 @@ phenotype-infrastructure = { path = "crates/phenotype-infrastructure" }
 phenotype-iter = { path = "crates/phenotype-iter" }
 phenotype-logging = { path = "crates/phenotype-logging" }
 phenotype-macros = { path = "crates/phenotype-macros" }
-phenotype-mcp = { path = "crates/phenotype-mcp" }
 phenotype-mock = { path = "crates/phenotype-mock" }
 phenotype-policy-engine = { path = "crates/phenotype-policy-engine" }
 phenotype-port-traits = { path = "crates/phenotype-port-traits" }
@@ -123,23 +145,24 @@ phenotype-time = { path = "crates/phenotype-time" }
 phenotype-validation = { path = "crates/phenotype-validation" }
 
 # External utilities
-axum = "0.7"
-axum-extra = "0.9"
+axum = "0.8"
+axum-extra = "0.10"
 clap = { version = "4", features = ["derive"] }
 figment = "0.10"
 futures-util = "0.3"
 http-body-util = "0.1"
 hyper = "1"
-opentelemetry = { version = "0.24", features = ["trace"] }
-opentelemetry_sdk = { version = "0.24", features = ["trace"] }
+opentelemetry = { version = "0.31", features = ["trace"] }
+opentelemetry-otlp = { version = "0.31", features = ["grpc-tonic"] }
+opentelemetry_sdk = { version = "0.31", features = ["trace"] }
 reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
 rusqlite = { version = "0.32", features = ["bundled"] }
 tokio-test = "0.4"
 tokio-util = "0.7"
-tower = "0.4"
-tower-http = { version = "0.5", features = ["trace"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace"] }
 tracing-actix-web = "4"
-tracing-opentelemetry = "0.24"
+tracing-opentelemetry = "0.32"
 
 [profile.dev]
 

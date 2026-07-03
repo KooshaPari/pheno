@@ -107,7 +107,7 @@ pub struct WorkPackageBuilder {
     feature_id: i64,
     title: String,
     sequence: i32,
-    summary: String,
+    acceptance_criteria: String,
     state: WpState,
     file_scope: Vec<String>,
 }
@@ -120,7 +120,7 @@ impl WorkPackageBuilder {
             feature_id,
             title: title.to_string(),
             sequence,
-            summary: String::new(),
+            acceptance_criteria: String::new(),
             state: WpState::Planned,
             file_scope: Vec::new(),
         }
@@ -138,9 +138,9 @@ impl WorkPackageBuilder {
         self
     }
 
-    /// Set the summary/description.
+    /// Set the acceptance criteria / summary.
     pub fn summary(mut self, summary: &str) -> Self {
-        self.summary = summary.to_string();
+        self.acceptance_criteria = summary.to_string();
         self
     }
 
@@ -163,9 +163,18 @@ impl WorkPackageBuilder {
             feature_id: self.feature_id,
             title: self.title,
             sequence: self.sequence,
-            summary: self.summary,
+            acceptance_criteria: self.acceptance_criteria,
             state: self.state,
             file_scope: self.file_scope,
+            agent_id: None,
+            pr_url: None,
+            pr_state: None,
+            worktree_path: None,
+            plane_sub_issue_id: None,
+            base_commit: None,
+            head_commit: None,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
         }
     }
 }
@@ -212,7 +221,7 @@ mod tests {
         assert_eq!(wp.feature_id, 1);
         assert_eq!(wp.title, "Test WP");
         assert_eq!(wp.state, WpState::Done);
-        assert_eq!(wp.summary, "This is a test");
+        assert_eq!(wp.acceptance_criteria, "This is a test");
         assert_eq!(wp.file_scope, vec!["src/lib.rs"]);
     }
 

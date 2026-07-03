@@ -132,7 +132,7 @@ pub async fn sync_with_peer_vectors(
     // 1. Determine what to send.
     let events_to_send = fetch_events_to_send(local_vector, peer_vector, event_store)
         .await
-        .map_err(|e| SyncError::EventStore(e.to_string()))?;
+        .map_err(SyncError::EventStore)?;
 
     debug!(
         "Will send {} events to peer {}",

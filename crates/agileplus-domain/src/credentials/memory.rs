@@ -93,7 +93,9 @@ mod tests {
     #[test]
     fn validate_api_key_single() {
         let store = InMemoryCredentialStore::new();
-        store.set("agileplus", keys::API_KEYS, "secret-key-abc").unwrap();
+        store
+            .set("agileplus", keys::API_KEYS, "secret-key-abc")
+            .unwrap();
         assert!(store.validate_api_key("secret-key-abc").unwrap());
         assert!(!store.validate_api_key("wrong-key").unwrap());
     }
