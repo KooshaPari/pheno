@@ -449,33 +449,17 @@ fn events_help_prints_subcommand_usage() {
         .args(["events", "--help"])
         .assert()
         .success()
-        .stdout(predicates::str::contains("source"));
+        .stdout(predicates::str::contains("since"));
 }
 
 #[test]
-fn events_source_reads_substrate_jsonl() {
-    let dir = TempDir::new().expect("temp dir");
-    let source_path = dir.path().join("events.jsonl");
-    std::fs::write(
-        &source_path,
-        r#"{"timestamp_ms":1760000000123,"run_id":"run-a","agent":"worker-1","kind":"progress","summary":"halfway","progress":0.5}"#,
-    )
-    .expect("write event source");
-
+fn events_since_filters_stub_events() {
     Command::cargo_bin("agileplus")
         .unwrap()
-        .args([
-            "events",
-            "--source",
-            source_path.to_str().unwrap(),
-            "--format",
-            "json",
-        ])
+        .args(["events", "--since", "2026-03-03", "--format", "json"])
         .assert()
         .success()
-        .stdout(predicates::str::contains("\"event_type\": \"progress\""))
-        .stdout(predicates::str::contains("\"actor\": \"worker-1\""))
-        .stdout(predicates::str::contains("\"source\": \"substrate\""));
+        .stdout(predicates::str::contains("[]"));
 }
 
 #[test]
@@ -700,8 +684,7 @@ fn specify_creates_spec_artifact() {
     // Verify the spec.md was written
     let spec_file = repo_dir
         .path()
-        .join("docs")
-        .join("specs")
+        .join("kitty-specs")
         .join("my-feature")
         .join("spec.md");
     assert!(
