@@ -33,11 +33,7 @@ pub(crate) fn checkout_branch(
     let branch = repo
         .find_branch(branch_name, BranchType::Local)
         .map_err(git_err)?;
-    let refname = branch
-        .get()
-        .name()
-        .map_err(git_err)?
-        .to_string();
+    let refname = branch.get().name().map_err(git_err)?.to_string();
     repo.set_head(&refname).map_err(git_err)?;
     repo.checkout_head(Some(CheckoutBuilder::new().force()))
         .map_err(git_err)?;
