@@ -150,7 +150,7 @@ pub async fn run<V: VcsPort>(args: BranchArgs, vcs: &V) -> Result<()> {
                         is_remote: remote,
                     }
                 })
-                .filter(|b| pattern.as_ref().map_or(true, |p| b.name.contains(p)))
+                .filter(|b| pattern.as_ref().is_none_or(|p| b.name.contains(p)))
                 .collect();
             print_branches(&branches, &output)?;
         }

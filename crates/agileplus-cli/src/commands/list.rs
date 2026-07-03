@@ -35,7 +35,7 @@ pub async fn run<S: StoragePort>(args: ListArgs, storage: &S) -> Result<()> {
         return Ok(());
     }
 
-    println!("{:<8}  {:<36}  {:<14}  {}", "ID", "SLUG", "STATE", "TITLE");
+    println!("{:<8}  {:<36}  {:<14}  TITLE", "ID", "SLUG", "STATE");
     println!("{}", "-".repeat(100));
 
     for f in features {

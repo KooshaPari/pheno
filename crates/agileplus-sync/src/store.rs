@@ -89,7 +89,12 @@ pub mod mem {
                 m.last_synced_at = synced_at;
                 Ok(())
             } else {
-                Err(SyncError::Store(format!("mapping {id} not found")))
+                Err(SyncError::Store(
+                    phenotype_error_core::RepositoryError::NotFound {
+                        entity: "sync_mapping".to_string(),
+                        id: id.to_string(),
+                    },
+                ))
             }
         }
 
@@ -99,7 +104,12 @@ pub mod mem {
                 m.increment_conflict();
                 Ok(())
             } else {
-                Err(SyncError::Store(format!("mapping {id} not found")))
+                Err(SyncError::Store(
+                    phenotype_error_core::RepositoryError::NotFound {
+                        entity: "sync_mapping".to_string(),
+                        id: id.to_string(),
+                    },
+                ))
             }
         }
 

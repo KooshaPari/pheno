@@ -574,6 +574,86 @@ fn implement_emits_cockpit_updates_to_configured_endpoint() {
 }
 
 #[test]
+fn implement_emits_cockpit_updates_via_substrate_env_alias() {
+    let repo_dir = init_temp_git_repo();
+    let db_path = repo_dir.path().join(".agileplus").join("agileplus.db");
+    let spec_path = fixtures_dir().join("sample-spec.md");
+    let (cockpit_url, rx) = spawn_cockpit_recorder(2);
+
+    Command::cargo_bin("agileplus")
+        .unwrap()
+        .args([
+            "--db",
+            db_path.to_str().unwrap(),
+            "specify",
+            "--feature",
+            "dogfood-flow-alias",
+            "--from-file",
+            spec_path.to_str().unwrap(),
+        ])
+        .current_dir(repo_dir.path())
+        .assert()
+        .success();
+
+    Command::cargo_bin("agileplus")
+        .unwrap()
+        .args([
+            "--db",
+            db_path.to_str().unwrap(),
+            "research",
+            "--feature",
+            "dogfood-flow-alias",
+        ])
+        .current_dir(repo_dir.path())
+        .assert()
+        .success();
+
+    Command::cargo_bin("agileplus")
+        .unwrap()
+        .args([
+            "--db",
+            db_path.to_str().unwrap(),
+            "plan",
+            "--feature",
+            "dogfood-flow-alias",
+        ])
+        .current_dir(repo_dir.path())
+        .assert()
+        .success();
+
+    Command::cargo_bin("agileplus")
+        .unwrap()
+        .env("SUBSTRATE_BIN", "true")
+        .env("SUBSTRATE_COCKPIT_URL", &cockpit_url)
+        .args([
+            "--db",
+            db_path.to_str().unwrap(),
+            "implement",
+            "--feature",
+            "dogfood-flow-alias",
+            "--wp",
+            "WP01",
+            "--max-review-cycles",
+            "1",
+        ])
+        .current_dir(repo_dir.path())
+        .assert()
+        .success();
+
+    let first = rx
+        .recv_timeout(Duration::from_secs(5))
+        .expect("first cockpit update");
+    let second = rx
+        .recv_timeout(Duration::from_secs(5))
+        .expect("second cockpit update");
+
+    assert_eq!(first["session_id"], "dogfood-flow-alias");
+    assert_eq!(first["phase"], "running");
+    assert_eq!(second["session_id"], "dogfood-flow-alias");
+    assert_eq!(second["phase"], "completed");
+}
+
+#[test]
 fn specify_from_file_creates_feature() {
     let repo_dir = init_temp_git_repo();
     let db_path = repo_dir.path().join(".agileplus").join("agileplus.db");

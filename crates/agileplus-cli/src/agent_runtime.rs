@@ -93,7 +93,9 @@ impl SubstrateAgentAdapter {
     pub fn from_env() -> Self {
         Self {
             bin: std::env::var("SUBSTRATE_BIN").unwrap_or_else(|_| "substrate".to_string()),
-            cockpit_url: std::env::var("AGILEPLUS_COCKPIT_URL").ok(),
+            cockpit_url: std::env::var("AGILEPLUS_COCKPIT_URL")
+                .ok()
+                .or_else(|| std::env::var("SUBSTRATE_COCKPIT_URL").ok()),
             running: Arc::new(Mutex::new(HashMap::new())),
             completed: Arc::new(Mutex::new(HashMap::new())),
         }

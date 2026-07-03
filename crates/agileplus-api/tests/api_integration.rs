@@ -163,6 +163,7 @@ impl MockStorage {
     }
 }
 
+#[async_trait::async_trait]
 impl StoragePort for MockStorage {
     async fn create_feature(&self, _f: &Feature) -> Result<i64, DomainError> {
         let id = (self.features.lock().unwrap().len() + 1) as i64;
@@ -519,6 +520,7 @@ impl StoragePort for MockStorage {
 
 // ── ContentStoragePort for MockStorage ───────────────────────────────────────
 
+#[async_trait::async_trait]
 impl ContentStoragePort for MockStorage {
     async fn create_feature(
         &self,

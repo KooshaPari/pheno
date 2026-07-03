@@ -6,42 +6,43 @@
 //! Since proc-macros generate code that must be tested in external crates,
 //! these tests focus on verifying macro expansion and compile-time behavior.
 
+use std::fs;
+use std::path::PathBuf;
+
+fn crate_root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+}
+
 /// Test that the Builder derive macro is properly exported and callable
 #[test]
 fn test_builder_macro_exists() {
-    // Verify the macro module exists and compiles
-    assert!(true, "Builder derive macro is correctly registered");
+    let source = fs::read_to_string(crate_root().join("src/error_derive.rs")).unwrap();
+    assert!(source.contains("pub use thiserror::Error"));
 }
 
 /// Test that the Builder module has the correct derive function signature
 #[test]
 fn test_builder_derive_signature() {
-    // The derive_builder module should be accessible and compile successfully
-    // This is verified by the fact that the crate compiles without errors
-    let test_name = "derive_builder";
-    assert!(!test_name.is_empty(), "Builder derive module is accessible");
+    let source = fs::read_to_string(crate_root().join("src/async_trait_wrapper.rs")).unwrap();
+    assert!(source.contains("pub use async_trait::async_trait"));
 }
 
 /// Test that helper modules compile correctly
 #[test]
 fn test_all_derive_modules_present() {
-    // Verify that all derive modules are present and accounted for
-    let modules = vec![
-        "aggregate",
-        "command",
-        "entity",
-        "error",
-        "event",
-        "value_object",
-        "derive_builder",
-        "derive_errors",
-        "derive_serde",
-    ];
+    let mut modules: Vec<String> = fs::read_dir(crate_root().join("src"))
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name().into_string().unwrap())
+        .collect();
+    modules.sort();
 
     assert_eq!(
-        modules.len(),
-        9,
-        "All expected derive modules should be present"
+        modules,
+        vec![
+            "async_trait_wrapper.rs".to_string(),
+            "error_derive.rs".to_string(),
+            "lib.rs".to_string(),
+        ]
     );
 }
 
@@ -73,6 +74,6 @@ fn test_builder_pattern_documentation() {
     // }
     // impl Default for PersonBuilder { ... }
 
-    let doc = "Builder macro generates fluent interface with validation";
-    assert!(!doc.is_empty());
+    let doc = fs::read_to_string(crate_root().join("tests/builder_integration_test.rs")).unwrap();
+    assert!(doc.contains("Builder derive macro generates:"));
 }

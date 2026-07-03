@@ -1990,7 +1990,7 @@ pub async fn save_services_settings(axum::Form(form): axum::Form<ServiceSettings
     };
 
     let mut services = Vec::new();
-    for (name, url) in form.names.into_iter().zip(form.endpoint_urls.into_iter()) {
+    for (name, url) in form.names.into_iter().zip(form.endpoint_urls) {
         if !name.trim().is_empty() {
             services.push(ServiceConfig {
                 name: name.trim().to_string(),
