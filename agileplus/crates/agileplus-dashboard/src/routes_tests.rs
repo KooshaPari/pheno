@@ -48,6 +48,9 @@ async fn home_page_renders() {
     let body = response.into_body();
     let bytes = to_bytes(body, usize::MAX).await.unwrap();
     let html = String::from_utf8(bytes.to_vec()).unwrap();
+    assert!(html.contains(
+        "[pheno:✓, AgilePlus:✓, Substrate:✓, Tracaera:◐, phenotype-registry:◐]"
+    ));
     assert!(html.contains("Multi-Project Control Surface"));
     assert!(html.contains("Projects"));
 }

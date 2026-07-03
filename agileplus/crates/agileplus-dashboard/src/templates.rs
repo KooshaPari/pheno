@@ -93,6 +93,7 @@ pub struct HomePage {
     pub total_features: usize,
     pub active_features: usize,
     pub shipped_features: usize,
+    pub ownership_bracket: String,
     pub projects: Vec<ProjectSummaryView>,
 }
 

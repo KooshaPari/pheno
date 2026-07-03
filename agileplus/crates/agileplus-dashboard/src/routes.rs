@@ -305,6 +305,21 @@ fn build_project_summaries(store: &crate::app_state::DashboardStore) -> Vec<Proj
         .collect()
 }
 
+fn ownership_bracket() -> String {
+    let items = [
+        ("pheno", "✓"),
+        ("AgilePlus", "✓"),
+        ("Substrate", "✓"),
+        ("Tracaera", "◐"),
+        ("phenotype-registry", "◐"),
+    ]
+    .into_iter()
+    .map(|(name, state)| format!("{name}:{state}"))
+    .collect::<Vec<_>>()
+    .join(", ");
+    format!("[{items}]")
+}
+
 const DEFAULT_PLANE_API_URL: &str = "https://app.plane.so";
 const DEFAULT_PLANE_WEB_URL: &str = "https://app.plane.so";
 
@@ -763,6 +778,7 @@ pub async fn root(State(state): State<SharedState>) -> Response {
         total_features,
         active_features,
         shipped_features,
+        ownership_bracket: ownership_bracket(),
         projects,
     })
 }
