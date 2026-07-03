@@ -262,12 +262,19 @@ impl CredentialStore for FileCredentialStore {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::{Mutex, OnceLock};
+
+    fn test_lock() -> &'static Mutex<()> {
+        static TEST_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+        TEST_LOCK.get_or_init(|| Mutex::new(()))
+    }
 
     /// Helper: set the passphrase env var for the duration of a test.
     fn with_passphrase<F>(passphrase: &str, f: F)
     where
         F: FnOnce(),
     {
+        let _guard = test_lock().lock().unwrap();
         unsafe {
             // SAFETY: single-threaded test, no concurrent env access
             if passphrase.is_empty() {
@@ -286,6 +293,7 @@ mod tests {
 
     #[test]
     fn file_store_set_get_plaintext() {
+        let _guard = test_lock().lock().unwrap();
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("creds.json");
         let store = FileCredentialStore::new(&path);
@@ -302,6 +310,7 @@ mod tests {
 
     #[test]
     fn file_store_delete() {
+        let _guard = test_lock().lock().unwrap();
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("creds.json");
         let store = FileCredentialStore::new(&path);
@@ -315,6 +324,7 @@ mod tests {
 
     #[test]
     fn file_store_list_keys() {
+        let _guard = test_lock().lock().unwrap();
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("creds.json");
         let store = FileCredentialStore::new(&path);
@@ -327,6 +337,7 @@ mod tests {
 
     #[test]
     fn file_store_not_found() {
+        let _guard = test_lock().lock().unwrap();
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("creds.json");
         let store = FileCredentialStore::new(&path);
@@ -374,17 +385,15 @@ mod tests {
 
     #[test]
     fn encrypted_file_persistence_across_store_reopens() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.enc");
-
-        // Write with passphrase
         with_passphrase("persist-test-key", || {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.enc");
+
+            // Write with passphrase
             let store = FileCredentialStore::new(&path);
             store.set("svc", "tok", "secret123").unwrap();
-        });
 
-        // Read back with same passphrase (new store instance)
-        with_passphrase("persist-test-key", || {
+            // Read back with same passphrase (new store instance)
             let store = FileCredentialStore::new(&path);
             assert_eq!(store.get("svc", "tok").unwrap(), "secret123");
         });
@@ -394,6 +403,7 @@ mod tests {
 
     #[test]
     fn derive_key_is_deterministic_with_same_salt() {
+        let _guard = test_lock().lock().unwrap();
         let passphrase = b"test-passphrase";
         let salt = [0xabu8; SALT_LEN];
         let key1 = FileCredentialStore::derive_key(passphrase, &salt);
@@ -403,6 +413,7 @@ mod tests {
 
     #[test]
     fn derive_key_differs_with_different_salt() {
+        let _guard = test_lock().lock().unwrap();
         let passphrase = b"test-passphrase";
         let salt1 = [0xabu8; SALT_LEN];
         let mut salt2 = [0xfeu8; SALT_LEN];
@@ -414,6 +425,7 @@ mod tests {
 
     #[test]
     fn derive_key_differs_with_different_passphrase() {
+        let _guard = test_lock().lock().unwrap();
         let salt = [0xcdu8; SALT_LEN];
         let key1 = FileCredentialStore::derive_key(b"pass-one", &salt);
         let key2 = FileCredentialStore::derive_key(b"pass-two", &salt);
