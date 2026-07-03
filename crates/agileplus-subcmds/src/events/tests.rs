@@ -1,4 +1,5 @@
 use super::*;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn make_args(since: Option<&str>, event_type: Option<&str>, actor: Option<&str>) -> EventsArgs {
     EventsArgs {
@@ -146,4 +147,31 @@ fn test_run_events_json_does_not_err() {
         limit: 10,
     };
     assert!(run_events(args).is_ok());
+}
+
+#[test]
+fn test_load_substrate_jsonl() {
+    let suffix = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let path = std::env::temp_dir().join(format!("agileplus-events-{suffix}.jsonl"));
+    std::fs::write(
+        &path,
+        r#"{"timestamp_ms":1740919530000,"run_id":"run-1","agent":"codex","kind":"running","summary":"agent dispatched","progress":0.5,"detail":"extra"}"#,
+    )
+    .unwrap();
+
+    let events = load_substrate_jsonl(&path).unwrap();
+    std::fs::remove_file(&path).unwrap();
+
+    assert_eq!(events.len(), 1);
+    let event = &events[0];
+    assert_eq!(event.source, "substrate");
+    assert_eq!(event.event_type, "running");
+    assert_eq!(event.actor, "codex");
+    assert_eq!(event.summary, "agent dispatched");
+    assert_eq!(event.payload["run_id"], "run-1");
+    assert_eq!(event.payload["progress"], 0.5);
+    assert_eq!(event.payload["detail"], "extra");
 }
