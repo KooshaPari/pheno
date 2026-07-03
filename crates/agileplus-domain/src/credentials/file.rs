@@ -14,6 +14,9 @@ use super::store::CredentialStore;
 
 const SALT_LEN: usize = 16;
 const NONCE_LEN: usize = 12;
+type Salt = [u8; SALT_LEN];
+type NonceBytes = [u8; NONCE_LEN];
+type EncryptedPayload = (Salt, NonceBytes, Vec<u8>);
 /// Env var that must contain the passphrase used to derive the AES-256 key
 /// via Argon2id. If unset, credentials are stored as plaintext JSON for
 /// backward compatibility.
@@ -67,9 +70,7 @@ impl FileCredentialStore {
 
     /// Encrypt `plaintext` bytes with AES-256-GCM using a key derived from
     /// the passphrase env-var. Returns `(salt, nonce, ciphertext)`.
-    fn encrypt(
-        plaintext: &[u8],
-    ) -> Result<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>), CredentialError> {
+    fn encrypt(plaintext: &[u8]) -> Result<EncryptedPayload, CredentialError> {
         let passphrase = Self::passphrase().ok_or_else(|| {
             CredentialError::Encryption(format!("{ENV_PASSPHRASE} not set, cannot encrypt"))
         })?;
@@ -120,7 +121,7 @@ impl FileCredentialStore {
     /// Detect whether the file on disk is encrypted (binary header) or
     /// plaintext JSON (starts with `{`).
     fn is_encrypted(data: &[u8]) -> bool {
-        data.len() >= SALT_LEN + NONCE_LEN + 1 && data[0] != b'{'
+        data.len() > SALT_LEN + NONCE_LEN && data[0] != b'{'
     }
 
     /// Load credentials from the encrypted file using AES-256-GCM.
@@ -200,9 +201,7 @@ impl FileCredentialStore {
 
     /// Encrypt raw bytes if a passphrase is configured. Returns `None` if
     /// the passphrase env-var is not set (plaintext mode).
-    fn try_encrypt(
-        raw: &[u8],
-    ) -> Result<Option<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>)>, CredentialError> {
+    fn try_encrypt(raw: &[u8]) -> Result<Option<EncryptedPayload>, CredentialError> {
         if Self::passphrase().is_some() {
             let (salt, nonce, ciphertext) = Self::encrypt(raw)?;
             Ok(Some((salt, nonce, ciphertext)))
