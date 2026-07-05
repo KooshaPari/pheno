@@ -102,10 +102,12 @@ jobs:
       checks: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -143,10 +145,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
@@ -177,10 +181,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
@@ -203,10 +209,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
       - uses: arduino/setup-protoc@v3
@@ -221,10 +229,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: dtolnay/rust-toolchain@1.86.0
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
       - uses: arduino/setup-protoc@v3
@@ -239,10 +249,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
       - uses: arduino/setup-protoc@v3

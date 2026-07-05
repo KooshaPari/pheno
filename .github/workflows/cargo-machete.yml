@@ -16,8 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
-      - name: Initialize AgilePlus submodule
+      - name: Ensure AgilePlus workspace sources
         run: |
-          git submodule sync -- agileplus
-          git submodule update --init --depth 1 -- agileplus
+          if [ ! -f agileplus/crates/agileplus-dashboard/Cargo.toml ]; then
+            rm -rf agileplus
+            git clone --depth 1 --branch main https://github.com/KooshaPari/AgilePlus.git agileplus
+          fi
       - uses: bnjbvr/cargo-machete@v0.9.2
