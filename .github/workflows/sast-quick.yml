@@ -17,8 +17,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
-        with:
-          submodules: recursive
 
       - uses: returntocorp/semgrep-action@v1
         with:
@@ -45,7 +43,6 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
         with:
           fetch-depth: 0
-          submodules: recursive
 
       - uses: trufflesecurity/trufflehog@30d5bb91af1a771378349dbbb0c82129392acf70  # was: @main
         with:
@@ -58,8 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
-        with:
-          submodules: recursive
+      - name: Initialize AgilePlus submodule
+        run: |
+          git submodule sync -- agileplus
+          git submodule update --init --depth 1 -- agileplus
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
@@ -71,8 +70,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
-        with:
-          submodules: recursive
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"

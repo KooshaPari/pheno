@@ -22,8 +22,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-        with:
-          submodules: recursive
+
+      - name: Initialize AgilePlus submodule
+        run: |
+          git submodule sync -- agileplus
+          git submodule update --init --depth 1 -- agileplus
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
