@@ -9,9 +9,16 @@
 //! Once B1 lands, this module will be replaced with a `reqwest`-based
 //! client that forwards chat completions to
 //! `BIFROST_BASE_URL/v1/chat/completions` per `docs/frameworks/BIFROST-BACKEND.md`.
+//!
+//! As a `RouterPort` (B1 wiring), `pick()` is implemented as
+//! `Err(BackendUnavailable)` so the dispatch loop routes through the
+//! fallback. `record_outcome()` is a no-op because there is no live
+//! gateway yet to feedback against.
+
+use async_trait::async_trait;
 
 use crate::error::{unavailable, Error, Result};
-use crate::router::{RouteOutcome, RouteRequest, RouteTarget};
+use crate::router::{RouteOutcome, RouteRequest, RouteTarget, RouterPort};
 
 /// Stub client for the Bifrost gateway. Every operation fails until the
 /// real implementation lands.
@@ -70,6 +77,25 @@ impl BifrostBackend {
 impl Default for BifrostBackend {
     fn default() -> Self {
         Self::new("http://127.0.0.1:8080")
+    }
+}
+
+#[async_trait]
+impl RouterPort for BifrostBackend {
+    async fn pick(&self, request: &RouteRequest) -> Result<RouteTarget> {
+        // Scaffold-stub: the real B1 implementation will issue an HTTP
+        // request to {base_url}/v1/models to resolve the target. Until
+        // then we fail with BackendUnavailable so the FallbackRouter
+        // adapter routes through the v1 placeholder.
+        Err(unavailable(format!(
+            "bifrost scaffold stub at {} (model={}, B1-B9 not yet landed)",
+            self.base_url, request.requested_model
+        )))
+    }
+
+    async fn record_outcome(&self, _target: &RouteTarget, _outcome: &RouteOutcome) -> Result<()> {
+        // No live gateway to feedback against.
+        Ok(())
     }
 }
 

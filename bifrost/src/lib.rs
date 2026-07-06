@@ -6,7 +6,7 @@
 //! Bifrost-backed implementation behind the same `RouterPort` trait
 //! (defined in `omni-core::executor`).
 //!
-//! The crate is intentionally thin at scaffold time. It exposes:
+//! The crate exposes:
 //!
 //! 1. [`RouterPort`] — the trait contract that any v1/v1.5 router must
 //!    satisfy. Today: `InMemoryRouter`, a deterministic router used by tests
@@ -14,8 +14,10 @@
 //! 2. [`BifrostBackend`] — the v1.5 client stub. It currently fails every
 //!    request with [`Error::BackendUnavailable`] so the v1.5 path can be
 //!    wired into the dispatch loop without falsely succeeding.
-//! 3. [`pick`] — a target-selection strategy that mirrors the v1 fallback
-//!    rules in `omni-router` so the v1 → v1.5 cutover is test-equivalent.
+//! 3. [`FallbackRouter`] — the B1 adapter. Composes a primary router with a
+//!    fallback router; falls back only on `Error::BackendUnavailable`. Any
+//!    other error propagates unchanged (R-omni-1 mitigation: no silent
+//!    swallowing).
 //!
 //! See: `docs/ROUTING-CONVERGENCE-STATUS.md` § "Tier-1 / Tier-2 Router Split"
 //! and the v8.1 Bifrost rollout plan (`PLAN.md` § 2.5.2, items B1-B9).
@@ -26,8 +28,10 @@
 
 pub mod backend;
 pub mod error;
+pub mod fallback;
 pub mod router;
 
 pub use backend::BifrostBackend;
 pub use error::{Error, Result};
+pub use fallback::FallbackRouter;
 pub use router::{InMemoryRouter, RouteTarget, RouterPort};
