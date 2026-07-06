@@ -27,11 +27,17 @@
 #![allow(clippy::module_name_repetitions)]
 
 pub mod backend;
+pub mod catalog;
 pub mod error;
 pub mod fallback;
 pub mod router;
 
 pub use backend::BifrostBackend;
+pub use catalog::{
+    CatalogEntry, CatalogWire, InMemoryCatalog, LookupOutcome, ModelCatalog, MAX_CATALOG_ENTRIES,
+};
+#[cfg(feature = "catalog-fetch")]
+pub use catalog::live::CatalogFetcher;
 pub use error::{Error, Result};
 pub use fallback::FallbackRouter;
 pub use router::{InMemoryRouter, RouteTarget, RouterPort};

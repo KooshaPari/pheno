@@ -21,6 +21,13 @@ async-trait = { workspace = true }
 chrono = { workspace = true }
 uuid = { workspace = true }
 tracing = "0.1"
+reqwest = { workspace = true, optional = true }
+
+[features]
+default = []
+# B2: enable the live /v1/models fetch path. When disabled, only the
+# offline-tolerant FakeTransport + InMemoryCatalog paths are available.
+catalog-fetch = ["dep:reqwest"]
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util"] }
