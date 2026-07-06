@@ -1,0 +1,29 @@
+[package]
+name = "phenotype-bifrost"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Bifrost-backed router adapter for OmniRoute v1.5 (D-omni-02)"
+keywords = ["phenotype", "router", "llm", "bifrost"]
+categories = ["api-bindings", "development-tools"]
+
+[dependencies]
+# Inherit the workspace's serde/thiserror/tokio so we stay consistent with the
+# rest of the phenotype-* crate family.
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+async-trait = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util"] }
+
+[lints.rust]
+unsafe_code = "forbid"

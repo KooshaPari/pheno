@@ -63,6 +63,7 @@ members = [
     "crates/phenotype-test-infra",
     "crates/phenotype-time",
     "crates/phenotype-validation",
+    "bifrost",
 ]
 [workspace.dependencies]
 # Core
