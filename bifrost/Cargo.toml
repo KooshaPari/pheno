@@ -22,6 +22,7 @@ chrono = { workspace = true }
 uuid = { workspace = true }
 tracing = "0.1"
 reqwest = { workspace = true, optional = true }
+tokio-util = { workspace = true }
 
 [features]
 default = []
@@ -30,7 +31,8 @@ default = []
 catalog-fetch = ["dep:reqwest"]
 
 [dev-dependencies]
-tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util"] }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util", "time"] }
+tracing-subscriber = "0.3"
 
 [lints.rust]
 unsafe_code = "forbid"

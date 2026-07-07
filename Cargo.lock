@@ -4304,6 +4304,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "phenotype-bifrost"
+version = "0.2.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "reqwest 0.12.28",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
 name = "phenotype-cache-adapter"
 version = "0.2.0"
 dependencies = [

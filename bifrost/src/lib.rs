@@ -31,6 +31,7 @@ pub mod catalog;
 pub mod error;
 pub mod fallback;
 pub mod router;
+pub mod sweeper;
 
 pub use backend::BifrostBackend;
 pub use catalog::{
