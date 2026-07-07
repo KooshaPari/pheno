@@ -106,7 +106,8 @@ impl VirtualKeyStore {
 
     /// Apply the schema migration (idempotent).
     fn apply_migration(&self) -> Result<()> {
-        self.conn.execute_batch(include_str!("virtual_key_schema.sql"))?;
+        self.conn
+            .execute_batch(include_str!("virtual_key_schema.sql"))?;
         Ok(())
     }
 
@@ -114,11 +115,7 @@ impl VirtualKeyStore {
     ///
     /// Returns the newly created [`VirtualKey`] or an error if the provider
     /// already has MAX_KEYS_PER_PROVIDER active keys.
-    pub fn mint(
-        &self,
-        provider: &str,
-        ttl: Option<Duration>,
-    ) -> Result<VirtualKey> {
+    pub fn mint(&self, provider: &str, ttl: Option<Duration>) -> Result<VirtualKey> {
         let now = SystemTime::now();
         let ttl = ttl.unwrap_or(Duration::from_secs(86400)); // 24h default
         let id = Uuid::new_v4();
@@ -207,8 +204,7 @@ impl VirtualKeyStore {
             .map_err(|e| Error::Invalid(format!("revoked_at parse: {e}")))?;
         let status = TokenStatus::parse(&status_s)?;
 
-        let id = Uuid::parse_str(&id_str)
-            .map_err(|e| Error::Invalid(format!("id parse: {e}")))?;
+        let id = Uuid::parse_str(&id_str).map_err(|e| Error::Invalid(format!("id parse: {e}")))?;
 
         let key = VirtualKey {
             id,
@@ -267,6 +263,5 @@ fn rfc3339(t: SystemTime) -> String {
 
 /// Parse an RFC 3339 string back into a SystemTime.
 fn parse_rfc3339(s: &str) -> std::result::Result<SystemTime, chrono::ParseError> {
-    chrono::DateTime::parse_from_rfc3339(s)
-        .map(|dt| dt.with_timezone(&chrono::Utc).into())
+    chrono::DateTime::parse_from_rfc3339(s).map(|dt| dt.with_timezone(&chrono::Utc).into())
 }

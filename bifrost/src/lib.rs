@@ -38,17 +38,14 @@ pub mod virtual_key;
 
 pub use backend::BifrostBackend;
 #[cfg(feature = "cache-sqlite")]
-pub use cache::{
-    BifrostModelCache, DEFAULT_TTL_SECS, MAX_ENTRIES_PER_PROVIDER,
-    ProviderMeta,
-};
-#[cfg(feature = "virtual-keys")]
-pub use virtual_key::{TokenStatus, VirtualKey, VirtualKeyStore};
+pub use cache::{BifrostModelCache, ProviderMeta, DEFAULT_TTL_SECS, MAX_ENTRIES_PER_PROVIDER};
+#[cfg(feature = "catalog-fetch")]
+pub use catalog::live::CatalogFetcher;
 pub use catalog::{
     CatalogEntry, CatalogWire, InMemoryCatalog, LookupOutcome, ModelCatalog, MAX_CATALOG_ENTRIES,
 };
-#[cfg(feature = "catalog-fetch")]
-pub use catalog::live::CatalogFetcher;
 pub use error::{Error, Result};
 pub use fallback::FallbackRouter;
 pub use router::{InMemoryRouter, RouteTarget, RouterPort};
+#[cfg(feature = "virtual-keys")]
+pub use virtual_key::{TokenStatus, VirtualKey, VirtualKeyStore};

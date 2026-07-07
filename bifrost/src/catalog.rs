@@ -200,9 +200,10 @@ impl InMemoryCatalog {
             )));
         }
 
-        let mut guard = self.inner.write().map_err(|e| {
-            unavailable(format!("catalog rwlock poisoned during seed: {e}"))
-        })?;
+        let mut guard = self
+            .inner
+            .write()
+            .map_err(|e| unavailable(format!("catalog rwlock poisoned during seed: {e}")))?;
 
         let now = Instant::now();
         for entry in wire.data {
@@ -327,18 +328,20 @@ pub mod live {
     impl ModelCatalog for CatalogFetcher {
         async fn refresh(&self) -> Result<usize> {
             let url = format!("{}/v1/models", self.base_url);
-            let resp = self.client.get(&url).send().await.map_err(|e| {
-                unavailable(format!("GET {url} failed: {e}"))
-            })?;
+            let resp = self
+                .client
+                .get(&url)
+                .send()
+                .await
+                .map_err(|e| unavailable(format!("GET {url} failed: {e}")))?;
             let status = resp.status();
             if !status.is_success() {
-                return Err(unavailable(format!(
-                    "GET {url} returned {status}"
-                )));
+                return Err(unavailable(format!("GET {url} returned {status}")));
             }
-            let wire: CatalogWire = resp.json().await.map_err(|e| {
-                unavailable(format!("GET {url} body not parseable: {e}"))
-            })?;
+            let wire: CatalogWire = resp
+                .json()
+                .await
+                .map_err(|e| unavailable(format!("GET {url} body not parseable: {e}")))?;
             self.catalog.seed(wire)
         }
 
@@ -358,8 +361,11 @@ pub mod live {
         #[test]
         fn catalog_fetcher_constructor_holds_url_and_cache() {
             let cache = Arc::new(InMemoryCatalog::one_hour());
-            let fetcher =
-                CatalogFetcher::new("http://bifrost.internal:9999", Duration::from_secs(2), cache);
+            let fetcher = CatalogFetcher::new(
+                "http://bifrost.internal:9999",
+                Duration::from_secs(2),
+                cache,
+            );
             assert_eq!(fetcher.base_url(), "http://bifrost.internal:9999");
             assert!(fetcher.catalog().is_empty());
         }
@@ -418,10 +424,7 @@ mod tests {
 
     #[test]
     fn lookup_fresh_when_within_ttl() {
-        let catalog = InMemoryCatalog::with_entries(
-            vec![entry("gpt-4o")],
-            Duration::from_secs(60),
-        );
+        let catalog = InMemoryCatalog::with_entries(vec![entry("gpt-4o")], Duration::from_secs(60));
         match catalog.lookup("gpt-4o") {
             LookupOutcome::Fresh(e) => assert_eq!(e.id, "gpt-4o"),
             other => panic!("expected Fresh, got {other:?}"),

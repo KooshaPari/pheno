@@ -170,9 +170,7 @@ impl Sweeper {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::catalog::{
-        CatalogEntry, CatalogWire, InMemoryCatalog, ModelCatalog,
-    };
+    use crate::catalog::{CatalogEntry, CatalogWire, InMemoryCatalog, ModelCatalog};
     use std::collections::HashSet;
     use std::sync::{Arc, Mutex};
     use std::time::Duration;
@@ -242,7 +240,10 @@ mod tests {
         let sweeper = Sweeper::with_defaults();
         let outcome = sweeper.run_once(&UnreachableCatalog).await;
         assert_eq!(outcome.refreshed, 0);
-        assert!(outcome.failed >= 1, "BackendUnavailable must count as failed");
+        assert!(
+            outcome.failed >= 1,
+            "BackendUnavailable must count as failed"
+        );
         assert_eq!(outcome.remaining_stale, 0);
         assert!(outcome.elapsed.as_nanos() > 0);
     }

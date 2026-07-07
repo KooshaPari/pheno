@@ -101,14 +101,20 @@ impl BifrostModelCache {
     pub fn open<P: AsRef<Path>>(path: P) -> Result<Self> {
         let conn = Connection::open(path)?;
         Self::init_schema(&conn)?;
-        Ok(Self { conn, include_expired: true })
+        Ok(Self {
+            conn,
+            include_expired: true,
+        })
     }
 
     /// In-memory cache (`:memory:`) for tests.
     pub fn open_in_memory() -> Result<Self> {
         let conn = Connection::open_in_memory()?;
         Self::init_schema(&conn)?;
-        Ok(Self { conn, include_expired: true })
+        Ok(Self {
+            conn,
+            include_expired: true,
+        })
     }
 
     /// When `false`, expired entries are skipped (production default).
@@ -172,9 +178,8 @@ impl BifrostModelCache {
             if inserted >= MAX_ENTRIES_PER_PROVIDER {
                 break;
             }
-            let payload = serde_json::to_string(entry).map_err(|e| {
-                Error::Invalid(format!("catalog entry serialize: {e}"))
-            })?;
+            let payload = serde_json::to_string(entry)
+                .map_err(|e| Error::Invalid(format!("catalog entry serialize: {e}")))?;
             tx.execute(
                 "INSERT INTO bifrost_models
                  (id, provider, object, owned_by, display_name,
@@ -203,13 +208,7 @@ impl BifrostModelCache {
                  last_error  = excluded.last_error,
                  last_count  = excluded.last_count,
                  updated_at  = excluded.updated_at",
-            params![
-                provider,
-                meta.as_str(),
-                last_error,
-                inserted as i64,
-                now_s,
-            ],
+            params![provider, meta.as_str(), last_error, inserted as i64, now_s,],
         )?;
 
         tx.commit()?;
@@ -237,39 +236,38 @@ impl BifrostModelCache {
 
         let mut stmt = self.conn.prepare(sql)?;
         let rows: Vec<CatalogEntry> = if self.include_expired {
-            stmt.query_map(
-                params![provider, MAX_ENTRIES_PER_PROVIDER as i64],
-                |row| {
-                    let payload: String = row.get(4)?;
-                    let mut entry: CatalogEntry = serde_json::from_str(&payload)
-                        .map_err(|e| {
-                            rusqlite::Error::FromSqlConversionFailure(
-                                4, rusqlite::types::Type::Text, Box::new(e),
-                            )
-                        })?;
-                    // Allow columns to override payload (for migrations where
-                    // the schema adds a column ahead of the JSON).
-                    let object: String = row.get(1)?;
-                    let owned_by: Option<String> = row.get(2)?;
-                    let display_name: Option<String> = row.get(3)?;
-                    entry.object = object;
-                    entry.owned_by = owned_by;
-                    entry.display_name = display_name;
-                    Ok(entry)
-                },
-            )?
+            stmt.query_map(params![provider, MAX_ENTRIES_PER_PROVIDER as i64], |row| {
+                let payload: String = row.get(4)?;
+                let mut entry: CatalogEntry = serde_json::from_str(&payload).map_err(|e| {
+                    rusqlite::Error::FromSqlConversionFailure(
+                        4,
+                        rusqlite::types::Type::Text,
+                        Box::new(e),
+                    )
+                })?;
+                // Allow columns to override payload (for migrations where
+                // the schema adds a column ahead of the JSON).
+                let object: String = row.get(1)?;
+                let owned_by: Option<String> = row.get(2)?;
+                let display_name: Option<String> = row.get(3)?;
+                entry.object = object;
+                entry.owned_by = owned_by;
+                entry.display_name = display_name;
+                Ok(entry)
+            })?
             .collect::<rusqlite::Result<Vec<_>>>()?
         } else {
             stmt.query_map(
                 params![provider, now_s, MAX_ENTRIES_PER_PROVIDER as i64],
                 |row| {
                     let payload: String = row.get(4)?;
-                    let mut entry: CatalogEntry = serde_json::from_str(&payload)
-                        .map_err(|e| {
-                            rusqlite::Error::FromSqlConversionFailure(
-                                4, rusqlite::types::Type::Text, Box::new(e),
-                            )
-                        })?;
+                    let mut entry: CatalogEntry = serde_json::from_str(&payload).map_err(|e| {
+                        rusqlite::Error::FromSqlConversionFailure(
+                            4,
+                            rusqlite::types::Type::Text,
+                            Box::new(e),
+                        )
+                    })?;
                     let object: String = row.get(1)?;
                     let owned_by: Option<String> = row.get(2)?;
                     let display_name: Option<String> = row.get(3)?;
@@ -525,7 +523,10 @@ mod tests {
                 display_name: None,
             })
             .collect();
-        let wire = CatalogWire { object: "list".to_string(), data: entries };
+        let wire = CatalogWire {
+            object: "list".to_string(),
+            data: entries,
+        };
         let n = cache
             .upsert_provider(
                 "test",
@@ -544,7 +545,10 @@ mod tests {
         cache
             .upsert_provider(
                 "openai",
-                &CatalogWire { object: "list".to_string(), data: vec![] },
+                &CatalogWire {
+                    object: "list".to_string(),
+                    data: vec![],
+                },
                 FetchStatus::Error,
                 Some("upstream timeout"),
                 Duration::from_secs(DEFAULT_TTL_SECS),

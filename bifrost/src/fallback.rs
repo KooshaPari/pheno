@@ -119,7 +119,10 @@ mod tests {
 
         // Bifrost is in scaffold-stub state -> BackendUnavailable ->
         // fallback wins.
-        let target = router.pick(&req("gpt-4o")).await.expect("fallback succeeded");
+        let target = router
+            .pick(&req("gpt-4o"))
+            .await
+            .expect("fallback succeeded");
         assert_eq!(target.model_id, "gpt-4o");
     }
 
