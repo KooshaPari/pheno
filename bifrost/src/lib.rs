@@ -27,6 +27,7 @@
 #![allow(clippy::module_name_repetitions)]
 
 pub mod backend;
+pub mod cache;
 pub mod catalog;
 pub mod error;
 pub mod fallback;
@@ -34,6 +35,11 @@ pub mod router;
 pub mod sweeper;
 
 pub use backend::BifrostBackend;
+#[cfg(feature = "cache-sqlite")]
+pub use cache::{
+    BifrostModelCache, DEFAULT_TTL_SECS, MAX_ENTRIES_PER_PROVIDER,
+    ProviderMeta,
+};
 pub use catalog::{
     CatalogEntry, CatalogWire, InMemoryCatalog, LookupOutcome, ModelCatalog, MAX_CATALOG_ENTRIES,
 };

@@ -4310,6 +4310,7 @@ dependencies = [
  "async-trait",
  "chrono",
  "reqwest 0.12.28",
+ "rusqlite",
  "serde",
  "serde_json",
  "thiserror 2.0.18",

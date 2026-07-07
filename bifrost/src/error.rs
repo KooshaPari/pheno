@@ -39,3 +39,10 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub(crate) fn unavailable(extra: impl fmt::Display) -> Error {
     Error::BackendUnavailable(extra.to_string())
 }
+
+#[cfg(feature = "cache-sqlite")]
+impl From<rusqlite::Error> for Error {
+    fn from(err: rusqlite::Error) -> Self {
+        Error::Transport(format!("sqlite: {err}"))
+    }
+}
