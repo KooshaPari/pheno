@@ -35,6 +35,7 @@ catalog-fetch = ["dep:reqwest"]
 # use the in-process InMemoryCatalog only (B2). Both paths share the
 # ModelCatalog trait, so callers should depend on the trait, not the impl.
 cache-sqlite = ["dep:rusqlite"]
+virtual-keys = ["dep:rusqlite"]
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["macros", "rt-multi-thread", "test-util", "time"] }
