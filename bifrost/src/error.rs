@@ -40,7 +40,7 @@ pub(crate) fn unavailable(extra: impl fmt::Display) -> Error {
     Error::BackendUnavailable(extra.to_string())
 }
 
-#[cfg(feature = "cache-sqlite")]
+#[cfg(any(feature = "cache-sqlite", feature = "virtual-keys"))]
 impl From<rusqlite::Error> for Error {
     fn from(err: rusqlite::Error) -> Self {
         Error::Transport(format!("sqlite: {err}"))

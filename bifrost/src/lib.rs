@@ -33,6 +33,8 @@ pub mod error;
 pub mod fallback;
 pub mod router;
 pub mod sweeper;
+#[cfg(feature = "virtual-keys")]
+pub mod virtual_key;
 
 pub use backend::BifrostBackend;
 #[cfg(feature = "cache-sqlite")]
@@ -40,6 +42,8 @@ pub use cache::{
     BifrostModelCache, DEFAULT_TTL_SECS, MAX_ENTRIES_PER_PROVIDER,
     ProviderMeta,
 };
+#[cfg(feature = "virtual-keys")]
+pub use virtual_key::{TokenStatus, VirtualKey, VirtualKeyStore};
 pub use catalog::{
     CatalogEntry, CatalogWire, InMemoryCatalog, LookupOutcome, ModelCatalog, MAX_CATALOG_ENTRIES,
 };
