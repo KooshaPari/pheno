@@ -28,11 +28,13 @@
 
 pub mod backend;
 pub mod cache;
+pub mod shadow;  // B6 traffic shadow
 pub mod catalog;
 pub mod error;
 pub mod fallback;
 pub mod router;
 pub mod sweeper;
+pub mod shadow;
 #[cfg(feature = "virtual-keys")]
 pub mod virtual_key;
 
@@ -46,6 +48,7 @@ pub use catalog::{
 };
 pub use error::{Error, Result};
 pub use fallback::FallbackRouter;
+pub use shadow::TrafficShadow;
 pub use router::{InMemoryRouter, RouteTarget, RouterPort};
 #[cfg(feature = "virtual-keys")]
 pub use virtual_key::{TokenStatus, VirtualKey, VirtualKeyStore};

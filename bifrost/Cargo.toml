@@ -21,6 +21,7 @@ async-trait = { workspace = true }
 chrono = { workspace = true }
 uuid = { workspace = true }
 tracing = "0.1"
+rand = { workspace = true }
 reqwest = { workspace = true, optional = true }
 tokio-util = { workspace = true }
 # B4: optional SQLite-backed model cache (rusqlite, bundled)
