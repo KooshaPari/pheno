@@ -7,9 +7,9 @@ use axum::{Json, Router};
 use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
-use agileplus_import::{ImportBundle, ImportProject, ImportReport, import_bundle};
+use agileplus_import::{import_bundle, ImportBundle, ImportProject, ImportReport};
 
-use crate::error::ApiError;
+use crate::error::{ApiError, ApiResponse};
 use crate::state::AppState;
 
 pub fn routes<S, V, O>() -> Router<AppState<S, V, O>>
@@ -26,7 +26,7 @@ where
 async fn import_bundle_handler<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Json(bundle): Json<ImportBundle>,
-) -> Result<Json<ImportReport>, ApiError>
+) -> Result<Json<ImportReport>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -43,7 +43,7 @@ where
 async fn batch_projects_handler<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Json(projects): Json<Vec<ImportProject>>,
-) -> Result<Json<ImportReport>, ApiError>
+) -> Result<Json<ImportReport>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,

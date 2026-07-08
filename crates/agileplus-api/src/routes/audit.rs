@@ -8,14 +8,14 @@
 use axum::extract::{Path, State};
 use axum::routing::{get, post};
 use axum::{Json, Router};
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 use agileplus_domain::domain::audit::AuditChain;
 use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, ApiResponse};
 use crate::responses::AuditEntryResponse;
 use crate::state::AppState;
 
@@ -34,7 +34,7 @@ where
 pub async fn get_audit_trail<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
-) -> Result<Json<Vec<AuditEntryResponse>>, ApiError>
+) -> Result<Json<Vec<AuditEntryResponse>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -44,14 +44,14 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let trail = state
         .storage
         .get_audit_trail(feature.id)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     Ok(Json(
         trail.into_iter().map(AuditEntryResponse::from).collect(),
@@ -64,7 +64,7 @@ where
 pub async fn verify_audit_chain<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
-) -> Result<Json<Value>, ApiError>
+) -> Result<Json<Value>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -74,14 +74,14 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let trail = state
         .storage
         .get_audit_trail(feature.id)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     let chain = AuditChain {
         entries: trail.clone(),

@@ -25,7 +25,7 @@ pub use args::{
     SyncArgs, SyncAutoArgs, SyncPullArgs, SyncPushArgs, SyncResolveArgs, SyncStatusArgs,
     SyncSubcommand,
 };
-pub use auto::{AutoSyncAction, run_sync_auto};
+pub use auto::{run_sync_auto, AutoSyncAction};
 pub use config::SyncConfig;
 pub use pull::run_sync_pull;
 pub use push::run_sync_push;

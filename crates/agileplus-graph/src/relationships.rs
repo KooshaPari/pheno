@@ -175,10 +175,9 @@ mod tests {
         let store = GraphStore::in_memory(GraphConfig::default());
         let rels = RelationshipStore::new(&store);
 
-        assert!(
-            rels.delete_relationship("Feature", 1, "DEPENDS_ON", "Feature", 2)
-                .await
-                .is_ok()
-        );
+        assert!(rels
+            .delete_relationship("Feature", 1, "DEPENDS_ON", "Feature", 2)
+            .await
+            .is_ok());
     }
 }

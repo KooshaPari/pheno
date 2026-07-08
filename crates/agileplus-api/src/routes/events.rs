@@ -19,7 +19,7 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, ApiError, ApiResponse};
 use crate::state::AppState;
 
 pub fn routes<S, V, O>() -> Router<AppState<S, V, O>>
@@ -70,7 +70,7 @@ pub struct EventResponse {
 pub async fn list_events<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Query(params): Query<EventListParams>,
-) -> Result<Json<Vec<EventResponse>>, ApiError>
+) -> Result<Json<Vec<EventResponse>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -81,7 +81,7 @@ where
         .storage
         .list_all_features()
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     let mut events: Vec<EventResponse> = Vec::new();
     for feature in &all_features {
@@ -89,7 +89,7 @@ where
             .storage
             .get_audit_trail(feature.id)
             .await
-            .map_err(ApiError::from)?;
+            .map_err(domain_error)?;
         for entry in trail {
             events.push(EventResponse {
                 id: entry.id,
@@ -109,7 +109,7 @@ where
             .storage
             .list_wps_by_feature(feature.id)
             .await
-            .map_err(ApiError::from)?;
+            .map_err(domain_error)?;
         for wp in wps {
             events.push(EventResponse {
                 id: wp.id,
@@ -189,7 +189,7 @@ where
 pub async fn get_event<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Json<EventResponse>, ApiError>
+) -> Result<Json<EventResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -200,14 +200,14 @@ where
         .storage
         .list_all_features()
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     for feature in &all_features {
         let trail = app
             .storage
             .get_audit_trail(feature.id)
             .await
-            .map_err(ApiError::from)?;
+            .map_err(domain_error)?;
         if let Some(entry) = trail.into_iter().find(|e| e.id == id) {
             return Ok(Json(EventResponse {
                 id: entry.id,
@@ -225,7 +225,7 @@ where
         }
     }
 
-    Err(ApiError::NotFound(format!("Event {id} not found")))
+    Err(ApiResponse::from(not_found("event", id.to_string())))
 }
 
 /// Parse a `since` parameter: ISO-8601 datetime or relative like "1h", "24h".

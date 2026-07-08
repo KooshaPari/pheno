@@ -155,6 +155,9 @@ impl FlagSet {
             let Some(suffix) = env_key.strip_prefix(prefix) else {
                 continue;
             };
+            if suffix.is_empty() {
+                continue;
+            }
             let key = match suffix.strip_prefix('_') {
                 Some(k) => k.to_string(),
                 None => continue,

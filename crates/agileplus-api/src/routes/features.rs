@@ -21,7 +21,7 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, ApiError, ApiResponse};
 use crate::responses::FeatureResponse;
 use crate::state::AppState;
 
@@ -53,7 +53,7 @@ pub struct FeatureListParams {
 pub async fn list_features<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Query(params): Query<FeatureListParams>,
-) -> Result<Json<Vec<FeatureResponse>>, ApiError>
+) -> Result<Json<Vec<FeatureResponse>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -65,13 +65,13 @@ where
             .storage
             .list_features_by_state(fs)
             .await
-            .map_err(ApiError::from)?
+            .map_err(domain_error)?
     } else {
         state
             .storage
             .list_all_features()
             .await
-            .map_err(ApiError::from)?
+            .map_err(domain_error)?
     };
 
     // label filter is informational for now — domain layer doesn't have label storage yet
@@ -86,7 +86,7 @@ where
 pub async fn get_feature<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
-) -> Result<Json<FeatureResponse>, ApiError>
+) -> Result<Json<FeatureResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -96,8 +96,8 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     Ok(Json(FeatureResponse::from(feature)))
 }
@@ -114,7 +114,7 @@ pub struct CreateFeatureRequest {
 pub async fn create_feature<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Json(body): Json<CreateFeatureRequest>,
-) -> Result<(StatusCode, Json<FeatureResponse>), ApiError>
+) -> Result<(StatusCode, Json<FeatureResponse>), ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -151,7 +151,7 @@ where
         .storage
         .create_feature(&feature)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     let created = Feature { id, ..feature };
     Ok((StatusCode::CREATED, Json(FeatureResponse::from(created))))
@@ -168,7 +168,7 @@ pub async fn update_feature<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
     Json(body): Json<UpdateFeatureRequest>,
-) -> Result<Json<FeatureResponse>, ApiError>
+) -> Result<Json<FeatureResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -178,8 +178,8 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     // Apply updates to a new owned copy.
     let updated = Feature {
@@ -210,7 +210,7 @@ pub async fn transition_feature<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(slug): Path<String>,
     Json(body): Json<TransitionRequest>,
-) -> Result<Json<TransitionResponse>, ApiError>
+) -> Result<Json<TransitionResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -220,16 +220,16 @@ where
         .storage
         .get_feature_by_slug(&slug)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Feature '{slug}' not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("feature", slug.clone()))?;
 
     let target = parse_feature_state(&body.target_state)?;
-    let result = feature.state.transition(target).map_err(ApiError::from)?;
+    let result = feature.state.transition(target).map_err(domain_error)?;
 
     app.storage
         .update_feature_state(feature.id, target)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     Ok(Json(TransitionResponse {
         feature_slug: slug,

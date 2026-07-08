@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 
 use agileplus_domain::ports::StoragePort;
 use agileplus_plane::maybe_sync_feature_module_unassignment_from_env;

@@ -53,7 +53,7 @@ impl NatsSyncBridge {
     pub async fn new(nats_url: &str) -> Result<Self, SyncError> {
         let client = async_nats::connect(nats_url)
             .await
-            .map_err(|e| SyncError::Nats(e.into()))?;
+            .map_err(|e| SyncError::Nats(e.to_string()))?;
         let bridge = Self { client };
         bridge.ensure_stream().await?;
         Ok(bridge)
@@ -84,7 +84,7 @@ impl NatsSyncBridge {
             }
             Err(e) => {
                 error!(stream = STREAM_NAME, error = %e, "Failed to ensure JetStream stream");
-                Err(SyncError::Nats(Box::new(e)))
+                Err(SyncError::Nats(e.to_string()))
             }
         }
     }
@@ -95,7 +95,7 @@ impl NatsSyncBridge {
         self.client
             .publish(SUBJECT_OUTBOUND, payload.into())
             .await
-            .map_err(|e| SyncError::Nats(e.into()))?;
+            .map_err(|e| SyncError::Nats(e.to_string()))?;
         debug!(
             entity_type = %cmd.entity_type,
             entity_id = cmd.entity_id,
@@ -118,7 +118,7 @@ impl NatsSyncBridge {
             .client
             .subscribe(SUBJECT_INBOUND)
             .await
-            .map_err(|e| SyncError::Nats(e.into()))?;
+            .map_err(|e| SyncError::Nats(e.to_string()))?;
         info!(
             subject = SUBJECT_INBOUND,
             "Subscribed to inbound sync events"

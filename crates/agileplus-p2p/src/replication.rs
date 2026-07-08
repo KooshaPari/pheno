@@ -11,7 +11,7 @@
 use async_nats::jetstream;
 use futures_util::StreamExt as _;
 use serde::{Deserialize, Serialize};
-use tokio::time::{Duration, sleep};
+use tokio::time::{sleep, Duration};
 use tracing::{debug, error, info, warn};
 
 use agileplus_domain::domain::event::Event;

@@ -1,6 +1,6 @@
 //! Dogfood seed data for AgilePlus dashboard initialization.
 //!
-//! Contains all AgilePlus kitty-specs and creates placeholder work packages
+//! Contains all AgilePlus docs-native specs and creates placeholder work packages
 //! for dashboard seeding. This module is extracted from agileplus-dashboard
 //! to enable reuse across tests and initialization.
 
@@ -100,7 +100,7 @@ pub fn seed_dogfood_features() -> (Vec<Feature>, HashMap<i64, Vec<WorkPackage>>)
         1,
         "Define spec schema and validation rules",
         1,
-        "Schema YAML defined and validated against kitty-specs",
+        "Schema YAML defined and validated against docs-native specs",
     );
     wp1_1.id = 1;
     wp1_1.state = WpState::Done;

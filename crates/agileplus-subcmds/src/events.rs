@@ -7,6 +7,7 @@
 use chrono::{DateTime, Utc};
 use clap::Args;
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 // ---------------------------------------------------------------------------
 // CLI argument types
@@ -24,6 +25,10 @@ pub enum EventOutputFormat {
 /// Arguments for `agileplus events`.
 #[derive(Debug, Args)]
 pub struct EventsArgs {
+    /// Read events from a Substrate JSONL export instead of the built-in sample stream.
+    #[arg(long)]
+    pub source: Option<PathBuf>,
+
     /// Filter events for a specific feature (by slug or id).
     #[arg(long)]
     pub feature: Option<String>,
@@ -62,6 +67,7 @@ pub struct EventsArgs {
 pub struct EventRecord {
     pub id: u64,
     pub timestamp: DateTime<Utc>,
+    pub source: String,
     pub event_type: String,
     pub entity_type: String,
     pub entity_id: u64,
@@ -218,7 +224,7 @@ pub fn render_jsonl(events: &[EventRecord]) -> anyhow::Result<String> {
 /// Here we use a stub that returns an empty result set, demonstrating the full
 /// filter + render pipeline.
 pub fn run_events(args: EventsArgs) -> anyhow::Result<()> {
-    let all_events = load_events_stub();
+    let all_events = load_events(&args)?;
     let filtered = filter_events(&all_events, &args);
     let result = EventQueryResult {
         total: filtered.len(),
@@ -234,6 +240,89 @@ pub fn run_events(args: EventsArgs) -> anyhow::Result<()> {
     Ok(())
 }
 
+fn load_events(args: &EventsArgs) -> anyhow::Result<Vec<EventRecord>> {
+    match args.source.as_ref() {
+        Some(path) => load_substrate_jsonl(path),
+        None => Ok(load_events_stub()),
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct SubstrateJsonlRecord {
+    timestamp_ms: i64,
+    #[serde(default)]
+    run_id: Option<String>,
+    #[serde(default)]
+    agent: Option<String>,
+    kind: String,
+    #[serde(default)]
+    summary: Option<String>,
+    #[serde(default)]
+    progress: Option<f64>,
+    #[serde(flatten)]
+    extra: serde_json::Map<String, serde_json::Value>,
+}
+
+fn load_substrate_jsonl(path: &std::path::Path) -> anyhow::Result<Vec<EventRecord>> {
+    let content = std::fs::read_to_string(path)?;
+    let mut events = Vec::new();
+    for (idx, line) in content.lines().enumerate() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+
+        let parsed: SubstrateJsonlRecord = serde_json::from_str(trimmed)
+            .map_err(|err| anyhow::anyhow!("parsing {} line {}: {err}", path.display(), idx + 1))?;
+        let timestamp = chrono::DateTime::<Utc>::from_timestamp_millis(parsed.timestamp_ms)
+            .ok_or_else(|| {
+                anyhow::anyhow!(
+                    "invalid timestamp_ms at {} line {}",
+                    path.display(),
+                    idx + 1
+                )
+            })?;
+
+        let mut payload = serde_json::Map::new();
+        if let Some(run_id) = &parsed.run_id {
+            payload.insert(
+                "run_id".to_string(),
+                serde_json::Value::String(run_id.clone()),
+            );
+        }
+        if let Some(agent) = &parsed.agent {
+            payload.insert(
+                "agent".to_string(),
+                serde_json::Value::String(agent.clone()),
+            );
+        }
+        if let Some(progress) = parsed.progress {
+            payload.insert("progress".to_string(), serde_json::json!(progress));
+        }
+        payload.extend(parsed.extra);
+
+        events.push(EventRecord {
+            id: (idx + 1) as u64,
+            timestamp,
+            source: "substrate".to_string(),
+            event_type: parsed.kind,
+            entity_type: "run".to_string(),
+            entity_id: parsed.run_id.as_deref().map(stable_entity_id).unwrap_or(0),
+            actor: parsed.agent.unwrap_or_else(|| "substrate".to_string()),
+            summary: parsed.summary.unwrap_or_default(),
+            payload: serde_json::Value::Object(payload),
+        });
+    }
+    Ok(events)
+}
+
+fn stable_entity_id(value: &str) -> u64 {
+    use std::hash::{Hash, Hasher};
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    value.hash(&mut hasher);
+    hasher.finish()
+}
+
 /// Stub event loader — returns a small canned dataset for tests and demos.
 fn load_events_stub() -> Vec<EventRecord> {
     use chrono::TimeZone;
@@ -241,6 +330,7 @@ fn load_events_stub() -> Vec<EventRecord> {
         EventRecord {
             id: 1234,
             timestamp: Utc.with_ymd_and_hms(2026, 3, 2, 12, 45, 30).unwrap(),
+            source: "agileplus".to_string(),
             event_type: "feature_created".to_string(),
             entity_type: "feature".to_string(),
             entity_id: 5,
@@ -251,6 +341,7 @@ fn load_events_stub() -> Vec<EventRecord> {
         EventRecord {
             id: 1233,
             timestamp: Utc.with_ymd_and_hms(2026, 3, 2, 12, 44, 15).unwrap(),
+            source: "agileplus".to_string(),
             event_type: "state_changed".to_string(),
             entity_type: "work-package".to_string(),
             entity_id: 8,
@@ -261,6 +352,7 @@ fn load_events_stub() -> Vec<EventRecord> {
         EventRecord {
             id: 1232,
             timestamp: Utc.with_ymd_and_hms(2026, 3, 2, 12, 43, 0).unwrap(),
+            source: "agileplus".to_string(),
             event_type: "sync_conflict".to_string(),
             entity_type: "feature".to_string(),
             entity_id: 5,
@@ -271,6 +363,7 @@ fn load_events_stub() -> Vec<EventRecord> {
         EventRecord {
             id: 1231,
             timestamp: Utc.with_ymd_and_hms(2026, 3, 2, 12, 30, 0).unwrap(),
+            source: "agileplus".to_string(),
             event_type: "updated".to_string(),
             entity_type: "work-package".to_string(),
             entity_id: 7,
@@ -281,6 +374,7 @@ fn load_events_stub() -> Vec<EventRecord> {
         EventRecord {
             id: 1230,
             timestamp: Utc.with_ymd_and_hms(2026, 3, 2, 12, 20, 45).unwrap(),
+            source: "agileplus".to_string(),
             event_type: "state_changed".to_string(),
             entity_type: "feature".to_string(),
             entity_id: 3,
@@ -296,152 +390,4 @@ fn load_events_stub() -> Vec<EventRecord> {
 // ---------------------------------------------------------------------------
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn make_args(since: Option<&str>, event_type: Option<&str>, actor: Option<&str>) -> EventsArgs {
-        EventsArgs {
-            feature: None,
-            since: since.map(str::to_string),
-            event_type: event_type.map(str::to_string),
-            actor: actor.map(str::to_string),
-            entity_type: None,
-            format: EventOutputFormat::Table,
-            limit: 50,
-        }
-    }
-
-    #[test]
-    fn test_parse_since_minutes() {
-        let dt = parse_since("30m");
-        assert!(dt.is_some());
-        let elapsed = Utc::now() - dt.unwrap();
-        assert!(elapsed.num_minutes() >= 29 && elapsed.num_minutes() <= 31);
-    }
-
-    #[test]
-    fn test_parse_since_hours() {
-        let dt = parse_since("2h");
-        assert!(dt.is_some());
-        let elapsed = Utc::now() - dt.unwrap();
-        assert!(elapsed.num_hours() >= 1 && elapsed.num_hours() <= 3);
-    }
-
-    #[test]
-    fn test_parse_since_days() {
-        let dt = parse_since("7d");
-        assert!(dt.is_some());
-        let elapsed = Utc::now() - dt.unwrap();
-        assert!(elapsed.num_days() >= 6 && elapsed.num_days() <= 8);
-    }
-
-    #[test]
-    fn test_parse_since_iso_date() {
-        let dt = parse_since("2025-03-01");
-        assert!(dt.is_some());
-    }
-
-    #[test]
-    fn test_parse_since_invalid() {
-        assert!(parse_since("bogus").is_none());
-    }
-
-    #[test]
-    fn test_filter_no_filters() {
-        let events = load_events_stub();
-        let args = make_args(None, None, None);
-        let result = filter_events(&events, &args);
-        assert_eq!(result.len(), events.len());
-    }
-
-    #[test]
-    fn test_filter_by_actor() {
-        let events = load_events_stub();
-        let args = make_args(None, None, Some("spec-kitty"));
-        let result = filter_events(&events, &args);
-        assert_eq!(result.len(), 1);
-        assert_eq!(result[0].actor, "spec-kitty");
-    }
-
-    #[test]
-    fn test_filter_by_event_type() {
-        let events = load_events_stub();
-        let args = make_args(None, Some("state_changed"), None);
-        let result = filter_events(&events, &args);
-        assert_eq!(result.len(), 2);
-        assert!(result.iter().all(|e| e.event_type == "state_changed"));
-    }
-
-    #[test]
-    fn test_filter_limit() {
-        let events = load_events_stub();
-        let mut args = make_args(None, None, None);
-        args.limit = 2;
-        let result = filter_events(&events, &args);
-        assert_eq!(result.len(), 2);
-    }
-
-    #[test]
-    fn test_render_table_empty() {
-        let out = render_table(&[]);
-        assert!(out.contains("No events found"));
-    }
-
-    #[test]
-    fn test_render_table_nonempty() {
-        let events = load_events_stub();
-        let out = render_table(&events[..1]);
-        assert!(out.contains("feature_created"));
-        assert!(out.contains("spec-kitty"));
-    }
-
-    #[test]
-    fn test_render_json() {
-        let events = load_events_stub();
-        let json = render_json(&events[..1]).unwrap();
-        assert!(json.contains("feature_created"));
-        // Must be valid JSON array.
-        let parsed: serde_json::Value = serde_json::from_str(&json).unwrap();
-        assert!(parsed.is_array());
-    }
-
-    #[test]
-    fn test_render_jsonl() {
-        let events = load_events_stub();
-        let jsonl = render_jsonl(&events[..2]).unwrap();
-        let lines: Vec<&str> = jsonl.trim_end().split('\n').collect();
-        assert_eq!(lines.len(), 2);
-        for line in lines {
-            let v: serde_json::Value = serde_json::from_str(line).unwrap();
-            assert!(v.is_object());
-        }
-    }
-
-    #[test]
-    fn test_run_events_table_does_not_err() {
-        let args = EventsArgs {
-            feature: None,
-            since: None,
-            event_type: None,
-            actor: None,
-            entity_type: None,
-            format: EventOutputFormat::Table,
-            limit: 10,
-        };
-        assert!(run_events(args).is_ok());
-    }
-
-    #[test]
-    fn test_run_events_json_does_not_err() {
-        let args = EventsArgs {
-            feature: None,
-            since: None,
-            event_type: None,
-            actor: None,
-            entity_type: None,
-            format: EventOutputFormat::Json,
-            limit: 10,
-        };
-        assert!(run_events(args).is_ok());
-    }
-}
+mod tests;

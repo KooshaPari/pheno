@@ -13,7 +13,7 @@
 
 use agileplus_benchmarks::helpers::make_feature;
 use agileplus_graph::{GraphConfig, GraphQueries, GraphStore, NodeStore, RelationshipStore};
-use criterion::{BenchmarkId, Criterion, black_box, criterion_group, criterion_main};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use tokio::runtime::Runtime;
 
 // ---------------------------------------------------------------------------

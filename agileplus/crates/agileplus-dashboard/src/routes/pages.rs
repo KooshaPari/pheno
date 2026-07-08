@@ -84,6 +84,21 @@ fn percentage_coverage(hit: usize, total: usize) -> String {
     format!("{hit}/{total} ({ratio}%)")
 }
 
+fn ownership_bracket() -> String {
+    let items = [
+        ("pheno", "✓"),
+        ("AgilePlus", "✓"),
+        ("Substrate", "✓"),
+        ("Tracaera", "◐"),
+        ("phenotype-registry", "◐"),
+    ]
+    .into_iter()
+    .map(|(name, state)| format!("{name}:{state}"))
+    .collect::<Vec<_>>()
+    .join(", ");
+    format!("[{items}]")
+}
+
 pub async fn root(State(state): State<SharedState>) -> Response {
     let store = state.read().await;
     let total_features = store.features.len();
@@ -113,6 +128,7 @@ pub async fn root(State(state): State<SharedState>) -> Response {
         total_features,
         active_features,
         shipped_features,
+        ownership_bracket: ownership_bracket(),
         projects,
     })
 }

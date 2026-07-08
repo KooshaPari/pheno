@@ -1,7 +1,7 @@
 use std::process::Command;
 use std::time::{Duration, Instant};
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 
 use crate::platform::args::PlatformDownArgs;
 use crate::platform::process_compose::find_process_compose;

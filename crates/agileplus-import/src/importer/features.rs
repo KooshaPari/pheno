@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 
 use agileplus_domain::domain::{
     feature::Feature, module::ModuleFeatureTag, state_machine::FeatureState,

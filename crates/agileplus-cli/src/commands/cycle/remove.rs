@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 
 use crate::commands::cycle::args::RemoveArgs;
 use crate::commands::cycle::find_cycle_by_name;

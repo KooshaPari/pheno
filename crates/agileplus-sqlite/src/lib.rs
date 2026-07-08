@@ -99,6 +99,7 @@ impl SqliteStorageAdapter {
     }
 }
 
+#[async_trait::async_trait]
 impl StoragePort for SqliteStorageAdapter {
     // -- Feature CRUD --
 
@@ -421,6 +422,7 @@ impl StoragePort for SqliteStorageAdapter {
     }
 }
 
+#[async_trait::async_trait]
 impl ContentStoragePort for SqliteStorageAdapter {
     async fn create_feature(&self, feature: &Feature) -> Result<i64, DomainError> {
         let conn = self.lock()?;
@@ -545,10 +547,8 @@ impl ContentStoragePort for SqliteStorageAdapter {
 #[async_trait::async_trait]
 impl EventStore for SqliteStorageAdapter {
     async fn append(&self, event: &Event) -> Result<i64, EventError> {
-        let conn = self
-            .lock()
-            .map_err(|e| EventError::StorageError(e.to_string()))?;
-        events::append_event(&conn, event).map_err(|e| EventError::StorageError(e.to_string()))
+        let conn = self.lock().map_err(|e| EventError::Query(e.to_string()))?;
+        events::append_event(&conn, event).map_err(|e| EventError::Query(e.to_string()))
     }
 
     async fn get_events(
@@ -556,11 +556,9 @@ impl EventStore for SqliteStorageAdapter {
         entity_type: &str,
         entity_id: i64,
     ) -> Result<Vec<Event>, EventError> {
-        let conn = self
-            .lock()
-            .map_err(|e| EventError::StorageError(e.to_string()))?;
+        let conn = self.lock().map_err(|e| EventError::Query(e.to_string()))?;
         events::get_events(&conn, entity_type, entity_id)
-            .map_err(|e| EventError::StorageError(e.to_string()))
+            .map_err(|e| EventError::Query(e.to_string()))
     }
 
     async fn get_events_since(
@@ -569,11 +567,9 @@ impl EventStore for SqliteStorageAdapter {
         entity_id: i64,
         sequence: i64,
     ) -> Result<Vec<Event>, EventError> {
-        let conn = self
-            .lock()
-            .map_err(|e| EventError::StorageError(e.to_string()))?;
+        let conn = self.lock().map_err(|e| EventError::Query(e.to_string()))?;
         events::get_events_since(&conn, entity_type, entity_id, sequence)
-            .map_err(|e| EventError::StorageError(e.to_string()))
+            .map_err(|e| EventError::Query(e.to_string()))
     }
 
     async fn get_events_by_range(
@@ -583,9 +579,7 @@ impl EventStore for SqliteStorageAdapter {
         from: chrono::DateTime<chrono::Utc>,
         to: chrono::DateTime<chrono::Utc>,
     ) -> Result<Vec<Event>, EventError> {
-        let conn = self
-            .lock()
-            .map_err(|e| EventError::StorageError(e.to_string()))?;
+        let conn = self.lock().map_err(|e| EventError::Query(e.to_string()))?;
         events::get_events_by_range(
             &conn,
             entity_type,
@@ -593,7 +587,7 @@ impl EventStore for SqliteStorageAdapter {
             &from.to_rfc3339(),
             &to.to_rfc3339(),
         )
-        .map_err(|e| EventError::StorageError(e.to_string()))
+        .map_err(|e| EventError::Query(e.to_string()))
     }
 
     async fn get_latest_sequence(
@@ -601,11 +595,9 @@ impl EventStore for SqliteStorageAdapter {
         entity_type: &str,
         entity_id: i64,
     ) -> Result<i64, EventError> {
-        let conn = self
-            .lock()
-            .map_err(|e| EventError::StorageError(e.to_string()))?;
+        let conn = self.lock().map_err(|e| EventError::Query(e.to_string()))?;
         events::get_latest_sequence(&conn, entity_type, entity_id)
-            .map_err(|e| EventError::StorageError(e.to_string()))
+            .map_err(|e| EventError::Query(e.to_string()))
     }
 }
 
@@ -613,7 +605,7 @@ impl EventStore for SqliteStorageAdapter {
 mod tests {
     use super::*;
     use agileplus_domain::domain::{
-        audit::{AuditEntry, hash_entry},
+        audit::{hash_entry, AuditEntry},
         feature::Feature,
         governance::{
             Evidence, EvidenceType, GovernanceContract, GovernanceRule, PolicyCheck,
@@ -934,12 +926,10 @@ mod tests {
             .await
             .unwrap();
 
-        assert!(
-            StoragePort::get_latest_audit_entry(&db, fid)
-                .await
-                .unwrap()
-                .is_none()
-        );
+        assert!(StoragePort::get_latest_audit_entry(&db, fid)
+            .await
+            .unwrap()
+            .is_none());
 
         let e1 = make_audit_entry(fid, [0u8; 32]);
         StoragePort::append_audit_entry(&db, &e1).await.unwrap();
@@ -1191,12 +1181,10 @@ mod tests {
     async fn module_not_found_returns_none() {
         let db = make_adapter();
         assert!(StoragePort::get_module(&db, 9999).await.unwrap().is_none());
-        assert!(
-            StoragePort::get_module_by_slug(&db, "no-such")
-                .await
-                .unwrap()
-                .is_none()
-        );
+        assert!(StoragePort::get_module_by_slug(&db, "no-such")
+            .await
+            .unwrap()
+            .is_none());
     }
 
     #[tokio::test]
@@ -1323,12 +1311,10 @@ mod tests {
     #[tokio::test]
     async fn module_get_with_features_none_for_missing() {
         let db = make_adapter();
-        assert!(
-            StoragePort::get_module_with_features(&db, 9999)
-                .await
-                .unwrap()
-                .is_none()
-        );
+        assert!(StoragePort::get_module_with_features(&db, 9999)
+            .await
+            .unwrap()
+            .is_none());
     }
 
     // -- Cycle tests --
@@ -1487,12 +1473,10 @@ mod tests {
     #[tokio::test]
     async fn cycle_with_features_none_for_missing() {
         let db = make_adapter();
-        assert!(
-            StoragePort::get_cycle_with_features(&db, 9999)
-                .await
-                .unwrap()
-                .is_none()
-        );
+        assert!(StoragePort::get_cycle_with_features(&db, 9999)
+            .await
+            .unwrap()
+            .is_none());
     }
 
     #[tokio::test]

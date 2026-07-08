@@ -1,10 +1,10 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 
 use agileplus_domain::ports::StoragePort;
 
-use crate::commands::cycle::CycleState;
 use crate::commands::cycle::args::ListArgs;
 use crate::commands::cycle::find_module_slug;
+use crate::commands::cycle::CycleState;
 
 pub(super) async fn cmd_list<S: StoragePort>(args: ListArgs, storage: &S) -> Result<()> {
     let cycles = if let Some(ref state_str) = args.state {

@@ -4,7 +4,7 @@
 
 use std::path::{Path, PathBuf};
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 
 /// Find a directory containing `process-compose.yml` by walking parents from `current_dir`.
 pub(crate) fn find_agileplus_root_from_walk() -> Option<PathBuf> {

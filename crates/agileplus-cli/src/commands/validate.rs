@@ -4,12 +4,13 @@
 //! Transitions to Validated on success.
 //! Traceability: FR-005, FR-018, FR-019 / WP13-T073, T074, T077
 
-use std::path::PathBuf;
+use std::collections::BTreeSet;
+use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
 use chrono::Utc;
 
-use agileplus_domain::domain::audit::{AuditEntry, hash_entry};
+use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::governance::{Evidence, GovernanceContract, PolicyCheck};
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
@@ -36,6 +37,10 @@ pub struct ValidateArgs {
     /// Force validation even if not in Implementing state (logs governance exception).
     #[arg(long)]
     pub force: bool,
+
+    /// Enforce bidirectional requirement-to-code/test traceability.
+    #[arg(long)]
+    pub traceability: bool,
 }
 
 /// Result of checking a single evidence requirement.
@@ -57,6 +62,14 @@ pub struct PolicyEvalResult {
     pub message: String,
 }
 
+/// Result of checking a bidirectional traceability link.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TraceabilityIssue {
+    pub kind: String,
+    pub id: String,
+    pub message: String,
+}
+
 /// Aggregated validation report.
 #[derive(Debug)]
 pub struct ValidationReport {
@@ -65,6 +78,7 @@ pub struct ValidationReport {
     pub overall_pass: bool,
     pub evidence_results: Vec<EvidenceCheck>,
     pub policy_results: Vec<PolicyEvalResult>,
+    pub traceability_results: Vec<TraceabilityIssue>,
     pub missing_evidence: Vec<(String, String)>,
     pub governance_exceptions: Vec<String>,
 }
@@ -114,6 +128,20 @@ impl ValidationReport {
                     p.domain,
                     if p.passed { "Yes" } else { "No" },
                     p.message,
+                ));
+            }
+        }
+
+        if !self.traceability_results.is_empty() {
+            lines.push(String::new());
+            lines.push("## Traceability Issues".to_string());
+            lines.push(String::new());
+            lines.push("| Kind | ID | Notes |".to_string());
+            lines.push("|------|----|-------|".to_string());
+            for issue in &self.traceability_results {
+                lines.push(format!(
+                    "| {} | {} | {} |",
+                    issue.kind, issue.id, issue.message
                 ));
             }
         }
@@ -171,17 +199,201 @@ impl ValidationReport {
                 })
             })
             .collect();
+        let traceability: Vec<serde_json::Value> = self
+            .traceability_results
+            .iter()
+            .map(|t| {
+                serde_json::json!({
+                    "kind": t.kind,
+                    "id": t.id,
+                    "message": t.message,
+                })
+            })
+            .collect();
         serde_json::to_string_pretty(&serde_json::json!({
             "feature_slug": self.feature_slug,
             "timestamp": self.timestamp.to_rfc3339(),
             "overall_pass": self.overall_pass,
             "evidence_results": evidence,
             "policy_results": policies,
+            "traceability_results": traceability,
             "missing_evidence": missing,
             "governance_exceptions": self.governance_exceptions,
         }))
         .unwrap_or_default()
     }
+}
+
+pub(crate) async fn evaluate_traceability<V: VcsPort>(
+    vcs: &V,
+    feature_slug: &str,
+) -> Result<Vec<TraceabilityIssue>> {
+    let spec = vcs
+        .read_artifact(feature_slug, "spec.md")
+        .await
+        .context("reading spec.md for traceability validation")?;
+    let requirement_ids = requirement_ids_from_spec(&spec);
+    let marker_refs = traceability_marker_refs_from_repo(&std::env::current_dir()?)?;
+
+    Ok(compare_traceability_links(
+        &requirement_ids,
+        &marker_refs.code_refs,
+        &marker_refs.test_refs,
+    ))
+}
+
+#[derive(Debug, Default)]
+struct TraceabilityMarkerRefs {
+    code_refs: BTreeSet<String>,
+    test_refs: BTreeSet<String>,
+}
+
+fn compare_traceability_links(
+    requirement_ids: &BTreeSet<String>,
+    code_refs: &BTreeSet<String>,
+    test_refs: &BTreeSet<String>,
+) -> Vec<TraceabilityIssue> {
+    let mut issues = Vec::new();
+    if requirement_ids.is_empty() {
+        issues.push(TraceabilityIssue {
+            kind: "missing_requirement_ids".to_string(),
+            id: "spec.md".to_string(),
+            message: "No stable requirement IDs found; use IDs such as FR-001 or AGP-REQ(FR-001)"
+                .to_string(),
+        });
+        return issues;
+    }
+
+    for req_id in requirement_ids {
+        if !code_refs.contains(req_id) {
+            issues.push(TraceabilityIssue {
+                kind: "missing_code_marker".to_string(),
+                id: req_id.clone(),
+                message: "Requirement has no matching code marker".to_string(),
+            });
+        }
+        if !test_refs.contains(req_id) {
+            issues.push(TraceabilityIssue {
+                kind: "missing_test_marker".to_string(),
+                id: req_id.clone(),
+                message: "Requirement has no matching test marker".to_string(),
+            });
+        }
+    }
+
+    for marker_id in code_refs.union(test_refs) {
+        if !requirement_ids.contains(marker_id) {
+            issues.push(TraceabilityIssue {
+                kind: "orphan_marker".to_string(),
+                id: marker_id.clone(),
+                message: "Code or test marker does not match a requirement in spec.md".to_string(),
+            });
+        }
+    }
+
+    issues
+}
+
+fn requirement_ids_from_spec(content: &str) -> BTreeSet<String> {
+    let mut ids = extract_traceability_ids(content);
+    ids.extend(extract_prefixed_ids(content, "FR-"));
+    ids
+}
+
+fn traceability_marker_refs_from_repo(root: &Path) -> Result<TraceabilityMarkerRefs> {
+    let mut refs = TraceabilityMarkerRefs::default();
+    for base in ["crates", "src", "tests", "python/src", "python/tests"] {
+        let path = root.join(base);
+        collect_traceability_marker_refs(&path, &mut refs)?;
+    }
+    Ok(refs)
+}
+
+fn collect_traceability_marker_refs(path: &Path, refs: &mut TraceabilityMarkerRefs) -> Result<()> {
+    if !path.exists() {
+        return Ok(());
+    }
+    if path.is_dir() {
+        for entry in std::fs::read_dir(path)
+            .with_context(|| format!("reading traceability scan directory {}", path.display()))?
+        {
+            let entry = entry?;
+            let child = entry.path();
+            let name = child
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or_default();
+            if matches!(
+                name,
+                "target" | ".git" | ".venv" | "node_modules" | "__pycache__"
+            ) {
+                continue;
+            }
+            collect_traceability_marker_refs(&child, refs)?;
+        }
+        return Ok(());
+    }
+
+    let Some(ext) = path.extension().and_then(|ext| ext.to_str()) else {
+        return Ok(());
+    };
+    if !matches!(ext, "rs" | "py" | "ts" | "tsx" | "js" | "jsx") {
+        return Ok(());
+    }
+
+    let content = std::fs::read_to_string(path)
+        .with_context(|| format!("reading traceability marker file {}", path.display()))?;
+    let ids = extract_traceability_ids(&content);
+    if ids.is_empty() {
+        return Ok(());
+    }
+
+    let path_text = path.to_string_lossy();
+    let target = if path_text.contains("/tests/") || path_text.contains("_test.") {
+        &mut refs.test_refs
+    } else {
+        &mut refs.code_refs
+    };
+    target.extend(ids);
+    Ok(())
+}
+
+fn extract_traceability_ids(content: &str) -> BTreeSet<String> {
+    let mut ids = BTreeSet::new();
+    let mut remaining = content;
+    while let Some(start) = remaining.find("AGP-REQ(") {
+        let after = &remaining[start + "AGP-REQ(".len()..];
+        let Some(end) = after.find(')') else {
+            break;
+        };
+        let id = after[..end].trim();
+        if is_traceability_id(id) {
+            ids.insert(id.to_string());
+        }
+        remaining = &after[end + 1..];
+    }
+    ids
+}
+
+fn extract_prefixed_ids(content: &str, prefix: &str) -> BTreeSet<String> {
+    let mut ids = BTreeSet::new();
+    for token in content.split(|c: char| !(c.is_ascii_alphanumeric() || c == '-' || c == '_')) {
+        if token.starts_with(prefix) && is_traceability_id(token) {
+            ids.insert(token.to_string());
+        }
+    }
+    ids
+}
+
+fn is_traceability_id(value: &str) -> bool {
+    let Some((prefix, suffix)) = value.split_once('-') else {
+        return false;
+    };
+    matches!(prefix, "FR" | "REQ" | "AGP")
+        && suffix
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+        && suffix.chars().any(|c| c.is_ascii_digit())
 }
 
 /// Evaluate governance evidence requirements against stored evidence.
@@ -308,13 +520,29 @@ async fn evaluate_policies<S: StoragePort>(
 
         let (passed, message) = match &policy.rule.check {
             PolicyCheck::EvidencePresent { evidence_type } => {
-                // Check if any evidence of this type exists for this feature
-                // We search across all FR evidence — a simple heuristic
+                let work_packages = storage
+                    .list_wps_by_feature(feature_id)
+                    .await
+                    .unwrap_or_default();
+                let mut found = false;
+                for wp in &work_packages {
+                    let evidence = storage.get_evidence_by_wp(wp.id).await.unwrap_or_default();
+                    if evidence
+                        .iter()
+                        .any(|entry| entry.evidence_type == *evidence_type)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
                 let ev_type_str = format!("{:?}", evidence_type);
-                // Since StoragePort doesn't have get_evidence_by_type, we list WPs and check
                 (
-                    true,
-                    format!("Evidence type {} check (assumed present)", ev_type_str),
+                    found,
+                    if found {
+                        format!("Evidence type {} present", ev_type_str)
+                    } else {
+                        format!("Evidence type {} missing", ev_type_str)
+                    },
                 )
             }
             PolicyCheck::ThresholdMet { metric, min } => {
@@ -432,7 +660,13 @@ where
     let evidence_pass =
         missing_evidence.is_empty() && evidence_results.iter().all(|e| e.found && e.threshold_met);
     let policy_pass = policy_results.iter().all(|p| p.passed);
-    let overall_pass = evidence_pass && policy_pass;
+    let traceability_results = if args.traceability {
+        evaluate_traceability(vcs, slug).await?
+    } else {
+        Vec::new()
+    };
+    let traceability_pass = traceability_results.is_empty();
+    let overall_pass = evidence_pass && policy_pass && traceability_pass;
 
     let report = ValidationReport {
         feature_slug: slug.clone(),
@@ -440,6 +674,7 @@ where
         overall_pass,
         evidence_results,
         policy_results,
+        traceability_results,
         missing_evidence,
         governance_exceptions,
     };
@@ -509,7 +744,7 @@ where
 
     println!("Feature '{}' validated successfully.", slug);
     println!("  State: Implementing -> Validated");
-    println!("  Report: kitty-specs/{slug}/validation-report.md");
+    println!("  Report: docs/specs/{slug}/validation-report.md");
 
     Ok(())
 }
@@ -561,6 +796,7 @@ mod tests {
                 message: "OK".to_string(),
             }],
             policy_results: vec![],
+            traceability_results: vec![],
             missing_evidence: vec![],
             governance_exceptions: vec![],
         };
@@ -583,6 +819,7 @@ mod tests {
                 message: "No evidence found for FR `FR-001`".to_string(),
             }],
             policy_results: vec![],
+            traceability_results: vec![],
             missing_evidence: vec![("FR-001".to_string(), "CiOutput".to_string())],
             governance_exceptions: vec![],
         };
@@ -599,6 +836,7 @@ mod tests {
             overall_pass: true,
             evidence_results: vec![],
             policy_results: vec![],
+            traceability_results: vec![],
             missing_evidence: vec![],
             governance_exceptions: vec![],
         };
@@ -670,5 +908,47 @@ mod tests {
         };
         let threshold = serde_json::json!({"max_critical": 0});
         assert!(!evaluate_threshold(&[&ev], &threshold));
+    }
+
+    #[test]
+    fn traceability_ids_parse_spec_and_agp_markers() {
+        let ids = requirement_ids_from_spec(
+            r#"
+            - FR-001: user-visible requirement
+            - Inline form AGP-REQ(FR-002)
+            "#,
+        );
+        assert!(ids.contains("FR-001"));
+        assert!(ids.contains("FR-002"));
+    }
+
+    #[test]
+    fn compare_traceability_links_reports_missing_and_orphan_links() {
+        let requirement_ids = BTreeSet::from(["FR-001".to_string(), "FR-002".to_string()]);
+        let code_refs = BTreeSet::from(["FR-001".to_string(), "FR-999".to_string()]);
+        let test_refs = BTreeSet::from(["FR-001".to_string()]);
+
+        let issues = compare_traceability_links(&requirement_ids, &code_refs, &test_refs);
+
+        assert!(issues
+            .iter()
+            .any(|i| i.kind == "missing_code_marker" && i.id == "FR-002"));
+        assert!(issues
+            .iter()
+            .any(|i| i.kind == "missing_test_marker" && i.id == "FR-002"));
+        assert!(issues
+            .iter()
+            .any(|i| i.kind == "orphan_marker" && i.id == "FR-999"));
+    }
+
+    #[test]
+    fn compare_traceability_links_reports_missing_requirement_ids() {
+        let issues = compare_traceability_links(
+            &BTreeSet::new(),
+            &BTreeSet::from(["FR-001".to_string()]),
+            &BTreeSet::new(),
+        );
+
+        assert_eq!(issues[0].kind, "missing_requirement_ids");
     }
 }

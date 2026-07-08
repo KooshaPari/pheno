@@ -1,4 +1,4 @@
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 use chrono::NaiveDate;
 
 use agileplus_domain::domain::cycle::Cycle;

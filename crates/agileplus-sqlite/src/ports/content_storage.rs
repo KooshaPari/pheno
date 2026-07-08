@@ -10,13 +10,12 @@ use agileplus_domain::{
         backlog::{BacklogFilters, BacklogItem, BacklogPriority, BacklogStatus},
         feature::Feature,
         state_machine::FeatureState,
-        work_package::{WorkPackage, WpState, WpDependency},
+        work_package::{WorkPackage, WpDependency, WpState},
     },
     error::DomainError,
     ports::ContentStoragePort,
 };
 
-#[allow(clippy::async_yield_iter)]
 #[async_trait::async_trait]
 impl ContentStoragePort for SqliteStorageAdapter {
     // -- Feature CRUD --

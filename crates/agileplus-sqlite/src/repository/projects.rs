@@ -3,7 +3,7 @@
 //! Traceability: FR-STORE-PROJECT
 
 use chrono::DateTime;
-use rusqlite::{Connection, params};
+use rusqlite::{params, Connection};
 
 use agileplus_domain::domain::project::Project;
 use agileplus_domain::error::DomainError;

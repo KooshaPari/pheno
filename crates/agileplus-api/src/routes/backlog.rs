@@ -15,9 +15,15 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, ApiError, ApiResponse};
 use crate::responses::BacklogItemResponse;
 use crate::state::AppState;
+
+mod parsing;
+use parsing::{
+    parse_intent, parse_intent_opt, parse_priority, parse_priority_opt, parse_sort, parse_status,
+    parse_status_opt,
+};
 
 pub fn routes<S, V, O>() -> Router<AppState<S, V, O>>
 where
@@ -51,7 +57,7 @@ pub struct BacklogListParams {
 pub async fn list_backlog<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Query(params): Query<BacklogListParams>,
-) -> Result<Json<Vec<BacklogItemResponse>>, ApiError>
+) -> Result<Json<Vec<BacklogItemResponse>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -76,7 +82,7 @@ where
         .storage
         .list_backlog_items(&filters)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     Ok(Json(
         items.into_iter().map(BacklogItemResponse::from).collect(),
@@ -109,7 +115,7 @@ pub struct ImportBacklogResponse {
 pub async fn create_backlog<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<CreateBacklogRequest>,
-) -> Result<(StatusCode, Json<BacklogItemResponse>), ApiError>
+) -> Result<(StatusCode, Json<BacklogItemResponse>), ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -133,7 +139,7 @@ where
         .storage
         .create_backlog_item(&item)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     let created = BacklogItem {
         id: Some(id),
         ..item
@@ -149,7 +155,7 @@ where
 pub async fn import_backlog<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<ImportBacklogRequest>,
-) -> Result<(StatusCode, Json<ImportBacklogResponse>), ApiError>
+) -> Result<(StatusCode, Json<ImportBacklogResponse>), ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -175,7 +181,7 @@ where
             .storage
             .create_backlog_item(&backlog_item)
             .await
-            .map_err(ApiError::from)?;
+            .map_err(domain_error)?;
         imported.push(BacklogItem {
             id: Some(id),
             ..backlog_item
@@ -197,7 +203,7 @@ where
 pub async fn get_backlog_item<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Json<BacklogItemResponse>, ApiError>
+) -> Result<Json<BacklogItemResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -207,8 +213,8 @@ where
         .storage
         .get_backlog_item(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Backlog item {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("backlog-item", id.to_string()))?;
     Ok(Json(BacklogItemResponse::from(item)))
 }
 
@@ -229,7 +235,7 @@ pub async fn transition_backlog_item<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
     Json(body): Json<TransitionBacklogRequest>,
-) -> Result<Json<TransitionBacklogResponse>, ApiError>
+) -> Result<Json<TransitionBacklogResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -239,15 +245,15 @@ where
         .storage
         .get_backlog_item(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("Backlog item {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("backlog-item", id.to_string()))?;
 
     let target = parse_status(&body.target_status)?;
     state
         .storage
         .update_backlog_status(id, target)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
 
     Ok(Json(TransitionBacklogResponse {
         backlog_item_id: id,
@@ -265,7 +271,7 @@ pub struct PopBacklogParams {
 pub async fn pop_backlog<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Query(params): Query<PopBacklogParams>,
-) -> Result<Json<Vec<BacklogItemResponse>>, ApiError>
+) -> Result<Json<Vec<BacklogItemResponse>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -278,7 +284,7 @@ where
             .storage
             .pop_next_backlog_item()
             .await
-            .map_err(ApiError::from)?
+            .map_err(domain_error)?
         {
             Some(item) => items.push(BacklogItemResponse::from(item)),
             None => break,
@@ -286,41 +292,4 @@ where
     }
 
     Ok(Json(items))
-}
-
-fn parse_intent(value: Option<String>) -> Result<Intent, ApiError> {
-    let value = value.unwrap_or_else(|| "task".to_string());
-    value
-        .parse::<Intent>()
-        .map_err(|e| ApiError::BadRequest(e.to_string()))
-}
-
-fn parse_intent_opt(value: Option<String>) -> Result<Option<Intent>, ApiError> {
-    value.map(|v| parse_intent(Some(v))).transpose()
-}
-
-fn parse_priority(value: String) -> Result<BacklogPriority, ApiError> {
-    value
-        .parse::<BacklogPriority>()
-        .map_err(|e| ApiError::BadRequest(e.to_string()))
-}
-
-fn parse_priority_opt(value: Option<String>) -> Result<Option<BacklogPriority>, ApiError> {
-    value.map(parse_priority).transpose()
-}
-
-fn parse_status(value: &str) -> Result<BacklogStatus, ApiError> {
-    value
-        .parse::<BacklogStatus>()
-        .map_err(|e| ApiError::BadRequest(e.to_string()))
-}
-
-fn parse_status_opt(value: Option<String>) -> Result<Option<BacklogStatus>, ApiError> {
-    value.as_deref().map(parse_status).transpose()
-}
-
-fn parse_sort(value: &str) -> Result<BacklogSort, ApiError> {
-    value
-        .parse::<BacklogSort>()
-        .map_err(|e| ApiError::BadRequest(e.to_string()))
 }

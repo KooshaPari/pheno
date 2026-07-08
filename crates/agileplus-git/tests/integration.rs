@@ -503,7 +503,7 @@ fn test_get_feature_history() {
 
 fn get_default_branch(repo: &Repository) -> String {
     if let Ok(head) = repo.head() {
-        if let Some(name) = head.shorthand() {
+        if let Ok(name) = head.shorthand() {
             return name.to_string();
         }
     }

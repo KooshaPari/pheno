@@ -42,15 +42,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          components: llvm-tools-preview
-        with:
-          components: rustfmt, clippy
+          components: rustfmt, clippy, llvm-tools-preview
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,11 +66,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -84,11 +82,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@71b39e394e9a9c97c5b54ec8371f4b66b8e25b8e
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -118,11 +116,11 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -141,11 +139,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           workspaces: rust
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -171,11 +169,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -193,9 +191,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -209,7 +207,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       - uses: dtolnay/rust-toolchain@1.86.0
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -221,9 +219,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-      - uses: dtolnay/rust-toolchain@4c2d35e7b5ceb1cabd27c58515f3c9a85b31f7b2
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
-      - uses: arduino/setup-protoc@9c805bbc2d6c6c0bbe39c66de7781eb4e8b67d6d
+      - uses: arduino/setup-protoc@v3
         with:
           version: "28.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}

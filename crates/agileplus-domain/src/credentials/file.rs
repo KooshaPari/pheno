@@ -14,6 +14,9 @@ use super::store::CredentialStore;
 
 const SALT_LEN: usize = 16;
 const NONCE_LEN: usize = 12;
+type Salt = [u8; SALT_LEN];
+type NonceBytes = [u8; NONCE_LEN];
+type EncryptedPayload = (Salt, NonceBytes, Vec<u8>);
 /// Env var that must contain the passphrase used to derive the AES-256 key
 /// via Argon2id. If unset, credentials are stored as plaintext JSON for
 /// backward compatibility.
@@ -67,11 +70,10 @@ impl FileCredentialStore {
 
     /// Encrypt `plaintext` bytes with AES-256-GCM using a key derived from
     /// the passphrase env-var. Returns `(salt, nonce, ciphertext)`.
-    fn encrypt(plaintext: &[u8]) -> Result<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>), CredentialError> {
-        let passphrase = Self::passphrase()
-            .ok_or_else(|| CredentialError::Encryption(
-                format!("{ENV_PASSPHRASE} not set, cannot encrypt"),
-            ))?;
+    fn encrypt(plaintext: &[u8]) -> Result<EncryptedPayload, CredentialError> {
+        let passphrase = Self::passphrase().ok_or_else(|| {
+            CredentialError::Encryption(format!("{ENV_PASSPHRASE} not set, cannot encrypt"))
+        })?;
 
         let mut salt = [0u8; SALT_LEN];
         OsRng.fill_bytes(&mut salt);
@@ -93,11 +95,14 @@ impl FileCredentialStore {
 
     /// Decrypt `ciphertext` using the key derived from the passphrase env-var
     /// with the given `salt` and `nonce`.
-    fn decrypt(ciphertext: &[u8], salt: &[u8; SALT_LEN], nonce: &[u8; NONCE_LEN]) -> Result<Vec<u8>, CredentialError> {
-        let passphrase = Self::passphrase()
-            .ok_or_else(|| CredentialError::Encryption(
-                format!("{ENV_PASSPHRASE} not set, cannot decrypt"),
-            ))?;
+    fn decrypt(
+        ciphertext: &[u8],
+        salt: &[u8; SALT_LEN],
+        nonce: &[u8; NONCE_LEN],
+    ) -> Result<Vec<u8>, CredentialError> {
+        let passphrase = Self::passphrase().ok_or_else(|| {
+            CredentialError::Encryption(format!("{ENV_PASSPHRASE} not set, cannot decrypt"))
+        })?;
 
         let key = Self::derive_key(passphrase.as_bytes(), salt);
 
@@ -116,7 +121,7 @@ impl FileCredentialStore {
     /// Detect whether the file on disk is encrypted (binary header) or
     /// plaintext JSON (starts with `{`).
     fn is_encrypted(data: &[u8]) -> bool {
-        data.len() >= SALT_LEN + NONCE_LEN + 1 && data[0] != b'{'
+        data.len() > SALT_LEN + NONCE_LEN && data[0] != b'{'
     }
 
     /// Load credentials from the encrypted file using AES-256-GCM.
@@ -196,7 +201,7 @@ impl FileCredentialStore {
 
     /// Encrypt raw bytes if a passphrase is configured. Returns `None` if
     /// the passphrase env-var is not set (plaintext mode).
-    fn try_encrypt(raw: &[u8]) -> Result<Option<([u8; SALT_LEN], [u8; NONCE_LEN], Vec<u8>)>, CredentialError> {
+    fn try_encrypt(raw: &[u8]) -> Result<Option<EncryptedPayload>, CredentialError> {
         if Self::passphrase().is_some() {
             let (salt, nonce, ciphertext) = Self::encrypt(raw)?;
             Ok(Some((salt, nonce, ciphertext)))
@@ -257,78 +262,114 @@ impl CredentialStore for FileCredentialStore {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::{Mutex, OnceLock};
+
+    fn test_lock() -> &'static Mutex<()> {
+        static TEST_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+        TEST_LOCK.get_or_init(|| Mutex::new(()))
+    }
+
+    fn with_env_override<F>(value: Option<&str>, f: F)
+    where
+        F: FnOnce(),
+    {
+        let _guard = test_lock().lock().unwrap();
+        let previous = std::env::var(ENV_PASSPHRASE).ok();
+        unsafe {
+            // SAFETY: guarded by test_lock, so env access is serialized in this test module.
+            match value {
+                Some(passphrase) if !passphrase.is_empty() => {
+                    std::env::set_var(ENV_PASSPHRASE, passphrase);
+                }
+                _ => {
+                    std::env::remove_var(ENV_PASSPHRASE);
+                }
+            }
+        }
+        f();
+        unsafe {
+            match previous {
+                Some(previous) => std::env::set_var(ENV_PASSPHRASE, previous),
+                None => std::env::remove_var(ENV_PASSPHRASE),
+            }
+        }
+    }
 
     /// Helper: set the passphrase env var for the duration of a test.
     fn with_passphrase<F>(passphrase: &str, f: F)
     where
         F: FnOnce(),
     {
-        unsafe {
-            // SAFETY: single-threaded test, no concurrent env access
-            if passphrase.is_empty() {
-                std::env::remove_var(ENV_PASSPHRASE);
-            } else {
-                std::env::set_var(ENV_PASSPHRASE, passphrase);
-            }
-        }
-        f();
-        unsafe {
-            std::env::remove_var(ENV_PASSPHRASE);
-        }
+        with_env_override(Some(passphrase), f);
+    }
+
+    fn with_plaintext_mode<F>(f: F)
+    where
+        F: FnOnce(),
+    {
+        with_env_override(None, f);
     }
 
     // ── Plaintext (no passphrase) tests ──────────────────────────────
 
     #[test]
     fn file_store_set_get_plaintext() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "tok", "abc123").unwrap();
-        assert!(path.exists());
-        assert_eq!(store.get("svc", "tok").unwrap(), "abc123");
-        // File should be plaintext JSON
-        let content = std::fs::read_to_string(&path).unwrap();
-        assert!(
-            content.starts_with('{'),
-            "expected plaintext JSON, got: {content:?}"
-        );
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            store.set("svc", "tok", "abc123").unwrap();
+            assert!(path.exists());
+            assert_eq!(store.get("svc", "tok").unwrap(), "abc123");
+            // File should be plaintext JSON
+            let content = std::fs::read_to_string(&path).unwrap();
+            assert!(
+                content.starts_with('{'),
+                "expected plaintext JSON, got: {content:?}"
+            );
+        });
     }
 
     #[test]
     fn file_store_delete() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "tok", "abc123").unwrap();
-        store.delete("svc", "tok").unwrap();
-        assert!(matches!(
-            store.get("svc", "tok"),
-            Err(CredentialError::NotFound(_))
-        ));
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            store.set("svc", "tok", "abc123").unwrap();
+            store.delete("svc", "tok").unwrap();
+            assert!(matches!(
+                store.get("svc", "tok"),
+                Err(CredentialError::NotFound(_))
+            ));
+        });
     }
 
     #[test]
     fn file_store_list_keys() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        store.set("svc", "a", "1").unwrap();
-        store.set("svc", "b", "2").unwrap();
-        let mut keys = store.list_keys("svc").unwrap();
-        keys.sort();
-        assert_eq!(keys, vec!["a", "b"]);
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            store.set("svc", "a", "1").unwrap();
+            store.set("svc", "b", "2").unwrap();
+            let mut keys = store.list_keys("svc").unwrap();
+            keys.sort();
+            assert_eq!(keys, vec!["a", "b"]);
+        });
     }
 
     #[test]
     fn file_store_not_found() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.json");
-        let store = FileCredentialStore::new(&path);
-        assert!(matches!(
-            store.get("svc", "missing"),
-            Err(CredentialError::NotFound(_))
-        ));
+        with_plaintext_mode(|| {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.json");
+            let store = FileCredentialStore::new(&path);
+            assert!(matches!(
+                store.get("svc", "missing"),
+                Err(CredentialError::NotFound(_))
+            ));
+        });
     }
 
     // ── Encrypted (with passphrase) tests ────────────────────────────
@@ -369,17 +410,15 @@ mod tests {
 
     #[test]
     fn encrypted_file_persistence_across_store_reopens() {
-        let dir = tempfile::tempdir().unwrap();
-        let path = dir.path().join("creds.enc");
-
-        // Write with passphrase
         with_passphrase("persist-test-key", || {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("creds.enc");
+
+            // Write with passphrase
             let store = FileCredentialStore::new(&path);
             store.set("svc", "tok", "secret123").unwrap();
-        });
 
-        // Read back with same passphrase (new store instance)
-        with_passphrase("persist-test-key", || {
+            // Read back with same passphrase (new store instance)
             let store = FileCredentialStore::new(&path);
             assert_eq!(store.get("svc", "tok").unwrap(), "secret123");
         });
@@ -389,6 +428,7 @@ mod tests {
 
     #[test]
     fn derive_key_is_deterministic_with_same_salt() {
+        let _guard = test_lock().lock().unwrap();
         let passphrase = b"test-passphrase";
         let salt = [0xabu8; SALT_LEN];
         let key1 = FileCredentialStore::derive_key(passphrase, &salt);
@@ -398,6 +438,7 @@ mod tests {
 
     #[test]
     fn derive_key_differs_with_different_salt() {
+        let _guard = test_lock().lock().unwrap();
         let passphrase = b"test-passphrase";
         let salt1 = [0xabu8; SALT_LEN];
         let mut salt2 = [0xfeu8; SALT_LEN];
@@ -409,6 +450,7 @@ mod tests {
 
     #[test]
     fn derive_key_differs_with_different_passphrase() {
+        let _guard = test_lock().lock().unwrap();
         let salt = [0xcdu8; SALT_LEN];
         let key1 = FileCredentialStore::derive_key(b"pass-one", &salt);
         let key2 = FileCredentialStore::derive_key(b"pass-two", &salt);

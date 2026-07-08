@@ -9,7 +9,7 @@ use agileplus_domain::{
 use git2::build::CheckoutBuilder;
 use git2::{BranchType, MergeAnalysis, Repository, Signature};
 
-use crate::{GitVcsAdapter, git_err};
+use crate::{git_err, GitVcsAdapter};
 
 /// Create a new branch from a base ref (branch name, tag, or commit SHA).
 pub(crate) fn create_branch(
@@ -33,11 +33,7 @@ pub(crate) fn checkout_branch(
     let branch = repo
         .find_branch(branch_name, BranchType::Local)
         .map_err(git_err)?;
-    let refname = branch
-        .get()
-        .name()
-        .ok_or_else(|| DomainError::Vcs("invalid branch ref name".into()))?
-        .to_string();
+    let refname = branch.get().name().map_err(git_err)?.to_string();
     repo.set_head(&refname).map_err(git_err)?;
     repo.checkout_head(Some(CheckoutBuilder::new().force()))
         .map_err(git_err)?;

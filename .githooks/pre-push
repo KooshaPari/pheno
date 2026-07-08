@@ -13,8 +13,9 @@ TO_TEST=${PRE_PUSH_TIMEOUT_TESTS:-300}
 run() { # run <label> <timeout> <cmd...>
   local label="$1" to="$2"; shift 2
   echo "[hooks] $label (timeout=${to}s)…"
-  if ! timeout --kill-after=5s "${to}s" "$@"; then
-    local rc=$?
+  timeout --kill-after=5s "${to}s" "$@"
+  local rc=$?
+  if [ $rc -ne 0 ]; then
     [ $rc -eq 124 ] && echo "[hooks] $label TIMED OUT after ${to}s" || echo "[hooks] $label FAILED (rc=$rc)"
     ERR=$((ERR+1))
   fi

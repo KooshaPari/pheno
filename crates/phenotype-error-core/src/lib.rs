@@ -308,9 +308,7 @@ impl<'de> Deserialize<'de> for StorageError {
         }
         let de = StorageErrorDe::deserialize(deserializer)?;
         Ok(match de {
-            StorageErrorDe::Io(msg) => {
-                Self::Io(std::io::Error::other(msg))
-            }
+            StorageErrorDe::Io(msg) => Self::Io(std::io::Error::other(msg)),
             StorageErrorDe::NotFound(msg) => Self::NotFound(msg),
             StorageErrorDe::PermissionDenied(msg) => Self::PermissionDenied(msg),
             StorageErrorDe::CapacityExceeded(msg) => Self::CapacityExceeded(msg),

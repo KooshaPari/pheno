@@ -13,10 +13,10 @@ use axum::{Json, Router};
 use serde::{Deserialize, Serialize};
 
 use agileplus_domain::ports::{
-    BranchInfo, observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
+    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort, BranchInfo,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, ApiError, ApiResponse};
 use crate::state::AppState;
 
 pub fn routes<S, V, O>() -> Router<AppState<S, V, O>>
@@ -44,7 +44,7 @@ pub struct BranchListParams {
 pub async fn list_branches<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Query(params): Query<BranchListParams>,
-) -> Result<Json<Vec<BranchInfo>>, ApiError>
+) -> Result<Json<Vec<BranchInfo>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -54,7 +54,7 @@ where
         .vcs
         .list_branches(params.pattern.as_deref(), params.remote.unwrap_or(false))
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(branches))
 }
 
@@ -67,7 +67,7 @@ pub struct CreateBranchRequest {
 pub async fn create_branch<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<CreateBranchRequest>,
-) -> Result<(StatusCode, Json<ActionResponse>), ApiError>
+) -> Result<(StatusCode, Json<ActionResponse>), ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -78,7 +78,7 @@ where
         .vcs
         .create_branch(&body.name, &base)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok((
         StatusCode::CREATED,
         Json(ActionResponse {
@@ -95,7 +95,7 @@ pub struct CheckoutBranchRequest {
 pub async fn checkout_branch<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<CheckoutBranchRequest>,
-) -> Result<Json<ActionResponse>, ApiError>
+) -> Result<Json<ActionResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -105,7 +105,7 @@ where
         .vcs
         .checkout_branch(&body.name)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(ActionResponse {
         message: format!("Checked out branch {}", body.name),
     }))
@@ -121,7 +121,7 @@ pub struct DeleteBranchRequest {
 pub async fn delete_branch<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<DeleteBranchRequest>,
-) -> Result<Json<ActionResponse>, ApiError>
+) -> Result<Json<ActionResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -135,7 +135,7 @@ where
             body.remote.as_deref(),
         )
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(ActionResponse {
         message: if let Some(remote) = body.remote {
             format!("Deleted remote branch {remote}/{}", body.name)
@@ -162,7 +162,7 @@ pub struct SyncBranchResponse {
 pub async fn sync_branches<S, V, O>(
     State(state): State<AppState<S, V, O>>,
     Json(body): Json<SyncBranchRequest>,
-) -> Result<Json<SyncBranchResponse>, ApiError>
+) -> Result<Json<SyncBranchResponse>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -172,7 +172,7 @@ where
         .vcs
         .merge_to_target(&body.source, &body.target)
         .await
-        .map_err(ApiError::from)?;
+        .map_err(domain_error)?;
     Ok(Json(SyncBranchResponse {
         source: body.source,
         target: body.target,

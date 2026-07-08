@@ -9,8 +9,8 @@ use agileplus_domain::config::AppConfig;
 use agileplus_domain::credentials::create_credential_store;
 use agileplus_git::GitVcsAdapter;
 use agileplus_sqlite::SqliteStorageAdapter;
-use agileplus_telemetry::{TelemetryAdapter, config::TelemetryConfig};
-use anyhow::{Context, Result, anyhow};
+use agileplus_telemetry::{config::TelemetryConfig, TelemetryAdapter};
+use anyhow::{anyhow, Context, Result};
 use tracing::warn;
 
 #[tokio::main]

@@ -23,9 +23,9 @@ use uuid::Uuid;
 
 #[cfg(unix)]
 use crate::discovery::tailscale_socket_path;
-use crate::error::ConnectionError;
 #[cfg(unix)]
 use crate::error::PeerDiscoveryError;
+use crate::error::{ConnectionError, RepositoryError};
 
 /// Persistent identity for one AgilePlus node in the tailnet.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -174,7 +174,7 @@ impl DeviceStore for InMemoryDeviceStore {
         let mut guard = self
             .inner
             .lock()
-            .map_err(|e| ConnectionError::Database(e.to_string()))?;
+            .map_err(|e| ConnectionError::Database(RepositoryError::Query(e.to_string())))?;
         if guard.is_some() {
             return Err(ConnectionError::ConflictingRegistration);
         }
@@ -186,7 +186,7 @@ impl DeviceStore for InMemoryDeviceStore {
         let guard = self
             .inner
             .lock()
-            .map_err(|e| ConnectionError::Database(e.to_string()))?;
+            .map_err(|e| ConnectionError::Database(RepositoryError::Query(e.to_string())))?;
         Ok(guard.clone())
     }
 }

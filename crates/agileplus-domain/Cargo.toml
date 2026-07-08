@@ -6,6 +6,7 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+async-trait.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 chrono.workspace = true
@@ -18,12 +19,11 @@ aes-gcm = "0.10"
 argon2 = "0.5"
 rand.workspace = true
 keyring = { version = "3", optional = true }
-agileplus-plugin-core = { git = "https://github.com/KooshaPari/agileplus-plugin-core", optional = true }
-phenotype-migrations = { path = "../../../../../phenotype-shared/crates/phenotype-migrations" }
+phenotype-error-core = { path = "../phenotype-error-core" }
 
 [features]
 keychain = ["dep:keyring"]
-plugins = ["agileplus-plugin-core"]
+plugins = []
 
 [dev-dependencies]
 proptest = "1"

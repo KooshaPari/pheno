@@ -58,48 +58,35 @@ pub async fn run_review_loop<A: AgentPort>(
             }
         };
 
-        match status {
-            AgentStatus::Completed { result } => {
-                if result.success {
-                    println!("  Agent completed successfully.");
-                    return ReviewOutcome::Approved;
-                } else {
-                    last_feedback = result.stderr.clone();
-                    println!(
-                        "  Agent completed with failure: {}",
-                        &result.stderr[..result.stderr.len().min(200)]
-                    );
-                    // Feed back stderr as instruction for next cycle
-                    if cycle < max_cycles {
-                        let instruction = format!(
-                            "Your previous attempt failed. Please fix the following issues:\n\n{}",
-                            result.stderr
-                        );
-                        if let Err(e) = agent.send_instruction(job_id, &instruction).await {
-                            tracing::warn!(error = %e, "failed to send instruction to agent");
-                        }
-                    }
-                }
-            }
-            AgentStatus::WaitingForReview { pr_url } => {
-                println!("  Agent waiting for review at: {pr_url}");
-                // In a real implementation we would poll Coderabbit here.
-                // For now, treat as approved.
-                return ReviewOutcome::Approved;
-            }
-            AgentStatus::Failed { error } => {
-                println!("  Agent failed: {error}");
-                return ReviewOutcome::AgentFailed { error };
-            }
-            AgentStatus::Running { pid } => {
-                tracing::debug!(pid = pid, "agent still running");
-            }
-            AgentStatus::Pending => {
-                tracing::debug!("agent pending");
-            }
+        if let Some(outcome) =
+            handle_agent_status(status, cycle, max_cycles, job_id, agent, &mut last_feedback).await
+        {
+            return outcome;
         }
 
         tokio::time::sleep(poll).await;
+    }
+
+    // One last status check closes the race where an async dispatch completes
+    // just after the final sleep interval but before we declare the review loop blocked.
+    match agent.query_status(job_id).await {
+        Ok(status) => {
+            if let Some(outcome) = handle_agent_status(
+                status,
+                max_cycles,
+                max_cycles,
+                job_id,
+                agent,
+                &mut last_feedback,
+            )
+            .await
+            {
+                return outcome;
+            }
+        }
+        Err(e) => {
+            tracing::warn!(error = %e, "error polling agent status during final review check");
+        }
     }
 
     println!(
@@ -109,6 +96,56 @@ pub async fn run_review_loop<A: AgentPort>(
     ReviewOutcome::MaxCyclesReached {
         cycles: max_cycles,
         last_feedback,
+    }
+}
+
+async fn handle_agent_status<A: AgentPort>(
+    status: AgentStatus,
+    cycle: u32,
+    max_cycles: u32,
+    job_id: &str,
+    agent: &A,
+    last_feedback: &mut String,
+) -> Option<ReviewOutcome> {
+    match status {
+        AgentStatus::Completed { result } => {
+            if result.success {
+                println!("  Agent completed successfully.");
+                Some(ReviewOutcome::Approved)
+            } else {
+                *last_feedback = result.stderr.clone();
+                println!(
+                    "  Agent completed with failure: {}",
+                    &result.stderr[..result.stderr.len().min(200)]
+                );
+                if cycle < max_cycles {
+                    let instruction = format!(
+                        "Your previous attempt failed. Please fix the following issues:\n\n{}",
+                        result.stderr
+                    );
+                    if let Err(e) = agent.send_instruction(job_id, &instruction).await {
+                        tracing::warn!(error = %e, "failed to send instruction to agent");
+                    }
+                }
+                None
+            }
+        }
+        AgentStatus::WaitingForReview { pr_url } => {
+            println!("  Agent waiting for review at: {pr_url}");
+            Some(ReviewOutcome::Approved)
+        }
+        AgentStatus::Failed { error } => {
+            println!("  Agent failed: {error}");
+            Some(ReviewOutcome::AgentFailed { error })
+        }
+        AgentStatus::Running { pid } => {
+            tracing::debug!(pid = pid, "agent still running");
+            None
+        }
+        AgentStatus::Pending => {
+            tracing::debug!("agent pending");
+            None
+        }
     }
 }
 
@@ -131,6 +168,12 @@ pub fn format_feedback(comments: &[String]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use agileplus_domain::domain::work_package::WorkPackage;
+    use agileplus_domain::error::DomainError;
+    use agileplus_domain::ports::agent::{AgentKind, AgentResult, AgentTask};
+    use std::collections::VecDeque;
+    use std::path::PathBuf;
+    use std::sync::Mutex;
 
     #[test]
     fn format_feedback_empty() {
@@ -143,5 +186,88 @@ mod tests {
         let result = format_feedback(&comments);
         assert!(result.contains("1. Fix typo"));
         assert!(result.contains("2. Add test"));
+    }
+
+    struct MockAgent {
+        statuses: Mutex<VecDeque<AgentStatus>>,
+    }
+
+    impl MockAgent {
+        fn new(statuses: Vec<AgentStatus>) -> Self {
+            Self {
+                statuses: Mutex::new(statuses.into()),
+            }
+        }
+    }
+
+    impl AgentPort for MockAgent {
+        async fn dispatch(
+            &self,
+            _task: AgentTask,
+            _config: &AgentConfig,
+        ) -> Result<AgentResult, DomainError> {
+            Err(DomainError::Other("unused in test".to_string()))
+        }
+
+        async fn dispatch_async(
+            &self,
+            _task: AgentTask,
+            _config: &AgentConfig,
+        ) -> Result<String, DomainError> {
+            Err(DomainError::Other("unused in test".to_string()))
+        }
+
+        async fn query_status(&self, _job_id: &str) -> Result<AgentStatus, DomainError> {
+            let mut statuses = self.statuses.lock().unwrap();
+            Ok(statuses.pop_front().unwrap_or(AgentStatus::Pending))
+        }
+
+        async fn cancel(&self, _job_id: &str) -> Result<(), DomainError> {
+            Ok(())
+        }
+
+        async fn send_instruction(
+            &self,
+            _job_id: &str,
+            _instruction: &str,
+        ) -> Result<(), DomainError> {
+            Ok(())
+        }
+    }
+
+    fn wp() -> WorkPackage {
+        let mut wp = WorkPackage::new(1, "Test WP", 1, "done");
+        wp.id = 1;
+        wp.worktree_path = Some(PathBuf::from(".").display().to_string());
+        wp
+    }
+
+    fn agent_config() -> AgentConfig {
+        AgentConfig {
+            kind: AgentKind::Codex,
+            max_review_cycles: 1,
+            timeout_secs: 60,
+            extra_args: vec![],
+        }
+    }
+
+    #[tokio::test]
+    async fn review_loop_approves_if_job_completes_after_final_sleep() {
+        let agent = MockAgent::new(vec![
+            AgentStatus::Running { pid: 123 },
+            AgentStatus::Completed {
+                result: AgentResult {
+                    success: true,
+                    pr_url: None,
+                    commits: vec![],
+                    stdout: "ok".to_string(),
+                    stderr: String::new(),
+                    exit_code: 0,
+                },
+            },
+        ]);
+
+        let outcome = run_review_loop(&wp(), "job-1", &agent, &agent_config(), 1, 0).await;
+        assert!(matches!(outcome, ReviewOutcome::Approved));
     }
 }

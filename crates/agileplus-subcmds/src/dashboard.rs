@@ -4,7 +4,7 @@
 //!
 //! Traceability: WP14-T089
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use clap::{Args, Subcommand};
 
 // ---------------------------------------------------------------------------

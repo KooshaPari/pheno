@@ -1,10 +1,10 @@
 use std::process::Command;
 use std::time::Duration;
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 
 use crate::platform::args::PlatformUpArgs;
-use crate::platform::health::{DEFAULT_API_URL, print_status_table_up, wait_for_health};
+use crate::platform::health::{print_status_table_up, wait_for_health, DEFAULT_API_URL};
 use crate::platform::process_compose::find_process_compose;
 use crate::platform::workspace::resolve_platform_compose;
 

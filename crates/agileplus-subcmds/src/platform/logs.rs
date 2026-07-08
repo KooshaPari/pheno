@@ -1,6 +1,6 @@
 use std::process::Command;
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 
 use crate::platform::args::PlatformLogsArgs;
 use crate::platform::process_compose::find_process_compose;

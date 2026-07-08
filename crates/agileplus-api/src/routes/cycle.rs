@@ -19,7 +19,7 @@ use agileplus_domain::ports::{
     observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
 };
 
-use crate::error::ApiError;
+use crate::error::{domain_error, not_found, template_error, ApiError, ApiResponse};
 use crate::state::AppState;
 
 #[derive(Debug, Deserialize)]
@@ -71,7 +71,7 @@ where
 async fn list_cycles<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Query(params): Query<CycleListParams>,
-) -> Result<Json<Vec<Cycle>>, ApiError>
+) -> Result<Json<Vec<Cycle>>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -87,12 +87,9 @@ where
         app.storage
             .list_cycles_by_state(cs)
             .await
-            .map_err(ApiError::from)?
+            .map_err(domain_error)?
     } else {
-        app.storage
-            .list_all_cycles()
-            .await
-            .map_err(ApiError::from)?
+        app.storage.list_all_cycles().await.map_err(domain_error)?
     };
     Ok(Json(cycles))
 }
@@ -102,7 +99,7 @@ where
 async fn get_cycle<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Json<CycleWithFeatures>, ApiError>
+) -> Result<Json<CycleWithFeatures>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -112,8 +109,8 @@ where
         .storage
         .get_cycle_with_features(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("cycle {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("cycle", id.to_string()))?;
     Ok(Json(cwf))
 }
 
@@ -121,17 +118,13 @@ where
 /// Traces to: FR-D02
 pub async fn cycle_kanban_page<S, V, O>(
     State(app): State<AppState<S, V, O>>,
-) -> Result<Html<String>, ApiError>
+) -> Result<Html<String>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
     O: ObservabilityPort + Send + Sync + 'static,
 {
-    let all_cycles = app
-        .storage
-        .list_all_cycles()
-        .await
-        .map_err(ApiError::from)?;
+    let all_cycles = app.storage.list_all_cycles().await.map_err(domain_error)?;
 
     let mut draft = Vec::new();
     let mut active = Vec::new();
@@ -144,7 +137,7 @@ where
             .storage
             .get_cycle_with_features(cycle.id)
             .await
-            .map_err(ApiError::from)?;
+            .map_err(domain_error)?;
         let feature_count = cwf.as_ref().map_or(0, |c| c.features.len());
         let entry = CycleColumnEntry {
             cycle: cycle.clone(),
@@ -166,9 +159,7 @@ where
         shipped,
         archived,
     };
-    let rendered = tmpl
-        .render()
-        .map_err(|e| ApiError::Template(e.to_string()))?;
+    let rendered = tmpl.render().map_err(|e| template_error(e.to_string()))?;
     Ok(Html(rendered))
 }
 
@@ -177,7 +168,7 @@ where
 pub async fn cycle_detail_page<S, V, O>(
     State(app): State<AppState<S, V, O>>,
     Path(id): Path<i64>,
-) -> Result<Html<String>, ApiError>
+) -> Result<Html<String>, ApiResponse>
 where
     S: StoragePort + Send + Sync + 'static,
     V: VcsPort + Send + Sync + 'static,
@@ -187,8 +178,8 @@ where
         .storage
         .get_cycle_with_features(id)
         .await
-        .map_err(ApiError::from)?
-        .ok_or_else(|| ApiError::NotFound(format!("cycle {id} not found")))?;
+        .map_err(domain_error)?
+        .ok_or_else(|| not_found("cycle", id.to_string()))?;
 
     let today = chrono::Utc::now().date_naive();
     let days_remaining = (cwf.cycle.end_date - today).num_days();
@@ -197,7 +188,7 @@ where
         app.storage
             .get_module(module_id)
             .await
-            .map_err(ApiError::from)?
+            .map_err(domain_error)?
             .map(|m| m.friendly_name)
     } else {
         None
@@ -208,8 +199,6 @@ where
         scope_module_name,
         days_remaining,
     };
-    let rendered = tmpl
-        .render()
-        .map_err(|e| ApiError::Template(e.to_string()))?;
+    let rendered = tmpl.render().map_err(|e| template_error(e.to_string()))?;
     Ok(Html(rendered))
 }
