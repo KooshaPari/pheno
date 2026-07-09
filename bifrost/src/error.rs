@@ -21,6 +21,11 @@ pub enum Error {
     /// Underlying I/O / HTTP failure.
     #[error("transport error: {0}")]
     Transport(String),
+
+    /// Kill-switch is active; caller should fall back to the secondary router.
+    /// B9: emitted by `BifrostKillSwitch::check()` when the switch is tripped.
+    #[error("kill-switch active: {0}")]
+    KillSwitchActive(String),
 }
 
 impl Error {

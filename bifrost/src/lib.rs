@@ -31,6 +31,7 @@ pub mod cache;
 pub mod catalog;
 pub mod error;
 pub mod fallback;
+pub mod kill_switch;  // B9 kill-switch (auto-fallback when Bifrost degrades)
 pub mod mcp_client;
 pub mod router;
 pub mod shadow;  // B6 traffic shadow
@@ -49,7 +50,8 @@ pub use catalog::{
 };
 pub use error::{Error, Result};
 pub use fallback::FallbackRouter;
-pub use mcp_client::BifrostMcpClient;
+pub use kill_switch::BifrostKillSwitch;
+pub use mcp_client::McpRouterClient;
 pub use shadow::TrafficShadow;
 pub use router::{InMemoryRouter, RouteTarget, RouterPort};
 #[cfg(feature = "virtual-keys")]

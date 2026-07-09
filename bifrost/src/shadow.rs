@@ -84,9 +84,7 @@ impl<P, S> RouterPort for TrafficShadow<P, S>
 where
     P: RouterPort + Send + Sync,
     S: RouterPort + Send + Sync + 'static,
-    P::Error: Into<Error>,
-    S::Error: Into<Error>,
-{
+    {
     /// Always returns the primary's result. Spawns a fire-and-forget task for
     /// the shadow's `pick` when the sample fires.
     async fn pick(&self, request: &RouteRequest) -> Result<RouteTarget> {
