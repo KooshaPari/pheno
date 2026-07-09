@@ -46,6 +46,7 @@
 use std::path::Path;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+#[cfg(feature = "cache-sqlite")]
 use rusqlite::{params, Connection};
 
 use crate::catalog::{CatalogEntry, CatalogWire};

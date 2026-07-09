@@ -13,6 +13,8 @@
 //! shadow.record_outcome(&target, &outcome).await?;   // always primary + sometimes bifrost
 //! ```
 
+use std::sync::Arc;
+
 use async_trait::async_trait;
 use rand::Rng;
 
@@ -32,8 +34,8 @@ pub const DEFAULT_SAMPLE_RATE: f64 = 0.05;
 ///   shadow fire-and-forget.
 #[derive(Debug)]
 pub struct TrafficShadow<P, S> {
-    primary: P,
-    shadow: S,
+    primary: Arc<P>,
+    shadow: Arc<S>,
     sample_rate: f64,
 }
 
@@ -53,8 +55,8 @@ where
             "sample_rate must be in [0.0, 1.0], got {sample_rate}"
         );
         Self {
-            primary,
-            shadow,
+            primary: Arc::new(primary),
+            shadow: Arc::new(shadow),
             sample_rate,
         }
     }
@@ -83,7 +85,7 @@ where
 impl<P, S> RouterPort for TrafficShadow<P, S>
 where
     P: RouterPort + Send + Sync,
-    S: RouterPort + Send + Sync + 'static,
+    S: RouterPort + Send + Sync,
     {
     /// Always returns the primary's result. Spawns a fire-and-forget task for
     /// the shadow's `pick` when the sample fires.
@@ -92,7 +94,7 @@ where
 
         if self.should_sample() {
             let shadow_req = request.clone();
-            let shadow = &self.shadow;
+            let shadow = self.shadow.clone();
             // Spawn a fire-and-forget tokio task so the shadow never blocks
             // the primary path.
             tokio::spawn(async move {
@@ -126,9 +128,10 @@ where
         if self.should_sample() {
             let shadow_target = target.clone();
             let shadow_outcome = outcome.clone();
-            let shadow = &self.shadow;
+            let shadow = self.shadow.clone();
+            let shadow_clone = shadow.clone();
             tokio::spawn(async move {
-                match shadow.record_outcome(&shadow_target, &shadow_outcome).await {
+                match shadow_clone.record_outcome(&shadow_target, &shadow_outcome).await {
                     Ok(()) => {}
                     Err(e) => {
                         let e: Error = e.into();
