@@ -145,15 +145,37 @@ pub async fn run_review_fix_loop(
     task: &AgentTask,
     max_cycles: u32,
 ) -> Result<ReviewLoopResult, DomainError> {
+    run_review_fix_loop_with_delay(
+        pr_url,
+        review,
+        _agent_config,
+        task,
+        max_cycles,
+        |cycle| Duration::from_secs(backoff_secs(cycle)),
+    )
+    .await
+}
+
+async fn run_review_fix_loop_with_delay<F>(
+    pr_url: &str,
+    review: &dyn ReviewPort,
+    _agent_config: &AgentConfig,
+    task: &AgentTask,
+    max_cycles: u32,
+    poll_delay_for: F,
+) -> Result<ReviewLoopResult, DomainError>
+where
+    F: Fn(u32) -> Duration,
+{
     let mut comment_history: Vec<Vec<ReviewComment>> = Vec::new();
     let mut final_review_outcome = ReviewOutcome::Pending;
     let mut final_ci_status = CiStatus::Unknown;
 
     for cycle in 0..max_cycles {
         // Exponential backoff: 30s → 60s → 120s → 300s (cap).
-        let poll_delay = backoff_secs(cycle);
-        info!(cycle, poll_delay_secs = poll_delay, %pr_url, "awaiting review");
-        tokio::time::sleep(Duration::from_secs(poll_delay)).await;
+        let poll_delay = poll_delay_for(cycle);
+        info!(cycle, poll_delay_secs = poll_delay.as_secs(), %pr_url, "awaiting review");
+        tokio::time::sleep(poll_delay).await;
 
         let review_timeout = Duration::from_secs(300);
         let outcome = review
@@ -449,6 +471,64 @@ mod tests {
         match result.unwrap_err() {
             DomainError::ReviewLoopExhausted { cycles } => assert_eq!(cycles, 2),
             other => panic!("unexpected error: {other}"),
+        }
+    }
+
+    #[tokio::test]
+    async fn review_loop_accepts_approval_on_final_cycle_after_pending() {
+        let tmp = tempfile::tempdir().unwrap();
+        let task = make_task(tmp.path().to_path_buf());
+        let review = SequenceReview {
+            outcomes: vec![ReviewOutcome::Pending, ReviewOutcome::Approved],
+            call_count: Arc::new(AtomicU32::new(0)),
+        };
+
+        let config = AgentConfig::default();
+        let result = run_review_fix_loop_with_delay(
+            "https://github.com/x/y/pull/3",
+            &review,
+            &config,
+            &task,
+            2,
+            |_| Duration::ZERO,
+        )
+        .await;
+
+        let outcome = result.expect("final-cycle approval should complete the loop");
+        assert!(outcome.approved);
+        assert_eq!(outcome.cycles_used, 2);
+        assert_eq!(outcome.final_review_outcome, ReviewOutcome::Approved);
+    }
+
+    struct SequenceReview {
+        outcomes: Vec<ReviewOutcome>,
+        call_count: Arc<AtomicU32>,
+    }
+
+    #[async_trait]
+    impl ReviewPort for SequenceReview {
+        async fn await_review(
+            &self,
+            _pr_url: &str,
+            _timeout: Duration,
+        ) -> Result<ReviewOutcome, DomainError> {
+            let n = self.call_count.fetch_add(1, Ordering::SeqCst) as usize;
+            Ok(self.outcomes.get(n).cloned().unwrap_or(ReviewOutcome::Pending))
+        }
+
+        async fn get_actionable_comments(
+            &self,
+            _pr_url: &str,
+        ) -> Result<Vec<ReviewComment>, DomainError> {
+            Ok(Vec::new())
+        }
+
+        async fn await_ci(
+            &self,
+            _pr_url: &str,
+            _timeout: Duration,
+        ) -> Result<CiStatus, DomainError> {
+            Ok(CiStatus::Passing)
         }
     }
 }
