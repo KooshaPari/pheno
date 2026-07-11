@@ -1,6 +1,7 @@
 //! Shared application state threaded through Axum handlers.
 
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use agileplus_domain::domain::{
@@ -21,6 +22,59 @@ pub struct ServiceHealth {
     pub last_check: DateTime<Utc>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CockpitSession {
+    pub id: String,
+    pub run_id: String,
+    pub state: String,
+    pub summary: String,
+    pub progress: f32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ownership_bracket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agent: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub agents: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub lanes: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub notices: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub trace_refs: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payload: Option<serde_json::Value>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CockpitEvent {
+    pub event_type: String,
+    pub session_id: String,
+    pub run_id: String,
+    pub phase: String,
+    pub summary: String,
+    pub progress: f32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ownership_bracket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agent: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub agents: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub lanes: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub notices: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub trace_refs: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payload: Option<serde_json::Value>,
+    pub received_at: DateTime<Utc>,
+}
+
 /// In-memory store used by dashboard handlers.
 /// In production this would delegate to repositories.
 #[derive(Default)]
@@ -33,6 +87,9 @@ pub struct DashboardStore {
     pub health: Vec<ServiceHealth>,
     pub projects: Vec<Project>,
     pub active_project_id: Option<i64>,
+    pub sessions: Vec<CockpitSession>,
+    pub cockpit_events: Vec<CockpitEvent>,
+    pub cockpit_event_db_path: Option<PathBuf>,
 }
 
 pub type SharedState = Arc<RwLock<DashboardStore>>;
@@ -163,6 +220,31 @@ impl DashboardStore {
                     })
                     .unwrap_or(false)
             })
+    }
+
+    pub fn apply_cockpit_event(&mut self, event: CockpitEvent) {
+        let session = CockpitSession {
+            id: event.session_id.clone(),
+            run_id: event.run_id.clone(),
+            state: event.phase.clone(),
+            summary: event.summary.clone(),
+            progress: event.progress,
+            ownership_bracket: event.ownership_bracket.clone(),
+            kind: event.kind.clone(),
+            agent: event.agent.clone(),
+            agents: event.agents.clone(),
+            lanes: event.lanes.clone(),
+            notices: event.notices.clone(),
+            trace_refs: event.trace_refs.clone(),
+            payload: event.payload.clone(),
+            updated_at: event.received_at,
+        };
+        self.cockpit_events.push(event);
+        if let Some(existing) = self.sessions.iter_mut().find(|s| s.id == session.id) {
+            *existing = session;
+        } else {
+            self.sessions.push(session);
+        }
     }
 }
 

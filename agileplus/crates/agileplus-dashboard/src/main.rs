@@ -15,7 +15,18 @@ async fn main() -> anyhow::Result<()> {
         .ok()
         .and_then(|value| value.parse::<u16>().ok())
         .unwrap_or(3000);
-    let state = Arc::new(tokio::sync::RwLock::new(DashboardStore::seeded()));
+    let mut store = DashboardStore::seeded();
+    store.cockpit_event_db_path = Some(
+        std::env::var("AGILEPLUS_DB")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|_| std::path::PathBuf::from(".agileplus/agileplus.db")),
+    );
+    match routes::hydrate_cockpit_events_from_sqlite(&mut store, 1_000) {
+        Ok(count) if count > 0 => info!(count, "hydrated dashboard cockpit events"),
+        Ok(_) => {}
+        Err(err) => tracing::warn!(error = %err, "failed to hydrate dashboard cockpit events"),
+    }
+    let state = Arc::new(tokio::sync::RwLock::new(store));
 
     let app: Router = routes::router(state)
         .nest_service("/static", ServeDir::new("templates/static"))

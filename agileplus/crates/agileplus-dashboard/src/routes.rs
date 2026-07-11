@@ -36,6 +36,10 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
+mod cockpit;
+
+pub use cockpit::{cockpit_post, dashboard_snapshot, hydrate_cockpit_events_from_sqlite};
+
 // ── JSON API Response Types ────────────────────────────────────────────────
 
 /// JSON response for GET /api/dashboard/agents (real-time agent detection)
@@ -2130,6 +2134,8 @@ pub fn router(state: SharedState) -> Router {
             "/api/dashboard/features/{id}/evidence.json",
             get(feature_evidence_json),
         )
+        .route("/api/dashboard/cockpit", post(cockpit_post))
+        .route("/api/dashboard/snapshot", get(dashboard_snapshot))
         .with_state(state)
 }
 
