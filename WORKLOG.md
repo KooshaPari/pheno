@@ -1,8 +1,19 @@
-# Worklog — pheno-agents-md
+# Worklog
 
-Schema v2.1 (ADR-015, ADR-025, ADR-030). See `/Users/kooshapari/CodeProjects/Phenotype/repos/findings/2026-06-17-L5-103-worklog-v2-1.md` and `/Users/kooshapari/CodeProjects/Phenotype/repos/pheno-worklog-schema/SPEC-v2.1.md`.
+This project is managed through AgilePlus.
 
-| Date | Task ID | Layer | Action | Files | Notes | device |
-|------|---------|-------|--------|-------|-------|--------|
-| 2026-06-18 | T15.1 | L0 | docs | meta-bundle | chore(meta): pheno-flake refresh 2026-06-18 — AGENTS.md + llms.txt + WORKLOG.md v2.1 + CHANGELOG.md + LICENSE-MIT + .github/workflows/ci.yml (No OTLP smoke test required for this substrate.) | macbook |
-| 2026-06-18 | L5-#110-#119 | L0 | governance | .github/workflows/ci.yml | Add CI workflow from pheno-ci-templates (test + clippy + fmt + 80% coverage gate per ADR-023) | macbook |
+## Current state
+
+- Ecosystem cleanup work is complete.
+- Active project work should be tracked in AgilePlus.
+- Historical work lives in the AgilePlus database and work-audit logs.
+- Current recovery-tree frontier in this workspace:
+  - `crates/hexa-kit/`
+  - `crates/agile-plus/`
+  - preserve-first handling only; no deletion or pruning of source-bearing work
+
+## Useful references
+
+- AgilePlus root: `/Users/kooshapari/CodeProjects/Phenotype/repos/AgilePlus`
+- AgilePlus database: `/Users/kooshapari/CodeProjects/Phenotype/repos/AgilePlus/.agileplus/agileplus.db`
+- AgilePlus work audit: `/Users/kooshapari/CodeProjects/Phenotype/repos/AgilePlus/.work-audit/worklog.md`
