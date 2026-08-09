@@ -20,7 +20,7 @@ jobs:
     name: Test Orchestration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4.1.1
 
       - name: Read Test Config
         run: cat .mcp-testing.yaml | head -30
@@ -32,7 +32,7 @@ jobs:
       run:
         working-directory: nanovms
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4.1.1
         with:
           repository: KooshaPari/nanovms
           path: nanovms
@@ -56,7 +56,7 @@ jobs:
       run:
         working-directory: AgilePlus
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4.1.1
         with:
           repository: KooshaPari/AgilePlus
           path: AgilePlus
@@ -79,7 +79,7 @@ jobs:
       run:
         working-directory: thegent
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4.1.1
         with:
           repository: KooshaPari/thegent
           path: thegent
