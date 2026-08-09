@@ -40,7 +40,7 @@ conventional_commits = true
 filter_unconventional = false
 split_commits = false
 commit_preprocessors = [
-  { pattern = '\(#(\d+)\)', replace = "([#${1}](https://github.com/KooshaPari/phenotype-shared/issues/${1}))" },
+  { pattern = '\(#(\d+)\)', replace = "([#${1}](https://github.com/KooshaPari/pheno/issues/${1}))" },
 ]
 commit_parsers = [
   { message = "^feat", group = "Features" },
