@@ -21,7 +21,9 @@ members = [
   "crates/agileplus-telemetry",
   "crates/agileplus-dashboard",
   "crates/agileplus-events",
-  # NOTE: clap-ext temporarily excluded — incompatible clap version constraint (4.3.x vs 4.6.x). Tracked in PR #924.
+  # NOTE: clap-ext activation staged for follow-up PR (see docket O17).
+  # Inner clap-ext carries its own sub-workspace; flattening requires Cargo.toml +
+  # path-rewrites across the example, smoke test, and dependent crates.
 ]
 
 [workspace.package]
