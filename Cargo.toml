@@ -12,7 +12,6 @@ resolver = "2"
 
 members = [
     "crates/agileplus-api",
-    "agileplus/crates/agileplus-dashboard",
     "crates/agileplus-benchmarks",
     "crates/agileplus-cache",
     "crates/agileplus-cli",
