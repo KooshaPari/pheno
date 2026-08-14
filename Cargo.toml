@@ -74,6 +74,7 @@ members = [
     "crates/eyetracker/eyetracker-camera",
     "crates/eyetracker/eyetracker-inference",
     "crates/eyetracker/eyetracker-cli",
+    "crates/pheno-runtime-config",
 ]
 [workspace.dependencies]
 # Core
