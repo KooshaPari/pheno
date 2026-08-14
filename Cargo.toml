@@ -65,6 +65,16 @@ members = [
     "crates/phenotype-validation",
     "bifrost",
     "crates/phenotype-gfx",
+    # eyetracker: absorbed 2026-08-13 from KooshaPari/eyetracker per docket O18.
+    # Eye-tracking core (domain, math, calibration, inference, FFI, CLI).
+    # CI status: pre-merge verification pending.
+    "crates/eyetracker/eyetracker-domain",
+    "crates/eyetracker/eyetracker-math",
+    "crates/eyetracker/eyetracker-core",
+    "crates/eyetracker/eyetracker-ffi",
+    "crates/eyetracker/eyetracker-camera",
+    "crates/eyetracker/eyetracker-inference",
+    "crates/eyetracker/eyetracker-cli",
 ]
 [workspace.dependencies]
 # Core
