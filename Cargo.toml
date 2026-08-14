@@ -77,6 +77,7 @@ members = [
     "crates/pheno-runtime-config",
     "crates/pheno-context",
     "crates/pheno-cdylib-bridge",
+    "crates/pheno-forge-smoke",
 ]
 [workspace.dependencies]
 # Core
