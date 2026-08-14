@@ -76,6 +76,7 @@ members = [
     "crates/eyetracker/eyetracker-cli",
     "crates/pheno-runtime-config",
     "crates/pheno-context",
+    "crates/pheno-cdylib-bridge",
 ]
 [workspace.dependencies]
 # Core
