@@ -1,8 +1,9 @@
 //! Tests for `clap_ext::common_subcommands` (3 tests).
 
+use std::path::PathBuf;
+
 use clap::Parser;
 use clap_ext::common_subcommands::{InitCmd, ValidateCmd, VersionCmd};
-use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
 struct Wrapper {

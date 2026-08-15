@@ -78,6 +78,10 @@ members = [
     "crates/pheno-context",
     "crates/pheno-cdylib-bridge",
     "crates/pheno-forge-smoke",
+    # clap-ext: flattened from KooshaPari/clap-ext per docket O17 (PR #288).
+    # Lib promoted from nested sub-workspace; example registered as clap-ext-examples.
+    "crates/clap-ext",
+    "crates/clap-ext-examples",
 ]
 [workspace.dependencies]
 # Core
@@ -100,7 +104,7 @@ regex = "1"
 tempfile = "3"
 sha2 = "0.10"
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 futures = "0.3"
 strum = { version = "0.26", features = ["derive"] }
 derive_more = { version = "1.0", features = ["from", "display", "into"] }
@@ -163,7 +167,7 @@ phenotype-validation = { path = "crates/phenotype-validation" }
 # External utilities
 axum = "0.8"
 axum-extra = "0.10"
-clap = { version = "4", features = ["derive"] }
+clap = { version = "4", features = ["derive", "env", "wrap_help", "string"] }
 figment = "0.10"
 futures-util = "0.3"
 http-body-util = "0.1"
