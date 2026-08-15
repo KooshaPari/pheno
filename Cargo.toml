@@ -83,6 +83,21 @@ members = [
     "crates/clap-ext",
     "crates/clap-ext-examples",
 ]
+# Exclude crates that have external-sibling path deps that don't resolve in CI runners.
+# Tracked separately: docket O24.
+
+# pheno-cdylib-bridge is a C ABI wrapper around the thegent chartruetype engine.
+# Built only locally for the forge-smoke integration test; its Cargo.toml has a
+# hard-coded path dependency (../../../thegent/crates/thegent-memory) that doesn't
+# resolve on CI runners (thegent is a sibling monorepo, not a sub-path of pheno).
+# Excluded from the workspace so `cargo metadata --workspace` doesn't error out
+# and shadow-breaks cargo-deny, cargo-machete, cargo-semver-checks, etc.
+# To regenerate: `cargo build -p pheno-cdylib-bridge` from the pheno-bridge worktree
+# (resolves locally because thegent is checked out at repos/thegent).
+exclude = [
+    "crates/pheno-cdylib-bridge",
+]
+
 [workspace.dependencies]
 # Core
 serde = { version = "1", features = ["derive"] }
