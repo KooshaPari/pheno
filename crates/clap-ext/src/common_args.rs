@@ -1,7 +1,8 @@
 //! Shared arg structs that 60+ CLIs re-implement.
 
-use clap::{Args, ValueEnum};
 use std::path::PathBuf;
+
+use clap::{Args, ValueEnum};
 
 /// `-c, --config <path>` arg, used by all 60+ CLIs.
 #[derive(Debug, Args, Clone)]
@@ -33,7 +34,7 @@ impl Verbosity {
     /// - (default)         → INFO
     /// - `-v`              → DEBUG
     /// - `-vv` (or more)   → TRACE
-    pub fn to_filter(&self) -> tracing_subscriber::filter::LevelFilter {
+    pub fn to_filter(self) -> tracing_subscriber::filter::LevelFilter {
         match (self.verbose, self.quiet) {
             (_, true) => tracing_subscriber::filter::LevelFilter::ERROR,
             (0, false) => tracing_subscriber::filter::LevelFilter::INFO,

@@ -1,7 +1,8 @@
 //! Shared subcommand structs that 60+ CLIs re-implement.
 
-use clap::{Args, Subcommand};
 use std::path::PathBuf;
+
+use clap::{Args, Subcommand};
 
 /// `init` subcommand: scaffold a new project.
 #[derive(Debug, Args)]
