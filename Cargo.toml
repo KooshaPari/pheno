@@ -76,7 +76,6 @@ members = [
     "crates/eyetracker/eyetracker-cli",
     "crates/pheno-runtime-config",
     "crates/pheno-context",
-    "crates/pheno-cdylib-bridge",
     "crates/pheno-forge-smoke",
     # clap-ext: flattened from KooshaPari/clap-ext per docket O17 (PR #288).
     # Lib promoted from nested sub-workspace; example registered as clap-ext-examples.
