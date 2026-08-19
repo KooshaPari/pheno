@@ -1,19 +1,19 @@
 name: Tag Automation
-permissions: read-all
 
-# Delegates to phenoShared reusable workflow.
-# See: https://github.com/KooshaPari/phenoShared/blob/main/.github/workflows/tag-automation.yml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
     tags:
       - 'v*'
 
-permissions:
-  contents: read
-
 jobs:
   tag:
-    uses: KooshaPari/phenoShared/.github/workflows/tag-automation.yml@d1f40cb9482add27c57925be5085cabe2c20d8be # pinned from @ref; org SHA may shift on new commits
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
+    steps:
+      - name: Tag automation skipped - phenoShared deprecated
+        run: echo "Tag automation workflow disabled due to phenoShared deprecation. TODO: Re-implement if needed."

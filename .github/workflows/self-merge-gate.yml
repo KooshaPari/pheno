@@ -1,7 +1,8 @@
 name: self-merge-gate
 
-# Delegates to phenoShared reusable workflow.
-# See: https://github.com/KooshaPari/phenoShared/blob/main/.github/workflows/self-merge-gate.yml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on: [pull_request_review]
 
@@ -10,4 +11,7 @@ permissions:
 
 jobs:
   gate:
-    uses: KooshaPari/phenoShared/.github/workflows/self-merge-gate.yml@d1f40cb9482add27c57925be5085cabe2c20d8be # pinned from @ref; org SHA may shift on new commits
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Self merge gate skipped - phenoShared deprecated
+        run: echo "Self merge gate workflow disabled due to phenoShared deprecation. TODO: Re-implement if needed."
