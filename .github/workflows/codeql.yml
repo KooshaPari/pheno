@@ -1,24 +1,54 @@
 name: CodeQL
-permissions: read-all
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "tests/**"
+      - "libs/*/tests/**"
+      - "libs/*/benches/**"
+      - "examples/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "tests/**"
+      - "libs/*/tests/**"
+      - "libs/*/benches/**"
+      - "examples/**"
   schedule:
-    - cron: '17 4 * * 1'
+    - cron: "0 6 * * 1"
 
 permissions:
   contents: read
+  security-events: write
+  actions: read
 
 jobs:
   analyze:
-    uses: KooshaPari/phenoShared/.github/workflows/codeql.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [rust, python, javascript-typescript]
     permissions:
       contents: read
-      actions: read
       security-events: write
-    with:
-      languages: '["rust"]'
-      build-mode: 'autobuild'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"

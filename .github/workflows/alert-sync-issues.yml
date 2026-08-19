@@ -1,4 +1,5 @@
 name: Alert sync issues
+
 on:
   schedule:
     - cron: '17 * * * *'
@@ -9,6 +10,7 @@ permissions:
 
 jobs:
   sync:
-    uses: KooshaPari/phenoShared/.github/workflows/alert-sync-issues.yml@72b9c6cbdb24c49189b0e7c7395d874830d1ed87 # pinned from @ref; org SHA may shift on new commits
-    with:
-      auto-label: auto-alert-sync
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Alert sync skipped - phenoShared deprecated
+        run: echo "Alert sync workflow disabled due to phenoShared deprecation. TODO: Implement custom alert sync if needed."
