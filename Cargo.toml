@@ -129,8 +129,12 @@ zstd = "0.13"
 unicode-normalization = "0.1"
 rand = "0.8"
 derive_builder = "0.20"
+# AgilePlus (nested sub-workspace deps that must also appear in root for top-level members)
+agileplus-error-core = { path = "crates/agileplus-error-core" }
+
+# Build / bench
 criterion = "0.5"
-mockall = "0.12"
+rayon = "1"
 proptest = "1.4"
 ulid = "1"
 
