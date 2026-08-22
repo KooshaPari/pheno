@@ -81,6 +81,14 @@ members = [
     # Lib promoted from nested sub-workspace; example registered as clap-ext-examples.
     "crates/clap-ext",
     "crates/clap-ext-examples",
+    # Configra canonical crates — migrated 2026-08-21 from KooshaPari/Configra.
+    # Source: Configra/crates/{pheno-config,config-schema,phenotype-config-loader,configra-ops,phenoctl,settly}
+    "crates/pheno-config",
+    "crates/config-schema",
+    "crates/phenotype-config-loader",
+    "crates/configra-ops",
+    "crates/phenoctl",
+    "crates/settly",
 ]
 # Exclude crates that have external-sibling path deps that don't resolve in CI runners.
 # Tracked separately: docket O24.
@@ -182,6 +190,7 @@ phenotype-testing = { path = "crates/phenotype-testing" }
 phenotype-time = { path = "crates/phenotype-time" }
 phenotype-validation = { path = "crates/phenotype-validation" }
 
+secrecy = { version = "0.10", features = ["serde"] }
 # External utilities
 axum = "0.8"
 axum-extra = "0.10"

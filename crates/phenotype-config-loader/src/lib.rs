@@ -1,4 +1,25 @@
 //! Configuration loading utilities for the Phenotype ecosystem.
+//!
+//! Absorbed from `KooshaPari/phenotype-config` per ADR-031 (L5-110).
+//! This crate provides generic, type-safe JSON and TOML file loaders
+//! that downstream consumers can use without depending on a heavier
+//! configuration framework.
+//!
+//! # Examples
+//!
+//! ```no_run
+//! use serde::Deserialize;
+//! use std::path::Path;
+//! use phenotype_config_loader::load_toml;
+//!
+//! #[derive(Deserialize, Debug)]
+//! struct AppConfig {
+//!     name: String,
+//! }
+//!
+//! let cfg: AppConfig = load_toml(Path::new("app.toml")).unwrap();
+//! println!("app = {}", cfg.name);
+//! ```
 
 use serde::de::DeserializeOwned;
 use std::path::Path;
@@ -16,11 +37,23 @@ pub enum ConfigLoadError {
 
 pub type Result<T> = std::result::Result<T, ConfigLoadError>;
 
+/// Load and deserialize a JSON file at `path` into `T`.
+///
+/// # Errors
+/// Returns `ConfigLoadError::Io` if the file cannot be read, or
+/// `ConfigLoadError::Parse` if the file is not valid JSON or does not
+/// match the target type.
 pub fn load_json<T: DeserializeOwned>(path: &Path) -> Result<T> {
     let content = std::fs::read_to_string(path)?;
     serde_json::from_str::<T>(&content).map_err(|e| ConfigLoadError::Parse(e.to_string()))
 }
 
+/// Load and deserialize a TOML file at `path` into `T`.
+///
+/// # Errors
+/// Returns `ConfigLoadError::Io` if the file cannot be read, or
+/// `ConfigLoadError::Parse` if the file is not valid TOML or does not
+/// match the target type.
 pub fn load_toml<T: DeserializeOwned>(path: &Path) -> Result<T> {
     let content = std::fs::read_to_string(path)?;
     toml::from_str(&content).map_err(|e| ConfigLoadError::Parse(e.to_string()))
@@ -32,7 +65,10 @@ mod tests {
     use serde::Deserialize;
 
     #[derive(Deserialize, Debug, PartialEq)]
-    struct TestConfig { name: String, value: i32 }
+    struct TestConfig {
+        name: String,
+        value: i32,
+    }
 
     #[test]
     fn test_load_json() {
