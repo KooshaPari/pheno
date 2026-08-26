@@ -113,8 +113,9 @@ fn type_matches(value: &Value, hint: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use serde_json::json;
+
+    use super::*;
 
     #[test]
     fn schema_validates_required_fields() {

@@ -14,15 +14,12 @@
 //!
 //! Traceability: L4 SSOT materialization layer
 
-use std::{
-    io::Write as IoWrite,
-    path::{Path, PathBuf},
-};
+use std::io::Write as IoWrite;
+use std::path::{Path, PathBuf};
 
-use agileplus_domain::{
-    domain::{feature::Feature, work_package::WorkPackage},
-    error::DomainError,
-};
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::work_package::WorkPackage;
+use agileplus_domain::error::DomainError;
 use chrono::Utc;
 use serde_json::{json, Value};
 
@@ -346,11 +343,10 @@ pub fn materialize_and_commit(
 
 #[cfg(test)]
 mod tests {
+    use agileplus_domain::domain::feature::Feature;
+    use agileplus_domain::domain::work_package::{WorkPackage, WpState};
+
     use super::*;
-    use agileplus_domain::domain::{
-        feature::Feature,
-        work_package::{WorkPackage, WpState},
-    };
 
     fn make_feature() -> Feature {
         let mut f = Feature::new("my-feature", "My Feature", [0xabu8; 32], Some("main"));

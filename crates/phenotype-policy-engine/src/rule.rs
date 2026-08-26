@@ -1,10 +1,11 @@
 //! Policy rule definitions with cached regex compilation.
 
+use regex::Regex;
+use serde::{Deserialize, Serialize};
+
 use crate::context::EvaluationContext;
 use crate::error::PolicyEngineError;
 use crate::result::Severity;
-use regex::Regex;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RuleType {

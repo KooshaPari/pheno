@@ -7,13 +7,12 @@
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result};
-use chrono::Utc;
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::governance::{Evidence, GovernanceContract, PolicyCheck};
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
+use anyhow::{Context, Result};
+use chrono::Utc;
 
 /// Arguments for the `validate` subcommand.
 #[derive(Debug, clap::Args)]
@@ -758,10 +757,11 @@ async fn get_latest_hash<S: StoragePort>(storage: &S, feature_id: i64) -> [u8; 3
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_domain::domain::governance::{
         EvidenceRequirement, EvidenceType, GovernanceContract, GovernanceRule,
     };
+
+    use super::*;
 
     #[allow(dead_code)]
     fn make_contract(feature_id: i64) -> GovernanceContract {

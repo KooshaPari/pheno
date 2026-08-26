@@ -11,31 +11,26 @@ pub mod repository;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
+use agileplus_domain::domain::audit::AuditEntry;
+use agileplus_domain::domain::backlog::{
+    BacklogFilters, BacklogItem, BacklogPriority, BacklogStatus,
+};
+use agileplus_domain::domain::cycle::{Cycle, CycleFeature, CycleState, CycleWithFeatures};
+use agileplus_domain::domain::event::Event;
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::governance::{Evidence, GovernanceContract, PolicyRule};
+use agileplus_domain::domain::metric::Metric;
+use agileplus_domain::domain::module::{Module, ModuleFeatureTag, ModuleWithFeatures};
+use agileplus_domain::domain::project::Project;
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::domain::sync_mapping::SyncMapping;
+use agileplus_domain::domain::work_package::{WorkPackage, WpDependency, WpState};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::{ContentStoragePort, StoragePort};
+use agileplus_events::{EventError, EventStore};
 use rusqlite::Connection;
 
-use agileplus_domain::{
-    domain::{
-        audit::AuditEntry,
-        backlog::{BacklogFilters, BacklogItem, BacklogPriority, BacklogStatus},
-        cycle::{Cycle, CycleFeature, CycleState, CycleWithFeatures},
-        feature::Feature,
-        governance::{Evidence, GovernanceContract, PolicyRule},
-        metric::Metric,
-        module::{Module, ModuleFeatureTag, ModuleWithFeatures},
-        state_machine::FeatureState,
-        work_package::{WorkPackage, WpDependency, WpState},
-    },
-    error::DomainError,
-    ports::{ContentStoragePort, StoragePort},
-};
-
-use agileplus_domain::domain::event::Event;
-use agileplus_events::{EventError, EventStore};
-
 use crate::migrations::MigrationRunner;
-use agileplus_domain::domain::project::Project;
-use agileplus_domain::domain::sync_mapping::SyncMapping;
-
 use crate::repository::{
     audit, backlog, cycles, events, evidence, features, governance, metrics, modules, projects,
     sync_mappings, work_packages,
@@ -603,18 +598,19 @@ impl EventStore for SqliteStorageAdapter {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use agileplus_domain::domain::{
-        audit::{hash_entry, AuditEntry},
-        feature::Feature,
-        governance::{
-            Evidence, EvidenceType, GovernanceContract, GovernanceRule, PolicyCheck,
-            PolicyDefinition, PolicyDomain, PolicyRule,
-        },
-        metric::Metric,
-        state_machine::FeatureState,
-        work_package::{DependencyType, WorkPackage, WpDependency, WpState},
+    use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
+    use agileplus_domain::domain::feature::Feature;
+    use agileplus_domain::domain::governance::{
+        Evidence, EvidenceType, GovernanceContract, GovernanceRule, PolicyCheck, PolicyDefinition,
+        PolicyDomain, PolicyRule,
     };
+    use agileplus_domain::domain::metric::Metric;
+    use agileplus_domain::domain::state_machine::FeatureState;
+    use agileplus_domain::domain::work_package::{
+        DependencyType, WorkPackage, WpDependency, WpState,
+    };
+
+    use super::*;
 
     fn make_adapter() -> SqliteStorageAdapter {
         SqliteStorageAdapter::in_memory().expect("in-memory adapter")

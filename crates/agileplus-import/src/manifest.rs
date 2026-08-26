@@ -1,12 +1,9 @@
+use agileplus_domain::domain::cycle::CycleState;
+use agileplus_domain::domain::module::Module;
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::domain::work_package::{PrState, WpState};
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-
-use agileplus_domain::domain::{
-    cycle::CycleState,
-    module::Module,
-    state_machine::FeatureState,
-    work_package::{PrState, WpState},
-};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ImportBundle {

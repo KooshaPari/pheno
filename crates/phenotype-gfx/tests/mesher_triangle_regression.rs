@@ -8,13 +8,11 @@
 //! These are regular `#[test]` items — not benchmarks — so `cargo test` catches
 //! regressions in CI without needing a timing baseline.
 
-use phenotype_gfx::voxel::{
-    chunk::{Chunk, ChunkId, ChunkView, CHUNK_EDGE, CHUNK_VOXELS},
-    cubic_mesher::CubicMesher,
-    greedy_mesher::GreedyMesher,
-    lod::LodLevel,
-    material::MaterialId,
-};
+use phenotype_gfx::voxel::chunk::{Chunk, ChunkId, ChunkView, CHUNK_EDGE, CHUNK_VOXELS};
+use phenotype_gfx::voxel::cubic_mesher::CubicMesher;
+use phenotype_gfx::voxel::greedy_mesher::GreedyMesher;
+use phenotype_gfx::voxel::lod::LodLevel;
+use phenotype_gfx::voxel::material::MaterialId;
 
 // ---------------------------------------------------------------------------
 // Helpers

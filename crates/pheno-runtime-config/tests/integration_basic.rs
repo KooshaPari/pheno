@@ -3,9 +3,10 @@
 //! Tests the `Reloadable<T>` trait and `ArcReloadable<T>` implementation
 //! with concurrent readers, watch channels, and large values.
 
-use pheno_runtime_config::{ArcReloadable, Reloadable};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
+
+use pheno_runtime_config::{ArcReloadable, Reloadable};
 
 #[test]
 fn concurrent_readers_no_data_race() {

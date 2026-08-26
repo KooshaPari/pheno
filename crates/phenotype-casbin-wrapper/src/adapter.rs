@@ -1,7 +1,8 @@
 //! Casbin adapter for Phenotype policy engine.
 
-use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, MgmtApi};
 use std::sync::Arc;
+
+use casbin::{CoreApi, DefaultModel, Enforcer, FileAdapter, MgmtApi};
 use tokio::sync::RwLock;
 
 use crate::error::CasbinWrapperError;
@@ -143,8 +144,9 @@ impl CasbinAdapter {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use tempfile::TempDir;
+
+    use super::*;
 
     fn create_test_files() -> (TempDir, String, String) {
         let dir = TempDir::new().unwrap();

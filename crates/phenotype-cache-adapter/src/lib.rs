@@ -2,8 +2,9 @@
 //!
 //! Two-tier cache with L1 (LRU) and L2 (Moka).
 
-use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
+
+use serde::{Deserialize, Serialize};
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 

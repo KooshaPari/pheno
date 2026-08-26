@@ -1,12 +1,14 @@
 // Policy loader for TOML configuration files.
 
+use std::fs;
+use std::path::Path;
+
+use serde::Deserialize;
+
 use crate::error::PolicyEngineError;
 use crate::policy::Policy;
 use crate::result::Severity;
 use crate::rule::{Rule, RuleType};
-use serde::Deserialize;
-use std::fs;
-use std::path::Path;
 
 fn default_priority() -> u32 {
     100

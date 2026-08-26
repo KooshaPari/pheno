@@ -11,17 +11,13 @@ pub mod vcs;
 
 // -- Trait re-exports --
 pub use agent::AgentPort;
-pub use content::ContentStoragePort;
-pub use observability::ObservabilityPort;
-pub use review::ReviewPort;
-pub use storage::StoragePort;
-pub use vcs::VcsPort;
-
 // -- Supporting type re-exports --
 pub use agent::{AgentConfig, AgentKind, AgentResult, AgentStatus, AgentTask};
-pub use observability::{LogEntry, LogLevel, MetricValue, SpanContext};
-pub use review::{CiStatus, CommentSeverity, PrInfo, ReviewComment, ReviewStatus};
-pub use vcs::{ConflictInfo, FeatureArtifacts, MergeResult, WorktreeInfo};
+pub use content::ContentStoragePort;
+pub use observability::{LogEntry, LogLevel, MetricValue, ObservabilityPort, SpanContext};
+pub use review::{CiStatus, CommentSeverity, PrInfo, ReviewComment, ReviewPort, ReviewStatus};
+pub use storage::StoragePort;
+pub use vcs::{ConflictInfo, FeatureArtifacts, MergeResult, VcsPort, WorktreeInfo};
 
 /// Application context bundling all ports for dependency injection.
 ///

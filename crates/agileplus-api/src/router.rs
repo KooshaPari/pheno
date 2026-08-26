@@ -31,17 +31,15 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Instant;
 
+use agileplus_domain::credentials::CredentialStore;
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use axum::routing::get;
-use axum::Json;
-use axum::{middleware, Router};
+use axum::{middleware, Json, Router};
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 use tower_http::trace::TraceLayer;
-
-use agileplus_domain::credentials::CredentialStore;
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
 
 type BoxError = Box<dyn std::error::Error + Send + Sync>;
 

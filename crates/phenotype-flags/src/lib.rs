@@ -224,8 +224,9 @@ fn parse_bool(s: &str) -> Option<bool> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::collections::BTreeMap;
+
+    use super::*;
 
     #[test]
     fn test_new_is_empty() {

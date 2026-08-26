@@ -169,11 +169,12 @@ impl Sweeper {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::catalog::{CatalogEntry, CatalogWire, InMemoryCatalog, ModelCatalog};
     use std::collections::HashSet;
     use std::sync::{Arc, Mutex};
     use std::time::Duration;
+
+    use super::*;
+    use crate::catalog::{CatalogEntry, CatalogWire, InMemoryCatalog, ModelCatalog};
 
     fn wire_with_two_models() -> CatalogWire {
         let mut ids = HashSet::new();

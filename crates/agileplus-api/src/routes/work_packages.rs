@@ -10,23 +10,21 @@
 
 mod transition;
 
+use agileplus_domain::domain::work_package::{WorkPackage, WpState};
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use chrono::Utc;
 use serde::Deserialize;
-
-use agileplus_domain::domain::work_package::{WorkPackage, WpState};
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
+use transition::transition_work_package;
 
 use crate::error::{domain_error, not_found, ApiResponse};
 use crate::responses::WorkPackageResponse;
 use crate::state::AppState;
-
-use transition::transition_work_package;
 
 pub fn routes<S, V, O>() -> Router<AppState<S, V, O>>
 where

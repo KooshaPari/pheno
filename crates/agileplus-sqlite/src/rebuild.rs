@@ -1,14 +1,10 @@
 //! rebuild_from_git — reconstruct SQLite state from git artifacts (FR-017).
 
-use agileplus_domain::{
-    domain::{
-        audit::{hash_entry, AuditEntry, EvidenceRef},
-        feature::Feature,
-        state_machine::FeatureState,
-    },
-    error::DomainError,
-    ports::VcsPort,
-};
+use agileplus_domain::domain::audit::{hash_entry, AuditEntry, EvidenceRef};
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::VcsPort;
 
 use crate::SqliteStorageAdapter;
 
@@ -281,14 +277,10 @@ mod tests {
     use std::collections::HashMap;
     use std::path::{Path, PathBuf};
 
-    use agileplus_domain::{
-        domain::audit::hash_entry,
-        error::DomainError,
-        ports::{
-            vcs::{ConflictInfo, FeatureArtifacts, MergeResult, WorktreeInfo},
-            StoragePort, VcsPort,
-        },
-    };
+    use agileplus_domain::domain::audit::hash_entry;
+    use agileplus_domain::error::DomainError;
+    use agileplus_domain::ports::vcs::{ConflictInfo, FeatureArtifacts, MergeResult, WorktreeInfo};
+    use agileplus_domain::ports::{StoragePort, VcsPort};
 
     use super::*;
     use crate::SqliteStorageAdapter;

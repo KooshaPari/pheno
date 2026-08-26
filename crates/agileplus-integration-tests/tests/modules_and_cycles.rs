@@ -10,16 +10,12 @@
 //!   T037 -- FR-M03, FR-C03
 //!   T038 -- FR-M02, FR-C01, FR-C03, FR-C04, FR-C07
 
-use agileplus_domain::{
-    domain::{
-        cycle::{Cycle, CycleFeature, CycleState, CycleWithFeatures},
-        feature::Feature,
-        module::{Module, ModuleFeatureTag},
-        state_machine::FeatureState,
-    },
-    error::DomainError,
-    ports::StoragePort,
-};
+use agileplus_domain::domain::cycle::{Cycle, CycleFeature, CycleState, CycleWithFeatures};
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::module::{Module, ModuleFeatureTag};
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::StoragePort;
 use agileplus_sqlite::SqliteStorageAdapter;
 use chrono::NaiveDate;
 

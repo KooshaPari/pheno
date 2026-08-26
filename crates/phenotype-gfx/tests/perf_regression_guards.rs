@@ -13,17 +13,15 @@
 
 use std::time::Instant;
 
-use phenotype_gfx::voxel::{
-    chunk::{Chunk, ChunkId, ChunkView, CHUNK_EDGE, CHUNK_VOXELS},
-    coord::ChunkCoord,
-    cubic_mesher::CubicMesher,
-    lod::LodLevel,
-    material::MaterialId,
-    octree::VoxelOctree,
-    serial::save_chunk,
-    world::VoxelWorld,
-    WorldCoord, FIXED_SCALE,
-};
+use phenotype_gfx::voxel::chunk::{Chunk, ChunkId, ChunkView, CHUNK_EDGE, CHUNK_VOXELS};
+use phenotype_gfx::voxel::coord::ChunkCoord;
+use phenotype_gfx::voxel::cubic_mesher::CubicMesher;
+use phenotype_gfx::voxel::lod::LodLevel;
+use phenotype_gfx::voxel::material::MaterialId;
+use phenotype_gfx::voxel::octree::VoxelOctree;
+use phenotype_gfx::voxel::serial::save_chunk;
+use phenotype_gfx::voxel::world::VoxelWorld;
+use phenotype_gfx::voxel::{WorldCoord, FIXED_SCALE};
 
 // ---------------------------------------------------------------------------
 // Helpers

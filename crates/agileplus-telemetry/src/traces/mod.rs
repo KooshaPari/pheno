@@ -15,7 +15,8 @@ use std::time::Instant;
 use opentelemetry::global;
 use opentelemetry::trace::TracerProvider as _;
 use tracing::Subscriber;
-use tracing_subscriber::{registry::LookupSpan, Layer};
+use tracing_subscriber::registry::LookupSpan;
+use tracing_subscriber::Layer;
 
 // ---------------------------------------------------------------------------
 // OTLP initialisation (T090 / T091)
@@ -198,8 +199,9 @@ impl Drop for SpanGuard {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use tracing_subscriber::prelude::*;
+
+    use super::*;
 
     fn init_test_subscriber() {
         // Ignore errors if subscriber already set (other tests).

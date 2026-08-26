@@ -5,12 +5,11 @@
 //!
 //! Traceability: WP15-T086
 
-use serde::{Deserialize, Serialize};
-
 use agileplus_domain::domain::audit::AuditEntry;
 use agileplus_domain::domain::feature::Feature;
 use agileplus_domain::domain::governance::GovernanceContract;
 use agileplus_domain::domain::work_package::WorkPackage;
+use serde::{Deserialize, Serialize};
 
 // ----- Features -----
 

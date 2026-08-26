@@ -3,8 +3,9 @@
 //! Orchestrates camera capture → face detection → face mesh → gaze estimation.
 //! Provides a high-level API for the CLI and other consumers.
 
-use eyetracker_camera::{Camera, CameraConfig, Frame};
 use std::time::Instant;
+
+use eyetracker_camera::{Camera, CameraConfig, Frame};
 
 use crate::classification::{GazeClassifier, GazeEvent};
 use crate::face_mesh::{extract_eye_regions, FaceBox, FaceDetector, FaceResult, Landmark3D};
@@ -340,8 +341,9 @@ fn create_fallback_face(frame: &Frame) -> FaceResult {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use eyetracker_camera::PixelFormat;
+
+    use super::*;
 
     #[test]
     fn test_pipeline_config_default() {

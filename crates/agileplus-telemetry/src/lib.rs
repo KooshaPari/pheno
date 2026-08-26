@@ -25,7 +25,9 @@ use opentelemetry::metrics::MeterProvider as _MeterProvider;
 use opentelemetry_sdk::metrics::SdkMeterProvider;
 use tracing_appender::non_blocking::WorkerGuard;
 
-use crate::{config::TelemetryConfig, logs::LogError, metrics::MetricsRecorder};
+use crate::config::TelemetryConfig;
+use crate::logs::LogError;
+use crate::metrics::MetricsRecorder;
 
 // ---------------------------------------------------------------------------
 // Error
@@ -354,9 +356,11 @@ fn noop_span_context() -> SpanContext {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use agileplus_domain::ports::observability::LogEntry;
     use std::collections::HashMap;
+
+    use agileplus_domain::ports::observability::LogEntry;
+
+    use super::*;
 
     #[test]
     fn noop_adapter_does_not_panic() {

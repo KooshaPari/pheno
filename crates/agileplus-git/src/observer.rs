@@ -1,7 +1,8 @@
 //! Git observer - watches .git/ for ref changes and emits typed events.
 
-use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::PathBuf;
+
+use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tokio::sync::broadcast;
 use tracing::{debug, info};
 

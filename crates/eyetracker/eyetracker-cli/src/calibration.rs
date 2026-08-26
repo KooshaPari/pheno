@@ -4,12 +4,13 @@
 //! target points on screen and gaze samples are collected to build
 //! a calibration mapping.
 
-use anyhow::Result;
-use eyetracker_inference::{PipelineConfig, TrackingPipeline};
-use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
+
+use anyhow::Result;
+use eyetracker_inference::{PipelineConfig, TrackingPipeline};
+use serde::{Deserialize, Serialize};
 
 /// Calibration point on screen
 #[derive(Debug, Clone, Serialize, Deserialize)]

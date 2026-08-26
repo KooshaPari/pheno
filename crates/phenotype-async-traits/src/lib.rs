@@ -167,8 +167,9 @@ impl<T: Send + 'static> AsyncDropper<T> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::sync::atomic::{AtomicUsize, Ordering};
+
+    use super::*;
 
     #[tokio::test]
     async fn test_map() {

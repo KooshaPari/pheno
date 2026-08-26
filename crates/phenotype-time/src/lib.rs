@@ -13,7 +13,5 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub mod duration;
 pub mod timestamp;
 
-pub use duration::constants as duration_constants;
-pub use duration::DurationExt;
-pub use timestamp::constants as time_constants;
-pub use timestamp::Timestamp;
+pub use duration::{constants as duration_constants, DurationExt};
+pub use timestamp::{constants as time_constants, Timestamp};

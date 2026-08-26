@@ -17,9 +17,9 @@ pub mod sync;
 pub mod sync_queue;
 pub mod webhook;
 
-pub use client::PlaneClient;
 pub use client::{
-    PlaneCreateCycleRequest, PlaneCreateModuleRequest, PlaneCycleResponse, PlaneModuleResponse,
+    PlaneClient, PlaneCreateCycleRequest, PlaneCreateModuleRequest, PlaneCycleResponse,
+    PlaneModuleResponse,
 };
 pub use content_hash::{compute_content_hash, detect_conflict, ConflictStatus};
 pub use inbound::{InboundOutcome, InboundSync, LocalEntityStore};

@@ -2,9 +2,10 @@
 //!
 //! Provides in-memory implementations suitable for testing and prototyping.
 
-use crate::error;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
+
+use crate::error;
 
 /// In-memory repository implementation using HashMap.
 ///

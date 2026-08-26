@@ -2,10 +2,8 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::RwLock;
 
-use aes_gcm::{
-    aead::{Aead, KeyInit, OsRng},
-    Aes256Gcm, Nonce,
-};
+use aes_gcm::aead::{Aead, KeyInit, OsRng};
+use aes_gcm::{Aes256Gcm, Nonce};
 use argon2::Argon2;
 use rand::RngCore;
 
@@ -261,8 +259,9 @@ impl CredentialStore for FileCredentialStore {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::sync::{Mutex, OnceLock};
+
+    use super::*;
 
     fn test_lock() -> &'static Mutex<()> {
         static TEST_LOCK: OnceLock<Mutex<()>> = OnceLock::new();

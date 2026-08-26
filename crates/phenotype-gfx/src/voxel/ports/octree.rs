@@ -1,7 +1,6 @@
 //! Octree port: sparse voxel tree query and storage contracts.
 
 use crate::voxel::coord::ChunkCoord;
-
 // Re-export the domain type so the trait and implementation share the same type.
 pub use crate::voxel::octree::OctreeNode;
 

@@ -138,8 +138,9 @@ impl Scheduler {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_domain::domain::work_package::DependencyType;
+
+    use super::*;
 
     fn dep(wp_id: i64, depends_on: i64) -> WpDependency {
         WpDependency {

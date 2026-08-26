@@ -6,7 +6,6 @@
 
 pub use crate::voxel::cubic_mesher::{CubicMesher, CubicVoxel};
 pub use crate::voxel::greedy_mesher::GreedyMesher;
-
 use crate::voxel::lod::LodLevel;
 use crate::voxel::mesh::Mesher;
 use crate::voxel::ports::chunk::ChunkView;

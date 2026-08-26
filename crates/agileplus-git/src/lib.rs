@@ -16,10 +16,8 @@ pub mod worktree;
 
 use std::path::{Path, PathBuf};
 
-use agileplus_domain::{
-    error::DomainError,
-    ports::{ConflictInfo, FeatureArtifacts, MergeResult, VcsPort, WorktreeInfo},
-};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::{ConflictInfo, FeatureArtifacts, MergeResult, VcsPort, WorktreeInfo};
 use git2::Repository;
 
 /// Map a git2 error to a DomainError.

@@ -135,8 +135,9 @@ impl AuditLog {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use tempfile::TempDir;
+
+    use super::*;
 
     #[test]
     fn audit_log_write_and_read() {

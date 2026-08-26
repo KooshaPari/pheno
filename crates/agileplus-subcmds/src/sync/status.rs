@@ -1,7 +1,9 @@
 use anyhow::Result;
 use chrono::{Duration, Utc};
 
-use super::{args::SyncStatusArgs, helpers::format_age, types::SyncStatusRow};
+use super::args::SyncStatusArgs;
+use super::helpers::format_age;
+use super::types::SyncStatusRow;
 
 /// Run `agileplus sync status`.
 pub fn run_sync_status(args: SyncStatusArgs) -> Result<()> {

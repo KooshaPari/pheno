@@ -6,14 +6,13 @@
 use std::io::{self, BufRead};
 use std::path::PathBuf;
 
-use anyhow::{Context, Result};
-use chrono::Utc;
-use sha2::{Digest, Sha256};
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::feature::Feature;
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
+use anyhow::{Context, Result};
+use chrono::Utc;
+use sha2::{Digest, Sha256};
 
 use super::governance::{enforce_governance, load_constitution, validate_spec_consistency};
 

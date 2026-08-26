@@ -1,8 +1,9 @@
 //! Configuration format detection and serialization.
 
-use crate::{ConfigError, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
+
+use crate::{ConfigError, Result};
 
 /// Supported configuration formats.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

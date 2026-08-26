@@ -1,9 +1,10 @@
 //! Common health checker implementations.
 
-use crate::{HealthChecker, HealthStatus};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
+
+use crate::{HealthChecker, HealthStatus};
 
 /// Health checker that probes a database connection via a user-supplied closure.
 pub struct DatabaseHealthChecker<F>

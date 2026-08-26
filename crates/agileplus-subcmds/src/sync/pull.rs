@@ -2,11 +2,9 @@ use std::time::Instant;
 
 use anyhow::Result;
 
-use super::{
-    args::SyncPullArgs,
-    helpers::{outcome_icon, pull_verb},
-    types::{SyncDirection, SyncItemOutcome, SyncReport, SyncReportEntry},
-};
+use super::args::SyncPullArgs;
+use super::helpers::{outcome_icon, pull_verb};
+use super::types::{SyncDirection, SyncItemOutcome, SyncReport, SyncReportEntry};
 
 /// Run `agileplus sync pull`.
 pub async fn run_sync_pull(args: SyncPullArgs) -> Result<()> {

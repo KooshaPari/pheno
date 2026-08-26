@@ -86,8 +86,9 @@ pub mod ttl {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::time::Duration;
+
+    use super::*;
 
     #[test]
     fn repository_error_not_found_display() {

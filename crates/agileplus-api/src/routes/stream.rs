@@ -7,6 +7,9 @@
 //!
 //! Traceability: WP11-T069
 
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use axum::extract::State;
 use axum::response::sse::{Event, KeepAlive, Sse};
 use axum::response::IntoResponse;
@@ -14,9 +17,6 @@ use tokio_stream::wrappers::BroadcastStream;
 use tokio_stream::StreamExt as _;
 
 use crate::state::AppState;
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
 
 /// `GET /api/v1/stream`
 ///

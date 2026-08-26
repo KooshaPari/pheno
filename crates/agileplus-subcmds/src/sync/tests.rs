@@ -1,5 +1,6 @@
-use super::*;
 use tempfile::TempDir;
+
+use super::*;
 
 #[test]
 fn sync_config_default() {

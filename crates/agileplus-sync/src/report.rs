@@ -92,8 +92,9 @@ impl fmt::Display for SyncReport {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::time::Duration;
+
+    use super::*;
 
     #[test]
     fn empty_report_is_clean() {

@@ -5,9 +5,8 @@
 //!
 //! Traceability: WP17-T099
 
-use chrono::Utc;
-
 pub use agileplus_domain::domain::backlog::{BacklogItem, BacklogPriority, BacklogStatus, Intent};
+use chrono::Utc;
 
 /// In-memory backlog store for unit testing and lightweight usage.
 /// Production usage goes through SQLite via StoragePort extension.

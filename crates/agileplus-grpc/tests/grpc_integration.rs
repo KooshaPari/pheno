@@ -5,16 +5,13 @@
 //!
 //! Traceability: WP14-T079, T080, T080b, T083
 
-use agileplus_domain::{
-    domain::{feature::Feature, work_package::WorkPackage},
-    error::DomainError,
-};
-use agileplus_grpc::{
-    conversions::{feature_to_proto, wp_to_proto},
-    event_bus::{AgentEvent, EventBus},
-    proxy::ProxyRouter,
-    server::domain_error_to_status,
-};
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::work_package::WorkPackage;
+use agileplus_domain::error::DomainError;
+use agileplus_grpc::conversions::{feature_to_proto, wp_to_proto};
+use agileplus_grpc::event_bus::{AgentEvent, EventBus};
+use agileplus_grpc::proxy::ProxyRouter;
+use agileplus_grpc::server::domain_error_to_status;
 
 // --- Conversion tests ---
 

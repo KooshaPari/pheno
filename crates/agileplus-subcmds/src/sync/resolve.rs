@@ -1,10 +1,8 @@
 use anyhow::Result;
 
-use super::{
-    args::SyncResolveArgs,
-    helpers::capitalize,
-    types::{ConflictResolution, SyncConflict},
-};
+use super::args::SyncResolveArgs;
+use super::helpers::capitalize;
+use super::types::{ConflictResolution, SyncConflict};
 
 /// Run `agileplus sync resolve <entity-type> <entity-id>`.
 pub fn run_sync_resolve(args: SyncResolveArgs) -> Result<()> {

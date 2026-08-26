@@ -1,7 +1,8 @@
 use anyhow::{Context, Result};
 use clap::ValueEnum;
 
-use super::{args::SyncAutoArgs, config::SyncConfig};
+use super::args::SyncAutoArgs;
+use super::config::SyncConfig;
 
 /// Action for `agileplus sync auto`.
 #[derive(Debug, Clone, ValueEnum)]

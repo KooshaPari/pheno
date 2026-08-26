@@ -2,11 +2,10 @@
 //!
 //! Traceability: FR-STORE-PROJECT
 
-use chrono::DateTime;
-use rusqlite::{params, Connection};
-
 use agileplus_domain::domain::project::Project;
 use agileplus_domain::error::DomainError;
+use chrono::DateTime;
+use rusqlite::{params, Connection};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

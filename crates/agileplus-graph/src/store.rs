@@ -1,6 +1,7 @@
-use crate::config::GraphConfig;
 use async_trait::async_trait;
 use serde_json::Value;
+
+use crate::config::GraphConfig;
 
 #[derive(Debug, thiserror::Error)]
 pub enum GraphError {

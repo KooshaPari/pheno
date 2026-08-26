@@ -1,9 +1,8 @@
-use crate::config::{AppConfig, CredentialBackend};
-
 use super::file::FileCredentialStore;
 #[cfg(feature = "keychain")]
 use super::keychain::KeychainCredentialStore;
 use super::store::CredentialStore;
+use crate::config::{AppConfig, CredentialBackend};
 
 /// Create the appropriate credential store based on the app configuration.
 pub fn create_credential_store(config: &AppConfig) -> Box<dyn CredentialStore> {

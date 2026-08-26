@@ -6,7 +6,6 @@
 //! Traceability: WP19-T110
 
 use agileplus_integration_tests::common::fixtures::plane_webhook_payload;
-
 #[cfg(feature = "integration")]
 use agileplus_integration_tests::common::{
     fixtures::feature_create_payload,

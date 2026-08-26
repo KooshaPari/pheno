@@ -1,6 +1,7 @@
-use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt;
+
+use serde::{Deserialize, Serialize};
 
 /// Represents the computational complexity of an algorithm.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

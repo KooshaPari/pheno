@@ -7,13 +7,13 @@
 
 use std::collections::HashMap;
 
+use agileplus_triage::BacklogItem;
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use crate::client::{GitHubClient, GitHubIssuePayload};
-use agileplus_triage::BacklogItem;
 
 /// Sync state for GitHub Issues tracking.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -153,8 +153,9 @@ fn hash_content(content: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_triage::{BacklogPriority, BacklogStatus, Intent};
+
+    use super::*;
 
     fn sample_bug() -> BacklogItem {
         BacklogItem {

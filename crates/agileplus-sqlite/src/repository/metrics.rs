@@ -1,8 +1,8 @@
 //! Metrics repository — CRUD for the `metrics` table.
 
+use agileplus_domain::domain::metric::Metric;
+use agileplus_domain::error::DomainError;
 use rusqlite::{params, Connection};
-
-use agileplus_domain::{domain::metric::Metric, error::DomainError};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

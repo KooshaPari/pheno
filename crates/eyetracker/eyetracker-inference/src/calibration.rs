@@ -4,9 +4,10 @@
 //! Includes 9-point grid constants and quality scoring used to decide whether
 //! a calibration should be accepted.
 
+use std::time::Instant;
+
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use std::time::Instant;
 
 /// Calibration point on screen
 #[derive(Debug, Clone, Serialize, Deserialize)]

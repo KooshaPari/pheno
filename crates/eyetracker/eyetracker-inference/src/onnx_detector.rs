@@ -13,10 +13,11 @@
 //! allows compilation everywhere; the pipeline falls back to the geometric
 //! estimator.
 
-use crate::face_mesh::{FaceDetector, FaceResult};
 use anyhow::{anyhow, Result};
 use eyetracker_camera::Frame;
 use serde::{Deserialize, Serialize};
+
+use crate::face_mesh::{FaceDetector, FaceResult};
 
 /// ONNX face detector configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -178,9 +179,11 @@ impl FaceDetector for OnnxFaceDetector {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use eyetracker_camera::PixelFormat;
     use std::time::Instant;
+
+    use eyetracker_camera::PixelFormat;
+
+    use super::*;
 
     fn dummy_frame() -> Frame {
         Frame {

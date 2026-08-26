@@ -9,13 +9,12 @@
 //!
 //! Traceability: FR-030 / WP11-T065
 
+use agileplus_domain::credentials::CredentialStore;
 use axum::extract::Request;
 use axum::http::HeaderMap;
 use axum::middleware::Next;
 use axum::response::Response;
 use tracing::warn;
-
-use agileplus_domain::credentials::CredentialStore;
 
 use crate::error::{ApiError, ApiResponse};
 

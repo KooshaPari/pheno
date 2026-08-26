@@ -4,6 +4,7 @@
 //! and canned response handlers.
 
 use std::path::PathBuf;
+
 use tempfile::TempDir;
 
 /// Temporary directory fixture that auto-cleans on drop.

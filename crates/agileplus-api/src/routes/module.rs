@@ -7,18 +7,17 @@
 //!
 //! Traces to: FR-D01, FR-D04
 
+use agileplus_domain::domain::module::{Module, ModuleWithFeatures};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use askama::Template;
 use axum::extract::{Path, State};
 use axum::response::Html;
 use axum::routing::get;
 use axum::{Json, Router};
 use serde::Serialize;
-
-use agileplus_domain::domain::module::{Module, ModuleWithFeatures};
-use agileplus_domain::error::DomainError;
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
 
 use crate::error::{domain_error, not_found, template_error, ApiResponse};
 use crate::state::AppState;

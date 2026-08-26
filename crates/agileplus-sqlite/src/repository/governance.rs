@@ -1,13 +1,10 @@
 //! Governance repository — CRUD for `governance_contracts` and `policy_rules`.
 
-use rusqlite::{params, Connection, Row};
-
-use agileplus_domain::{
-    domain::governance::{
-        GovernanceContract, GovernanceRule, PolicyDefinition, PolicyDomain, PolicyRule,
-    },
-    error::DomainError,
+use agileplus_domain::domain::governance::{
+    GovernanceContract, GovernanceRule, PolicyDefinition, PolicyDomain, PolicyRule,
 };
+use agileplus_domain::error::DomainError;
+use rusqlite::{params, Connection, Row};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

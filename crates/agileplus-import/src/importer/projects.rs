@@ -4,10 +4,10 @@
 
 use std::collections::HashMap;
 
-use anyhow::{Context, Result};
-
-use agileplus_domain::domain::{feature::Feature, project::Project};
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::project::Project;
 use agileplus_domain::ports::StoragePort;
+use anyhow::{Context, Result};
 
 use crate::manifest::ImportProject;
 use crate::report::ImportReport;

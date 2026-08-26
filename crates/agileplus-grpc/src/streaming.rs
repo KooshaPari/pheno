@@ -4,14 +4,11 @@
 
 use std::pin::Pin;
 
+use agileplus_proto::agileplus::v1::{AgentEvent as ProtoAgentEvent, StreamAgentEventsResponse};
 use tokio::sync::broadcast;
 use tokio_stream::wrappers::BroadcastStream;
-use tokio_stream::Stream;
-use tokio_stream::StreamExt as TokioStreamExt;
+use tokio_stream::{Stream, StreamExt as TokioStreamExt};
 use tonic::Status;
-
-use agileplus_proto::agileplus::v1::AgentEvent as ProtoAgentEvent;
-use agileplus_proto::agileplus::v1::StreamAgentEventsResponse;
 
 use crate::event_bus::AgentEvent;
 

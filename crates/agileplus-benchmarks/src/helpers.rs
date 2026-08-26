@@ -3,7 +3,9 @@
 //! All helpers are sync (return values directly) so they can be called
 //! from both Criterion bench closures and regular `#[test]` functions.
 
-use agileplus_domain::domain::{event::Event, feature::Feature, state_machine::FeatureState};
+use agileplus_domain::domain::event::Event;
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_sqlite::SqliteStorageAdapter;
 use chrono::Utc;
 

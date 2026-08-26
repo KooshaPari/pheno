@@ -1,13 +1,11 @@
 //! Repository operations for backlog queue items.
 
-use rusqlite::{params, params_from_iter, types::Value, Connection, Row};
-
-use agileplus_domain::{
-    domain::backlog::{
-        BacklogFilters, BacklogItem, BacklogPriority, BacklogSort, BacklogStatus, Intent,
-    },
-    error::DomainError,
+use agileplus_domain::domain::backlog::{
+    BacklogFilters, BacklogItem, BacklogPriority, BacklogSort, BacklogStatus, Intent,
 };
+use agileplus_domain::error::DomainError;
+use rusqlite::types::Value;
+use rusqlite::{params, params_from_iter, Connection, Row};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

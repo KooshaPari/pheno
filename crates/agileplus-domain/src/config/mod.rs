@@ -12,14 +12,14 @@ mod telemetry;
 #[cfg(test)]
 mod tests;
 
+pub use core::CoreConfig;
+
 pub use agents::AgentConfig;
 pub use api::ApiConfig;
-pub use core::CoreConfig;
 pub use credentials::{CredentialBackend, CredentialConfig};
 pub use loader::ConfigError;
-pub use telemetry::TelemetryConfig;
-
 use serde::{Deserialize, Serialize};
+pub use telemetry::TelemetryConfig;
 
 /// Top-level configuration for AgilePlus.
 ///

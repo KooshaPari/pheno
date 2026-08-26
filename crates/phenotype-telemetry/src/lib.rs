@@ -374,8 +374,9 @@ impl Logger for NoopTelemetry {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::str::FromStr;
+
+    use super::*;
 
     #[test]
     fn test_log_level_from_str() {

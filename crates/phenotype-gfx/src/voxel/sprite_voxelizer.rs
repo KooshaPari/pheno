@@ -302,9 +302,11 @@ pub fn voxelize_to_chunk(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use proptest::prelude::*;
     use std::collections::HashSet;
+
+    use proptest::prelude::*;
+
+    use super::*;
 
     fn solid_pixel() -> [u8; 4] {
         [200, 100, 50, 255]

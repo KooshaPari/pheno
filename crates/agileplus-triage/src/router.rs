@@ -4,9 +4,10 @@
 //!
 //! Traceability: WP17-T101, T102
 
-use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::fmt::Write;
+
+use serde::{Deserialize, Serialize};
 
 /// Project configuration detected during init/scan.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]

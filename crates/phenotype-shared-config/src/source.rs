@@ -1,7 +1,8 @@
 //! Configuration source types and priorities.
 
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+
+use serde::{Deserialize, Serialize};
 
 /// Priority levels for configuration sources.
 /// Higher priority values override lower ones.

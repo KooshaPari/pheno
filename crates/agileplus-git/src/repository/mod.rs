@@ -2,10 +2,8 @@
 //!
 //! Traceability: WP07-T040
 
-use agileplus_domain::{
-    error::DomainError,
-    ports::{ConflictInfo, MergeResult},
-};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::{ConflictInfo, MergeResult};
 use git2::build::CheckoutBuilder;
 use git2::{BranchType, MergeAnalysis, Repository, Signature};
 

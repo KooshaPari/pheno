@@ -4,16 +4,12 @@
 //! OpenTelemetry Meter.  A [`MetricSnapshot`] type captures point-in-time
 //! values for persistence to SQLite.
 
-use std::{
-    sync::atomic::{AtomicU64, Ordering},
-    time::Duration,
-};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::Duration;
 
 use chrono::{DateTime, Utc};
-use opentelemetry::{
-    metrics::{Counter, Gauge, Histogram, Meter},
-    KeyValue,
-};
+use opentelemetry::metrics::{Counter, Gauge, Histogram, Meter};
+use opentelemetry::KeyValue;
 
 // ---------------------------------------------------------------------------
 // Instruments
@@ -247,9 +243,10 @@ pub struct MetricSnapshot {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use opentelemetry::metrics::MeterProvider as _;
     use opentelemetry_sdk::metrics::SdkMeterProvider;
+
+    use super::*;
 
     fn test_recorder() -> MetricsRecorder {
         let provider = SdkMeterProvider::builder().build();

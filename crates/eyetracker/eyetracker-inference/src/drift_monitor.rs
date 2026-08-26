@@ -4,10 +4,12 @@
 //! When drift exceeds a configurable threshold (>2° from baseline), a
 //! recalibration event is emitted. The user may dismiss once per session.
 
+use std::time::{Duration, Instant};
+
+use serde::{Deserialize, Serialize};
+
 use crate::multi_monitor::DisplayId;
 use crate::smoothing::GazeSmoother;
-use serde::{Deserialize, Serialize};
-use std::time::{Duration, Instant};
 
 /// Drift severity level
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

@@ -192,9 +192,10 @@ fn extract_header_optional(headers: &HeaderMap, name: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use http::HeaderValue;
     use proptest::prelude::*;
+
+    use super::*;
 
     #[test]
     fn builder_sets_all_fields() {

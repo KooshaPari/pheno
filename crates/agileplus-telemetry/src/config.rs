@@ -3,10 +3,8 @@
 //! Reads `~/.agileplus/otel-config.yaml`. Missing file returns defaults (stdout
 //! only, no OTLP export).  Environment variables override YAML values.
 
-use std::{
-    collections::HashMap,
-    path::{Path, PathBuf},
-};
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -218,8 +216,9 @@ fn default_config_path() -> PathBuf {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::io::Write;
+
+    use super::*;
 
     #[test]
     fn missing_file_returns_defaults() {

@@ -2,10 +2,9 @@ use anyhow::{Context, Result};
 use reqwest::Method;
 
 use super::endpoints::ClientEndpoints;
-use super::transport;
 use super::{
-    PlaneClient, PlaneCreateCycleRequest, PlaneCreateModuleRequest, PlaneCycleResponse, PlaneIssue,
-    PlaneModuleResponse, PlaneWorkItem, PlaneWorkItemResponse,
+    transport, PlaneClient, PlaneCreateCycleRequest, PlaneCreateModuleRequest, PlaneCycleResponse,
+    PlaneIssue, PlaneModuleResponse, PlaneWorkItem, PlaneWorkItemResponse,
 };
 
 mod cycles;

@@ -7,17 +7,16 @@
 //!
 //! Traces to: FR-D02, FR-D03
 
+use agileplus_domain::domain::cycle::{Cycle, CycleState, CycleWithFeatures};
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::response::Html;
 use axum::routing::get;
 use axum::{Json, Router};
 use serde::Deserialize;
-
-use agileplus_domain::domain::cycle::{Cycle, CycleState, CycleWithFeatures};
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
 
 use crate::error::{domain_error, not_found, template_error, ApiError, ApiResponse};
 use crate::state::AppState;

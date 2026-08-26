@@ -167,13 +167,15 @@ pub fn format_feedback(comments: &[String]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use agileplus_domain::domain::work_package::WorkPackage;
-    use agileplus_domain::error::DomainError;
-    use agileplus_domain::ports::agent::{AgentKind, AgentResult, AgentTask};
     use std::collections::VecDeque;
     use std::path::PathBuf;
     use std::sync::Mutex;
+
+    use agileplus_domain::domain::work_package::WorkPackage;
+    use agileplus_domain::error::DomainError;
+    use agileplus_domain::ports::agent::{AgentKind, AgentResult, AgentTask};
+
+    use super::*;
 
     #[test]
     fn format_feedback_empty() {

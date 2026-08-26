@@ -12,10 +12,11 @@ use tracing::{debug, warn};
 
 #[cfg(target_os = "macos")]
 mod platform {
-    use super::*;
     use core_graphics::event::{CGEvent, CGEventTapLocation, CGMouseButton, ScrollEventUnit};
     use core_graphics::event_source::{CGEventSource, CGEventSourceStateID};
     use core_graphics::geometry::CGPoint;
+
+    use super::*;
 
     /// Send a click + release at the absolute display coordinates.
     pub fn click_at(x: f64, y: f64, button: MouseButton) {

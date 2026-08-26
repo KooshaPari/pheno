@@ -1,11 +1,9 @@
 use std::collections::BTreeMap;
 
-use agileplus_domain::domain::{
-    event::Event,
-    feature::Feature,
-    governance::{Evidence, GovernanceContract},
-    work_package::WorkPackage,
-};
+use agileplus_domain::domain::event::Event;
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::governance::{Evidence, GovernanceContract};
+use agileplus_domain::domain::work_package::WorkPackage;
 use agileplus_domain::ports::StoragePort;
 use agileplus_events::EventStore;
 use anyhow::{Context, Result};
@@ -314,9 +312,10 @@ fn hex_hash(hash: &[u8; 32]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_domain::domain::governance::{EvidenceRequirement, EvidenceType, GovernanceRule};
     use agileplus_domain::domain::work_package::WpState;
+
+    use super::*;
 
     #[test]
     fn requirement_nodes_deduplicate_contract_requirements() {

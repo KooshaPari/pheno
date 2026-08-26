@@ -1,7 +1,8 @@
+use std::fs;
+
 use assert_cmd::Command;
 use predicates::prelude::*;
 use serde_json::json;
-use std::fs;
 use tempfile::tempdir;
 
 #[test]

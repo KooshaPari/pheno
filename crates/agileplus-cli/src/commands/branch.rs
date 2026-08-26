@@ -4,10 +4,9 @@
 
 use std::process::Command;
 
+use agileplus_domain::ports::VcsPort;
 use anyhow::{Context, Result};
 use serde::Serialize;
-
-use agileplus_domain::ports::VcsPort;
 
 #[derive(Debug, Clone, Serialize)]
 struct BranchInfo {

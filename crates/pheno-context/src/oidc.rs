@@ -74,8 +74,9 @@ impl OidcClaims {
 #[cfg(feature = "oidc")]
 #[cfg(test)]
 mod tests {
-    use super::*;
     use http::HeaderValue;
+
+    use super::*;
 
     #[test]
     fn extracts_all_fields() {

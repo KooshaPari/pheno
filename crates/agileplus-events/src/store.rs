@@ -5,7 +5,6 @@
 use agileplus_domain::domain::event::Event;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
-
 pub use phenotype_error_core::RepositoryError as EventError;
 
 #[async_trait]

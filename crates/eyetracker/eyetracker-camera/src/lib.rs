@@ -3,17 +3,16 @@
 //! Provides camera enumeration, frame capture, and configuration
 //! via nokhwa (AVFoundation on macOS).
 
-use anyhow::{anyhow, Result};
-use nokhwa::{
-    pixel_format::RgbFormat,
-    utils::{
-        ApiBackend, CameraFormat, CameraIndex, FrameFormat, RequestedFormat, RequestedFormatType,
-        Resolution,
-    },
-    Camera as NokhwaCamera,
-};
-use serde::{Deserialize, Serialize};
 use std::time::Instant;
+
+use anyhow::{anyhow, Result};
+use nokhwa::pixel_format::RgbFormat;
+use nokhwa::utils::{
+    ApiBackend, CameraFormat, CameraIndex, FrameFormat, RequestedFormat, RequestedFormatType,
+    Resolution,
+};
+use nokhwa::Camera as NokhwaCamera;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 /// Camera-related errors

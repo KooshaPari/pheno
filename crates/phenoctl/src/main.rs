@@ -1,5 +1,7 @@
 //! `phenoctl` CLI backed by the real Configra runtime library.
 
+use std::path::PathBuf;
+
 use anyhow::{anyhow, Context, Result};
 use clap::{Parser, Subcommand};
 use config_schema::ConfigSchema;
@@ -9,7 +11,6 @@ use settly::adapters::sources::{CliSource, EnvSource, FileSource};
 use settly::application::builder::ConfigBuilder;
 use settly::crypto::{decrypt_from_file, encrypt, HotReloader};
 use settly::domain::{Config, ConfigValue, Layer, LayerPriority, LayerStack, Source};
-use std::path::PathBuf;
 use tokio::sync::broadcast;
 
 #[derive(Debug, Parser)]
@@ -423,8 +424,9 @@ fn priority_for_file(index: usize) -> LayerPriority {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use serde_json::json;
+
+    use super::*;
 
     // --- default_type_hint ---
 

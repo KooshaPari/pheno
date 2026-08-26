@@ -6,22 +6,31 @@
 use std::path::PathBuf;
 use std::process;
 
-use anyhow::{Context, Result};
-use clap::{Parser, Subcommand};
-
 use agileplus_cli::agent_runtime::ConfiguredAgentAdapter;
-use agileplus_cli::commands::{
-    branch::BranchArgs, cycle::CycleArgs, hooks::HooksArgs, implement::ImplementArgs,
-    init::InitArgs, mcp::McpArgs, migrate_artifacts::MigrateArtifactsArgs, module::ModuleArgs,
-    plan::PlanArgs, queue::QueueArgs, research::ResearchArgs, retrospective::RetrospectiveArgs,
-    ship::ShipArgs, specify::SpecifyArgs, tracaera::TracaeraArgs, triage::TriageArgs,
-    validate::ValidateArgs,
-};
+use agileplus_cli::commands::branch::BranchArgs;
+use agileplus_cli::commands::cycle::CycleArgs;
+use agileplus_cli::commands::hooks::HooksArgs;
+use agileplus_cli::commands::implement::ImplementArgs;
+use agileplus_cli::commands::init::InitArgs;
+use agileplus_cli::commands::mcp::McpArgs;
+use agileplus_cli::commands::migrate_artifacts::MigrateArtifactsArgs;
+use agileplus_cli::commands::module::ModuleArgs;
+use agileplus_cli::commands::plan::PlanArgs;
+use agileplus_cli::commands::queue::QueueArgs;
+use agileplus_cli::commands::research::ResearchArgs;
+use agileplus_cli::commands::retrospective::RetrospectiveArgs;
+use agileplus_cli::commands::ship::ShipArgs;
+use agileplus_cli::commands::specify::SpecifyArgs;
+use agileplus_cli::commands::tracaera::TracaeraArgs;
+use agileplus_cli::commands::triage::TriageArgs;
+use agileplus_cli::commands::validate::ValidateArgs;
 use agileplus_git::GitVcsAdapter;
 use agileplus_sqlite::SqliteStorageAdapter;
 use agileplus_subcmds::{
     run_dashboard, run_events, run_platform, DashboardArgs, EventsArgs, PlatformArgs,
 };
+use anyhow::{Context, Result};
+use clap::{Parser, Subcommand};
 
 /// Spec-driven development engine.
 #[derive(Parser)]

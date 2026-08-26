@@ -1,11 +1,10 @@
 //! Work package repository — CRUD operations for `work_packages` and `wp_dependencies`.
 
-use rusqlite::{params, Connection, Row};
-
-use agileplus_domain::{
-    domain::work_package::{DependencyType, PrState, WorkPackage, WpDependency, WpState},
-    error::DomainError,
+use agileplus_domain::domain::work_package::{
+    DependencyType, PrState, WorkPackage, WpDependency, WpState,
 };
+use agileplus_domain::error::DomainError;
+use rusqlite::{params, Connection, Row};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

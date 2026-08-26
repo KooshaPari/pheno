@@ -4,13 +4,12 @@
 //! archives the feature, and transitions to Shipped.
 //! Traceability: FR-006 / WP13-T075, T077
 
-use anyhow::{Context, Result};
-use chrono::Utc;
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::domain::work_package::WpState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
+use anyhow::{Context, Result};
+use chrono::Utc;
 
 /// Arguments for the `ship` subcommand.
 #[derive(Debug, clap::Args)]

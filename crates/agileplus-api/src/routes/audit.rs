@@ -5,15 +5,14 @@
 //!
 //! Traceability: WP15-T086
 
+use agileplus_domain::domain::audit::AuditChain;
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use axum::extract::{Path, State};
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use serde_json::{json, Value};
-
-use agileplus_domain::domain::audit::AuditChain;
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
 
 use crate::error::{domain_error, not_found, ApiResponse};
 use crate::responses::AuditEntryResponse;

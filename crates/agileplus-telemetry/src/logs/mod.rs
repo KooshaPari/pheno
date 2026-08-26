@@ -8,7 +8,9 @@ use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use tracing_appender::non_blocking::WorkerGuard;
-use tracing_subscriber::{fmt::format::FmtSpan, prelude::*, EnvFilter};
+use tracing_subscriber::fmt::format::FmtSpan;
+use tracing_subscriber::prelude::*;
+use tracing_subscriber::EnvFilter;
 
 // ---------------------------------------------------------------------------
 // Public types

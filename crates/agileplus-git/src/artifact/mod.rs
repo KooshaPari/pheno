@@ -7,7 +7,8 @@
 
 use std::path::{Path, PathBuf};
 
-use agileplus_domain::{error::DomainError, ports::FeatureArtifacts};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::FeatureArtifacts;
 
 use crate::GitVcsAdapter;
 

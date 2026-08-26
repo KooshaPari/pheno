@@ -23,14 +23,15 @@
 //!   1  one or more required checks failed
 //!   2  bridge not loadable (cdylib missing or broken)
 
+use std::sync::OnceLock;
+use std::time::{Duration, Instant};
+
 use anyhow::{Context, Result};
 use chrono::Utc;
 use clap::Parser;
 use colored::*;
 use pheno_forge_smoke::{default_bridge_path, Bridge, MemoryValue, Provider, Scope};
 use serde::{Deserialize, Serialize};
-use std::sync::OnceLock;
-use std::time::{Duration, Instant};
 use tokio::time::sleep;
 
 #[derive(Parser, Debug)]
@@ -311,7 +312,12 @@ async fn check_endpoint_health(name: &str, url: &str) -> CheckResult {
     }
 }
 
-async fn run_scope_route(scope_label: &str, scope: Scope, bridge: &Bridge, args: &Args) -> CheckResult {
+async fn run_scope_route(
+    scope_label: &str,
+    scope: Scope,
+    bridge: &Bridge,
+    args: &Args,
+) -> CheckResult {
     let start = Instant::now();
     let key = format!("smoke-key-{}", scope_label);
     let value_text = format!("smoke-value-{}", Utc::now().timestamp_millis());

@@ -5,6 +5,7 @@
 
 use std::fs;
 use std::path::Path;
+
 use serde::{Deserialize, Serialize};
 
 use crate::water::error::{WaterError, WaterResult};
@@ -26,7 +27,9 @@ pub struct WaterSnapshot {
     pub material_names: Vec<String>,
 }
 
-fn default_version() -> i32 { 1 }
+fn default_version() -> i32 {
+    1
+}
 
 /// Hexagonal port: save / load water snapshots.
 pub trait ISerializationPort {
@@ -44,11 +47,15 @@ pub struct JsonFileSerializationPort;
 
 impl JsonFileSerializationPort {
     /// New JSON adapter.
-    pub fn new() -> Self { Self }
+    pub fn new() -> Self {
+        Self
+    }
 }
 
 impl ISerializationPort for JsonFileSerializationPort {
-    fn format_id(&self) -> &'static str { "water-json-v1" }
+    fn format_id(&self) -> &'static str {
+        "water-json-v1"
+    }
 
     fn save(&self, snapshot: &WaterSnapshot, destination: &str) -> WaterResult<()> {
         if destination.trim().is_empty() {
@@ -92,11 +99,15 @@ impl ISerializationPort for JsonFileSerializationPort {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::env;
 
+    use super::*;
+
     fn tmp_path(name: &str) -> String {
-        env::temp_dir().join(format!("water-snap-{}.json", name)).to_string_lossy().into_owned()
+        env::temp_dir()
+            .join(format!("water-snap-{}.json", name))
+            .to_string_lossy()
+            .into_owned()
     }
 
     #[test]
@@ -138,7 +149,12 @@ mod tests {
     #[test]
     fn save_empty_destination_raises() {
         let port = JsonFileSerializationPort::new();
-        let snap = WaterSnapshot { version: 1, name: "X".to_string(), sea_level: 0.0, material_names: vec![] };
+        let snap = WaterSnapshot {
+            version: 1,
+            name: "X".to_string(),
+            sea_level: 0.0,
+            material_names: vec![],
+        };
         assert!(port.save(&snap, "").is_err());
     }
 }

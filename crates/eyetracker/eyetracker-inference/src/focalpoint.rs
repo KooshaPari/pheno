@@ -8,14 +8,16 @@
 //! The connector is a thin shim that wraps the eye tracker pipeline and
 //! forwards TrackingResult events to the bus.
 
-use crate::pipeline::TrackingResult;
-use anyhow::{Context, Result};
-use serde::{Deserialize, Serialize};
 use std::io::Write;
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use anyhow::{Context, Result};
+use serde::{Deserialize, Serialize};
+
+use crate::pipeline::TrackingResult;
 
 /// Default socket path used by FocalPoint subscribers
 pub const DEFAULT_SOCKET: &str = "/tmp/eyetracker-focalpoint.sock";
@@ -136,11 +138,13 @@ fn unix_millis() -> u64 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::calibration::CalibrationResult;
-    use eyetracker_camera::{Frame, PixelFormat};
     use std::os::unix::net::UnixListener;
     use std::time::Instant;
+
+    use eyetracker_camera::{Frame, PixelFormat};
+
+    use super::*;
+    use crate::calibration::CalibrationResult;
 
     fn dummy_result() -> TrackingResult {
         TrackingResult {

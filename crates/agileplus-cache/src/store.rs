@@ -2,13 +2,14 @@
 //!
 //! Uses phenotype-error-core::StorageError for canonical error handling.
 
-use crate::pool::CachePool;
-use async_trait::async_trait;
-use redis::AsyncCommands;
-use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
+use async_trait::async_trait;
 pub use phenotype_error_core::StorageError as CacheError;
+use redis::AsyncCommands;
+use serde::{Deserialize, Serialize};
+
+use crate::pool::CachePool;
 
 #[async_trait]
 pub trait CacheStore: Send + Sync {

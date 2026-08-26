@@ -1,7 +1,8 @@
 //! Design-by-contract assertions and invariants for Rust.
 
-use serde::{Deserialize, Serialize};
 use std::fmt;
+
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Debug, Clone, Error)]

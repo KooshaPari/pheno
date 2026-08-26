@@ -17,17 +17,13 @@
 //!     .layer(opentelemetry_tracing_layer());
 //! ```
 
-use std::{
-    future::Future,
-    pin::Pin,
-    task::{Context, Poll},
-    time::Instant,
-};
+use std::future::Future;
+use std::pin::Pin;
+use std::task::{Context, Poll};
+use std::time::Instant;
 
-use axum::{
-    body::Body,
-    http::{Request, Response},
-};
+use axum::body::Body;
+use axum::http::{Request, Response};
 use tower::{Layer, Service};
 use tracing::Instrument;
 

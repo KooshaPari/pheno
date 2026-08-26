@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 use std::fmt;
 use std::sync::{Arc, RwLock};
+
 use thiserror::Error;
 
 /// Callback type for state enter/exit hooks.
@@ -232,8 +233,9 @@ impl StateMachineBuilder {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::sync::atomic::{AtomicUsize, Ordering};
+
+    use super::*;
 
     fn traffic_light() -> StateMachine {
         StateMachineBuilder::new("red")

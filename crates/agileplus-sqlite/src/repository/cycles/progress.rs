@@ -1,6 +1,6 @@
+use agileplus_domain::domain::cycle::WpProgressSummary;
+use agileplus_domain::error::DomainError;
 use rusqlite::{params, Connection};
-
-use agileplus_domain::{domain::cycle::WpProgressSummary, error::DomainError};
 
 use crate::repository::features::map_err;
 

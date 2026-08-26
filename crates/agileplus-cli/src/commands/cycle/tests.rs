@@ -1,6 +1,7 @@
-use super::*;
 use agileplus_domain::domain::cycle::{Cycle, CycleState};
 use chrono::NaiveDate;
+
+use super::*;
 
 /// Traces to: FR-C01
 #[test]

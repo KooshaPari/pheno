@@ -1,9 +1,11 @@
 //! Connection pool for Dragonfly/Redis.
 
-use crate::config::CacheConfig;
+use std::time::Duration;
+
 use bb8::Pool;
 use bb8_redis::RedisConnectionManager;
-use std::time::Duration;
+
+use crate::config::CacheConfig;
 
 #[derive(Debug, thiserror::Error)]
 pub enum PoolError {

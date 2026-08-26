@@ -1,11 +1,8 @@
 //! Audit repository — CRUD for the `audit_log` table.
 
+use agileplus_domain::domain::audit::{AuditEntry, EvidenceRef};
+use agileplus_domain::error::DomainError;
 use rusqlite::{params, Connection, Row};
-
-use agileplus_domain::{
-    domain::audit::{AuditEntry, EvidenceRef},
-    error::DomainError,
-};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

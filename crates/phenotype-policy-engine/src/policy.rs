@@ -1,9 +1,10 @@
 // Policy abstraction and trait definitions.
 
+use serde::{Deserialize, Serialize};
+
 use crate::context::EvaluationContext;
 use crate::result::{PolicyResult, Violation};
 use crate::rule::Rule;
-use serde::{Deserialize, Serialize};
 
 // Trait for evaluable policies.
 pub trait EvaluablePolicy: Send + Sync {

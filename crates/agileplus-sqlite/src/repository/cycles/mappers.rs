@@ -1,6 +1,7 @@
+use agileplus_domain::domain::cycle::Cycle;
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::state_machine::FeatureState;
 use rusqlite::Row;
-
-use agileplus_domain::domain::{cycle::Cycle, feature::Feature, state_machine::FeatureState};
 
 fn parse_datetime(
     value: &str,

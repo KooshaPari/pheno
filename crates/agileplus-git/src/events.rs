@@ -1,7 +1,8 @@
 //! NATS event publishing for git observer events.
 
-use crate::observer::GitEvent;
 use serde::Serialize;
+
+use crate::observer::GitEvent;
 
 /// Subject prefix for all git events.
 pub const GIT_SUBJECT_PREFIX: &str = "agileplus.git";

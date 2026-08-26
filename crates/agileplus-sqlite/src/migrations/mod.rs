@@ -3,9 +3,8 @@
 //! Migrations are embedded as SQL files and applied in order on startup.
 //! Applied migrations are tracked in the `_migrations` meta table.
 
-use rusqlite::{Connection, Result as SqlResult};
-
 use agileplus_domain::error::DomainError;
+use rusqlite::{Connection, Result as SqlResult};
 
 // Embedded SQL migrations
 const MIGRATION_001: &str = include_str!("001_create_features.sql");

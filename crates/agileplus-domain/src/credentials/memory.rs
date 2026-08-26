@@ -65,8 +65,7 @@ impl CredentialStore for InMemoryCredentialStore {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::credentials::keys;
-    use crate::credentials::store;
+    use crate::credentials::{keys, store};
 
     #[test]
     fn in_memory_set_get_delete() {

@@ -1,5 +1,9 @@
 //! Terminal UI rendering with ratatui
 
+use std::io::Stdout;
+use std::sync::mpsc::Receiver;
+use std::time::{Duration, Instant};
+
 use anyhow::Result;
 use ratatui::backend::CrosstermBackend;
 use ratatui::layout::{Alignment, Constraint, Direction, Layout, Rect};
@@ -7,9 +11,6 @@ use ratatui::style::{Color, Modifier, Style, Stylize};
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Block, BorderType, Borders, Gauge, Paragraph, Sparkline};
 use ratatui::Terminal;
-use std::io::Stdout;
-use std::sync::mpsc::Receiver;
-use std::time::{Duration, Instant};
 
 /// Data to display on the TUI dashboard
 pub struct DashboardData {
@@ -54,8 +55,9 @@ pub fn run_event_loop<T>(
     duration_secs: u64,
     dismiss_flag: std::sync::Arc<std::sync::atomic::AtomicBool>,
 ) -> Result<()> {
-    use crossterm::event::{self, Event, KeyCode};
     use std::sync::atomic::Ordering;
+
+    use crossterm::event::{self, Event, KeyCode};
 
     let start = Instant::now();
     let mut fps_history: Vec<f64> = Vec::with_capacity(60);

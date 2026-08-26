@@ -131,10 +131,11 @@ criterion_main!(benches);
 #[cfg(test)]
 #[allow(unused_imports, dead_code)]
 mod tests {
-    use super::seed_features;
     use agileplus_benchmarks::helpers::make_in_memory_adapter;
     use agileplus_domain::domain::state_machine::FeatureState;
     use agileplus_sqlite::repository::features as feat_repo;
+
+    use super::seed_features;
 
     #[test]
     fn list_100_features_smoke() {

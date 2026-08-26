@@ -5,7 +5,8 @@
 
 use std::path::{Path, PathBuf};
 
-use agileplus_domain::{error::DomainError, ports::WorktreeInfo};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::WorktreeInfo;
 use git2::WorktreeAddOptions;
 
 use crate::{git_err, GitVcsAdapter};

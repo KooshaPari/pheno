@@ -194,8 +194,9 @@ fn extract_string_array(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use tempfile::TempDir;
+
+    use super::*;
 
     fn create_test_files() -> (TempDir, String, String) {
         let dir = TempDir::new().unwrap();

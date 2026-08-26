@@ -4,10 +4,11 @@
 //!
 //! Traceability: WP14-T088
 
+use std::path::PathBuf;
+
 use chrono::{DateTime, Utc};
 use clap::Args;
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
 
 // ---------------------------------------------------------------------------
 // CLI argument types

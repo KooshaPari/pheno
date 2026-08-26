@@ -1,11 +1,12 @@
 //! Integration tests for casbin backend in phenotype-policy-engine.
 #![cfg(feature = "casbin-backend")]
 
+use std::fs;
+
 use phenotype_policy_engine::casbin_backend::{
     evaluation_context_to_casbin_request, evaluation_context_to_casbin_requests, CasbinBackend,
     CasbinRequest, PolicyBackend,
 };
-use std::fs;
 use tempfile::TempDir;
 
 fn create_test_model_and_policy() -> (TempDir, String, String) {

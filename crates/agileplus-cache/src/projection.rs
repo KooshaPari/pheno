@@ -1,10 +1,12 @@
 //! Projection cache for Feature and WorkPackage state.
 
-use crate::store::{CacheStore, RedisCacheStore};
+use std::sync::Arc;
+
 use agileplus_domain::domain::feature::Feature;
 use agileplus_domain::domain::work_package::WorkPackage;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+
+use crate::store::{CacheStore, RedisCacheStore};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ProjectionError {

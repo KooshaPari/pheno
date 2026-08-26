@@ -1,11 +1,10 @@
 use agileplus_domain::domain::state_machine::FeatureState;
 use anyhow::Result;
 
-use crate::{
-    content_hash::compute_content_hash, state_mapper::PlaneStateMapper, webhook::PlaneWebhookIssue,
-};
-
 use super::{InboundOutcome, LocalEntityStore};
+use crate::content_hash::compute_content_hash;
+use crate::state_mapper::PlaneStateMapper;
+use crate::webhook::PlaneWebhookIssue;
 
 pub(super) fn handle_create<S: LocalEntityStore>(
     mapper: &PlaneStateMapper,

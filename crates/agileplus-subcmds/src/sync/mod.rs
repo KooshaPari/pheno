@@ -21,6 +21,7 @@ mod status;
 mod tests;
 mod types;
 
+use anyhow::Result;
 pub use args::{
     SyncArgs, SyncAutoArgs, SyncPullArgs, SyncPushArgs, SyncResolveArgs, SyncStatusArgs,
     SyncSubcommand,
@@ -35,8 +36,6 @@ pub use types::{
     ConflictResolution, SyncConflict, SyncDirection, SyncItemOutcome, SyncReport, SyncReportEntry,
     SyncStatusRow,
 };
-
-use anyhow::Result;
 
 /// Dispatch `sync` subcommands.
 pub async fn run_sync(args: SyncArgs) -> Result<()> {

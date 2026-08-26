@@ -8,18 +8,17 @@
 //!
 //! Traceability: WP11-T066
 
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::ports::observability::ObservabilityPort;
+use agileplus_domain::ports::storage::StoragePort;
+use agileplus_domain::ports::vcs::VcsPort;
 use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
-
-use agileplus_domain::domain::feature::Feature;
-use agileplus_domain::domain::state_machine::FeatureState;
-use agileplus_domain::ports::{
-    observability::ObservabilityPort, storage::StoragePort, vcs::VcsPort,
-};
 
 use crate::error::{domain_error, not_found, ApiError, ApiResponse};
 use crate::responses::FeatureResponse;

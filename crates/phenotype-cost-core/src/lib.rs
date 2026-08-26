@@ -46,9 +46,10 @@ pub use types::{Complexity, CostUnit};
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::cmp::Ordering;
     use std::ops::{Add, Div};
+
+    use super::*;
 
     #[test]
     fn test_cost_creation() {

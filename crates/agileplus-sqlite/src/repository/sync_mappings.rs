@@ -2,11 +2,10 @@
 //!
 //! Traceability: WP06-T033
 
-use chrono::Utc;
-use rusqlite::{params, Connection};
-
 use agileplus_domain::domain::sync_mapping::{SyncDirection, SyncMapping};
 use agileplus_domain::error::DomainError;
+use chrono::Utc;
+use rusqlite::{params, Connection};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

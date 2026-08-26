@@ -140,9 +140,10 @@ fn build_acceptance_checklist(criteria: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_domain::domain::feature::Feature;
     use agileplus_domain::domain::work_package::WorkPackage;
+
+    use super::*;
 
     fn make_feature() -> Feature {
         Feature::new("my-feature", "My Feature", [0u8; 32], Some("main"))

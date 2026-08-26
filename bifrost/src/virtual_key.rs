@@ -33,12 +33,14 @@
 
 #![cfg(feature = "virtual-keys")]
 
-use crate::error::{Error, Result};
-use rusqlite::{params, Connection};
 use std::path::Path;
 use std::time::{Duration, SystemTime};
+
+use rusqlite::{params, Connection};
 use tracing::debug;
 use uuid::Uuid;
+
+use crate::error::{Error, Result};
 
 /// Maximum active keys per provider (defense against runaway key generation).
 const MAX_KEYS_PER_PROVIDER: u32 = 10_000;

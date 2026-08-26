@@ -1,10 +1,8 @@
-use anyhow::anyhow;
-use anyhow::{Context, Result};
-
 use agileplus_domain::domain::cycle::CycleState;
 use agileplus_domain::error::DomainError;
 use agileplus_domain::ports::StoragePort;
 use agileplus_plane::maybe_sync_cycle_from_env;
+use anyhow::{anyhow, Context, Result};
 
 use crate::commands::cycle::args::TransitionArgs;
 use crate::commands::cycle::{find_cycle_by_name, prior_state_label};

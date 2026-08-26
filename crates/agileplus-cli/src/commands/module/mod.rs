@@ -3,9 +3,8 @@
 //! Provides CRUD and association management for Module entities.
 //! Traces to: FR-M01, FR-M02, FR-M04, FR-M07 / WP03-T014..T018
 
-use anyhow::Result;
-
 use agileplus_domain::ports::StoragePort;
+use anyhow::Result;
 
 pub mod args;
 pub mod assign;

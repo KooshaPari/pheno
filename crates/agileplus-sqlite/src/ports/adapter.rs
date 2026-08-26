@@ -6,9 +6,8 @@
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
-use rusqlite::Connection;
-
 use agileplus_domain::error::DomainError;
+use rusqlite::Connection;
 
 use crate::migrations::MigrationRunner;
 

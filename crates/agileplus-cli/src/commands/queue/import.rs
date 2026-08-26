@@ -2,12 +2,11 @@
 
 use std::path::Path;
 
-use anyhow::Result;
-use serde::Deserialize;
-
 use agileplus_domain::domain::backlog::BacklogItem;
 use agileplus_domain::ports::ContentStoragePort;
 use agileplus_triage::TriageClassifier;
+use anyhow::Result;
+use serde::Deserialize;
 
 use super::parsing;
 

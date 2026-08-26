@@ -1,11 +1,13 @@
 // Policy engine for managing and evaluating policies.
 
+use std::sync::Arc;
+
+use dashmap::DashMap;
+
 use crate::context::EvaluationContext;
 use crate::error::PolicyEngineError;
 use crate::policy::{EvaluablePolicy, Policy};
 use crate::result::PolicyResult;
-use dashmap::DashMap;
-use std::sync::Arc;
 
 // Thread-safe policy engine for managing and evaluating policies.
 pub struct PolicyEngine {

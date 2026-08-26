@@ -11,19 +11,18 @@ mod project;
 #[cfg(test)]
 mod tests;
 
+use std::future::Future;
+use std::pin::Pin;
+use std::time::{Duration, Instant};
+
 pub use checkers::{
     CacheHealthChecker, DatabaseHealthChecker, ExternalServiceHealthChecker, MemoryHealthChecker,
 };
-
 pub use project::{
     DimensionScore, Finding, HealthBand, HealthDimension, HealthSummary, LanguageStack,
     ProjectHealth, Severity,
 };
-
 use serde::Serialize;
-use std::future::Future;
-use std::pin::Pin;
-use std::time::{Duration, Instant};
 
 /// Overall status of a health check.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

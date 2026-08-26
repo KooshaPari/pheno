@@ -22,6 +22,7 @@ mod types;
 mod up;
 mod workspace;
 
+use anyhow::Result;
 pub use args::{
     PlatformArgs, PlatformDownArgs, PlatformLogsArgs, PlatformStatusArgs, PlatformSubcommand,
     PlatformUpArgs,
@@ -31,8 +32,6 @@ pub use logs::run_platform_logs;
 pub use status::run_platform_status;
 pub use types::{OverallStatus, PlatformHealth, ServiceHealth, ServiceStatus};
 pub use up::run_platform_up;
-
-use anyhow::Result;
 
 /// Run a `platform` subcommand.
 pub fn run_platform(args: PlatformArgs) -> Result<()> {

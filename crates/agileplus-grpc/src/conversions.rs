@@ -64,9 +64,10 @@ pub fn audit_entry_to_proto(e: DomainAuditEntry) -> ProtoAuditEntry {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_domain::domain::feature::Feature;
     use agileplus_domain::domain::work_package::WorkPackage;
+
+    use super::*;
 
     #[test]
     fn feature_conversion() {

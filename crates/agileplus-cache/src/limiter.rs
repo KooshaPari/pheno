@@ -1,7 +1,8 @@
 //! Redis-based sliding window rate limiter.
 
-use crate::pool::CachePool;
 use redis::AsyncCommands;
+
+use crate::pool::CachePool;
 
 #[derive(Debug, thiserror::Error)]
 pub enum LimiterError {

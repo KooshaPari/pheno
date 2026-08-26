@@ -1,7 +1,8 @@
 //! Point-in-time snapshot of git repository state using git2.
 
-use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GitSnapshot {

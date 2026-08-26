@@ -1,5 +1,6 @@
-use crate::store::{GraphError, GraphStore};
 use serde_json::json;
+
+use crate::store::{GraphError, GraphStore};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GraphHealth {

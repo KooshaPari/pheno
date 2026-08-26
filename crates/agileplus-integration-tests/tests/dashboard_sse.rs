@@ -4,11 +4,10 @@
 //!
 //! Traceability: WP19-T109
 
-use agileplus_integration_tests::common::fixtures::feature_create_payload;
-
 #[cfg(feature = "integration")]
 use std::time::Duration;
 
+use agileplus_integration_tests::common::fixtures::feature_create_payload;
 #[cfg(feature = "integration")]
 use agileplus_integration_tests::common::harness::{is_process_compose_installed, TestHarness};
 

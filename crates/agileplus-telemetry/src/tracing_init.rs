@@ -1,6 +1,8 @@
 //! Shared tracing bootstrap used by AgilePlus binaries.
 
-use tracing_subscriber::{prelude::*, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::prelude::*;
+use tracing_subscriber::util::SubscriberInitExt;
+use tracing_subscriber::EnvFilter;
 
 /// Initialize the process-wide tracing subscriber.
 ///

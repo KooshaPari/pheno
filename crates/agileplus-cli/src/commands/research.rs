@@ -3,13 +3,12 @@
 //! Supports pre-specify (codebase scan) and post-specify (feasibility analysis) modes.
 //! Traceability: FR-002 / WP11-T062
 
-use anyhow::{Context, Result};
-use chrono::Utc;
-use clap::ValueEnum;
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
+use anyhow::{Context, Result};
+use chrono::Utc;
+use clap::ValueEnum;
 
 use super::governance::{enforce_governance, load_constitution, validate_spec_consistency};
 

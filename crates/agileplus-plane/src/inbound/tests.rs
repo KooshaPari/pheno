@@ -3,10 +3,8 @@ use std::collections::HashMap;
 use agileplus_domain::domain::state_machine::FeatureState;
 
 use super::{InboundOutcome, InboundSync, LocalEntityStore};
-use crate::{
-    state_mapper::PlaneStateMapper,
-    webhook::{PlaneInboundEvent, PlaneWebhookCycle, PlaneWebhookIssue, PlaneWebhookModule},
-};
+use crate::state_mapper::PlaneStateMapper;
+use crate::webhook::{PlaneInboundEvent, PlaneWebhookCycle, PlaneWebhookIssue, PlaneWebhookModule};
 
 struct MockStore {
     hashes: HashMap<String, String>,

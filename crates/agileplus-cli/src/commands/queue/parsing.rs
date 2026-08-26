@@ -1,8 +1,7 @@
 use std::str::FromStr;
 
-use anyhow::Result;
-
 use agileplus_domain::domain::backlog::{BacklogPriority, BacklogSort, BacklogStatus, Intent};
+use anyhow::Result;
 
 pub(crate) fn parse_intent(value: Option<String>) -> Result<Intent> {
     let value = value.unwrap_or_else(|| "task".to_string());

@@ -8,13 +8,12 @@
 //!
 //! Traceability: WP16 / T098
 
+use agileplus_domain::domain::event::Event;
 use async_nats::jetstream;
 use futures_util::StreamExt as _;
 use serde::{Deserialize, Serialize};
 use tokio::time::{sleep, Duration};
 use tracing::{debug, error, info, warn};
-
-use agileplus_domain::domain::event::Event;
 
 use crate::discovery::PeerInfo;
 use crate::error::SyncError;

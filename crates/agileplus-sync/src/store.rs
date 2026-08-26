@@ -2,10 +2,9 @@
 //!
 //! Traceability: FR-SYNC-STORE / WP09-T056
 
+use agileplus_domain::domain::sync_mapping::SyncMapping;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
-
-use agileplus_domain::domain::sync_mapping::SyncMapping;
 
 use crate::error::SyncError;
 
@@ -46,8 +45,9 @@ pub trait SyncMappingStore: Send + Sync {
 
 #[cfg(test)]
 pub mod mem {
-    use super::*;
     use std::sync::{Arc, Mutex};
+
+    use super::*;
 
     #[derive(Clone, Default)]
     pub struct InMemoryStore {
@@ -121,9 +121,10 @@ pub mod mem {
 
 #[cfg(test)]
 mod tests {
+    use agileplus_domain::domain::sync_mapping::SyncMapping;
+
     use super::mem::InMemoryStore;
     use super::*;
-    use agileplus_domain::domain::sync_mapping::SyncMapping;
 
     #[tokio::test]
     async fn create_and_retrieve() {

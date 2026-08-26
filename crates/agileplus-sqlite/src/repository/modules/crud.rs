@@ -1,13 +1,9 @@
+use agileplus_domain::domain::module::{Module, ModuleWithFeatures};
+use agileplus_domain::error::DomainError;
 use rusqlite::{params, Connection};
 
-use agileplus_domain::{
-    domain::module::{Module, ModuleWithFeatures},
-    error::DomainError,
-};
-
-use crate::repository::features::map_err;
-
 use super::mappers::{row_to_feature, row_to_module, OptionalExt};
+use crate::repository::features::map_err;
 
 /// Create a module. Returns the new row ID.
 ///

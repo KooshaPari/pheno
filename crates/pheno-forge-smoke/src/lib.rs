@@ -9,11 +9,12 @@
 //! All calls ultimately route through the loaded cdylib, so the smoke
 //! binary never has a hard link dependency on `libpheno_bridge`.
 
-use anyhow::{anyhow, Context, Result};
-use libloading::Library;
 use std::ffi::{CStr, CString};
 use std::fmt;
 use std::os::raw::{c_char, c_int, c_void};
+
+use anyhow::{anyhow, Context, Result};
+use libloading::Library;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -131,7 +132,10 @@ mod tests {
         assert!(result.is_err());
         let err = result.unwrap_err();
         let msg = format!("{:#}", err);
-        assert!(msg.contains("nonexistent"), "error should mention path: {msg}");
+        assert!(
+            msg.contains("nonexistent"),
+            "error should mention path: {msg}"
+        );
     }
 
     #[test]
@@ -245,8 +249,10 @@ pub struct Bridge {
     f_last_error: unsafe extern "C" fn() -> *const c_char,
     f_string_free: unsafe extern "C" fn(*mut c_char),
     f_memory_new: unsafe extern "C" fn(*const c_char) -> *mut c_void,
-    f_memory_store: unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char, *const c_char) -> c_int,
-    f_memory_recall: unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char, *mut *mut c_char) -> c_int,
+    f_memory_store:
+        unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char, *const c_char) -> c_int,
+    f_memory_recall:
+        unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char, *mut *mut c_char) -> c_int,
     f_memory_forget: unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char) -> c_int,
     f_memory_free: unsafe extern "C" fn(*mut c_void),
 }
@@ -270,22 +276,48 @@ impl Bridge {
             macro_rules! sym {
                 ($name:literal, $ty:ty) => {{
                     let s = std::ffi::CString::new($name).unwrap();
-                    *lib.get::<$ty>(s.as_bytes())
-                        .map_err(|e| anyhow!(SmokeError::SymbolNotFound {
+                    *lib.get::<$ty>(s.as_bytes()).map_err(|e| {
+                        anyhow!(SmokeError::SymbolNotFound {
                             name: $name.to_owned(),
                             cause: e.to_string(),
-                        }))?
+                        })
+                    })?
                 }};
             }
 
             Ok(Self {
-                f_version: sym!("pheno_bridge_version", unsafe extern "C" fn() -> *const c_char),
+                f_version: sym!(
+                    "pheno_bridge_version",
+                    unsafe extern "C" fn() -> *const c_char
+                ),
                 f_last_error: sym!("pheno_last_error", unsafe extern "C" fn() -> *const c_char),
                 f_string_free: sym!("pheno_string_free", unsafe extern "C" fn(*mut c_char)),
-                f_memory_new: sym!("pheno_memory_new", unsafe extern "C" fn(*const c_char) -> *mut c_void),
-                f_memory_store: sym!("pheno_memory_store", unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char, *const c_char) -> c_int),
-                f_memory_recall: sym!("pheno_memory_recall", unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char, *mut *mut c_char) -> c_int),
-                f_memory_forget: sym!("pheno_memory_forget", unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char) -> c_int),
+                f_memory_new: sym!(
+                    "pheno_memory_new",
+                    unsafe extern "C" fn(*const c_char) -> *mut c_void
+                ),
+                f_memory_store: sym!(
+                    "pheno_memory_store",
+                    unsafe extern "C" fn(
+                        *mut c_void,
+                        *const c_char,
+                        *const c_char,
+                        *const c_char,
+                    ) -> c_int
+                ),
+                f_memory_recall: sym!(
+                    "pheno_memory_recall",
+                    unsafe extern "C" fn(
+                        *mut c_void,
+                        *const c_char,
+                        *const c_char,
+                        *mut *mut c_char,
+                    ) -> c_int
+                ),
+                f_memory_forget: sym!(
+                    "pheno_memory_forget",
+                    unsafe extern "C" fn(*mut c_void, *const c_char, *const c_char) -> c_int
+                ),
                 f_memory_free: sym!("pheno_memory_free", unsafe extern "C" fn(*mut c_void)),
                 _lib: lib,
             })
@@ -339,7 +371,13 @@ impl Bridge {
         unsafe { (self.f_memory_free)(handle.0) };
     }
 
-    pub fn store(&self, handle: MemoryHandle, scope: Scope, key: &str, value: &MemoryValue) -> Result<()> {
+    pub fn store(
+        &self,
+        handle: MemoryHandle,
+        scope: Scope,
+        key: &str,
+        value: &MemoryValue,
+    ) -> Result<()> {
         let scope_c = CString::new(scope.label()).map_err(|e| anyhow!("scope label: {}", e))?;
         let key_c = CString::new(key).map_err(|e| anyhow!("key contained null: {}", e))?;
         let (text, _kind) = match value {
@@ -373,7 +411,12 @@ impl Bridge {
         let mut out: *mut c_char = std::ptr::null_mut();
         // SAFETY: c_* are valid C strings; out is a valid output pointer.
         let rc = unsafe {
-            (self.f_memory_recall)(handle.0, scope_c.as_ptr(), query_c.as_ptr(), &mut out as *mut *mut c_char)
+            (self.f_memory_recall)(
+                handle.0,
+                scope_c.as_ptr(),
+                query_c.as_ptr(),
+                &mut out as *mut *mut c_char,
+            )
         };
         if rc == 0 && !out.is_null() {
             // SAFETY: out is a heap-allocated c_string returned by the bridge.
@@ -396,9 +439,7 @@ impl Bridge {
         let key_c = CString::new(key).map_err(|e| anyhow!("key contained null: {}", e))?;
 
         // SAFETY: c_* are valid C strings; handle is non-null.
-        let rc = unsafe {
-            (self.f_memory_forget)(handle.0, scope_c.as_ptr(), key_c.as_ptr())
-        };
+        let rc = unsafe { (self.f_memory_forget)(handle.0, scope_c.as_ptr(), key_c.as_ptr()) };
         if rc == 0 {
             Ok(())
         } else {

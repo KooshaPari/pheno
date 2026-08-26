@@ -1,5 +1,6 @@
-use phenotype_time::DurationExt;
 use std::time::Duration;
+
+use phenotype_time::DurationExt;
 
 #[test]
 fn format_human_zero_seconds() {

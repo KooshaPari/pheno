@@ -2,8 +2,7 @@
 
 use std::time::Duration;
 
-use tokio::signal;
-use tokio::time;
+use tokio::{signal, time};
 use tracing::{info, warn};
 
 use crate::metrics::{self, names, MetricsHook, NoopMetricsHook};

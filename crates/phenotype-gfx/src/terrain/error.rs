@@ -6,6 +6,7 @@
 //! enum to be `PartialEq` for test assertions without comparing internals.
 
 use std::io;
+
 use thiserror::Error;
 
 #[derive(Debug, Error)]

@@ -2,19 +2,17 @@
 //!
 //! Traceability: WP06-T031
 
+use agileplus_domain::domain::backlog::{
+    BacklogFilters, BacklogItem, BacklogPriority, BacklogStatus,
+};
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::domain::work_package::{WorkPackage, WpDependency, WpState};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::ContentStoragePort;
+
 use crate::ports::adapter::SqliteStorageAdapter;
 use crate::repository::{backlog, features, work_packages};
-
-use agileplus_domain::{
-    domain::{
-        backlog::{BacklogFilters, BacklogItem, BacklogPriority, BacklogStatus},
-        feature::Feature,
-        state_machine::FeatureState,
-        work_package::{WorkPackage, WpDependency, WpState},
-    },
-    error::DomainError,
-    ports::ContentStoragePort,
-};
 
 #[async_trait::async_trait]
 impl ContentStoragePort for SqliteStorageAdapter {

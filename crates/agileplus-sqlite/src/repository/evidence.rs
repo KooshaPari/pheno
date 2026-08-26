@@ -1,11 +1,8 @@
 //! Evidence repository — CRUD for the `evidence` table.
 
+use agileplus_domain::domain::governance::{Evidence, EvidenceType};
+use agileplus_domain::error::DomainError;
 use rusqlite::{params, Connection, Row};
-
-use agileplus_domain::{
-    domain::governance::{Evidence, EvidenceType},
-    error::DomainError,
-};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

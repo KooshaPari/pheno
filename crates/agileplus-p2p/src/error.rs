@@ -3,7 +3,6 @@
 //! Uses phenotype-error-core for canonical error types.
 
 pub use phenotype_error_core::{DomainError, RepositoryError, StorageError};
-
 use thiserror::Error;
 
 /// Errors that occur during peer discovery via Tailscale.

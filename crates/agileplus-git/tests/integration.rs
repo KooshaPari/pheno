@@ -3,10 +3,11 @@
 //!
 //! Traceability: WP07-T043
 
+use std::path::Path;
+
 use agileplus_domain::ports::VcsPort;
 use agileplus_git::GitVcsAdapter;
 use git2::{Repository, Signature};
-use std::path::Path;
 use tempfile::TempDir;
 
 // ---- Test harness ----

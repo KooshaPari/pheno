@@ -100,9 +100,10 @@ pub fn apply_resolution(
 
 #[cfg(test)]
 mod tests {
+    use serde_json::json;
+
     use super::*;
     use crate::conflict::SyncConflict;
-    use serde_json::json;
 
     fn make_conflict() -> SyncConflict {
         SyncConflict::new(

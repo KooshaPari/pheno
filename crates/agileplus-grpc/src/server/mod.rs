@@ -7,15 +7,13 @@ use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::Arc;
 
-use tonic::transport::Server;
-use tonic::{Request, Response, Status};
-use tracing::info;
-
 use agileplus_domain::domain::audit::AuditChain;
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{AgentPort, ObservabilityPort, ReviewPort, StoragePort, VcsPort};
+use agileplus_proto::agileplus::v1::agile_plus_core_service_server::{
+    AgilePlusCoreService, AgilePlusCoreServiceServer,
+};
 use agileplus_proto::agileplus::v1::{
-    agile_plus_core_service_server::{AgilePlusCoreService, AgilePlusCoreServiceServer},
     CheckGovernanceGateRequest, CheckGovernanceGateResponse, CommandResponse,
     DispatchCommandRequest, DispatchCommandResponse, GateViolation as ProtoGateViolation,
     GetAuditTrailRequest, GetAuditTrailResponse, GetFeatureRequest, GetFeatureResponse,
@@ -24,6 +22,9 @@ use agileplus_proto::agileplus::v1::{
     ListWorkPackagesRequest, ListWorkPackagesResponse, VerifyAuditChainRequest,
     VerifyAuditChainResponse,
 };
+use tonic::transport::Server;
+use tonic::{Request, Response, Status};
+use tracing::info;
 
 use crate::conversions::{audit_entry_to_proto, feature_to_proto, wp_to_proto};
 use crate::event_bus::EventBus;

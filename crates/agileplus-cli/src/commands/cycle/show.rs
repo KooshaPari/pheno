@@ -1,8 +1,8 @@
+use agileplus_domain::ports::StoragePort;
 use anyhow::{Context, Result};
 
 use crate::commands::cycle::args::ShowArgs;
 use crate::commands::cycle::{find_cycle_by_name, find_module_slug};
-use agileplus_domain::ports::StoragePort;
 
 // ---------------------------------------------------------------------------
 // T021: show

@@ -1,7 +1,6 @@
-use rusqlite::{params, Connection};
-
 use agileplus_domain::domain::module::ModuleFeatureTag;
 use agileplus_domain::error::DomainError;
+use rusqlite::{params, Connection};
 
 use crate::repository::features::map_err;
 

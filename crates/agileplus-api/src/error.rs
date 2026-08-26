@@ -5,10 +5,9 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
-use serde_json::json;
-
 pub use phenotype_error_core::ApiError;
 use phenotype_error_core::DomainError;
+use serde_json::json;
 
 /// Response wrapper for ApiError that implements axum's `IntoResponse`.
 #[derive(Debug)]

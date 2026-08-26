@@ -5,9 +5,6 @@
 //! transitions the feature state to `planned`.
 //! Traceability: FR-003, FR-038, FR-039 / WP12-T066, T067, T068
 
-use anyhow::{Context, Result};
-use chrono::Utc;
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::governance::{
     EvidenceRequirement, EvidenceType, GovernanceContract, GovernanceRule,
@@ -15,6 +12,8 @@ use agileplus_domain::domain::governance::{
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::domain::work_package::{DependencyType, WorkPackage, WpDependency};
 use agileplus_domain::ports::{StoragePort, VcsPort};
+use anyhow::{Context, Result};
+use chrono::Utc;
 
 use super::scheduler::Scheduler;
 use super::scope::{build_overlap_graph, detect_file_scope};

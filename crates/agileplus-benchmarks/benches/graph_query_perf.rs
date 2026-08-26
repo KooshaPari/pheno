@@ -179,8 +179,9 @@ criterion_main!(benches);
 #[cfg(test)]
 #[allow(unused_imports)]
 mod tests {
-    use super::{make_store, seed_features};
     use agileplus_graph::{GraphQueries, NodeStore, RelationshipStore};
+
+    use super::{make_store, seed_features};
 
     #[tokio::test]
     async fn create_and_get_feature_smoke() {

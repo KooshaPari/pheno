@@ -4,23 +4,23 @@
 //! classification) with the drift monitor, multi-monitor calibration store,
 //! and privacy manager. Surfaces all state to the TUI dashboard.
 
-use anyhow::Result;
-use eyetracker_inference::{
-    accessibility::{AccessibilityAction, AccessibilityManager},
-    classification::GazeEvent,
-    drift_monitor::{DriftMonitor, DriftMonitorConfig, DriftSeverity, RecalibrationEvent},
-    multi_monitor::{detect_active_display, MultiMonitorCalibration},
-    privacy::{PrivacyManager, PrivacyMode},
-    PipelineConfig, TrackingPipeline, TrackingResult,
-};
-use ratatui::Terminal;
 use std::io::Stdout;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc;
 use std::time::Instant;
 
-use crate::mouse;
-use crate::ui;
+use anyhow::Result;
+use eyetracker_inference::accessibility::{AccessibilityAction, AccessibilityManager};
+use eyetracker_inference::classification::GazeEvent;
+use eyetracker_inference::drift_monitor::{
+    DriftMonitor, DriftMonitorConfig, DriftSeverity, RecalibrationEvent,
+};
+use eyetracker_inference::multi_monitor::{detect_active_display, MultiMonitorCalibration};
+use eyetracker_inference::privacy::{PrivacyManager, PrivacyMode};
+use eyetracker_inference::{PipelineConfig, TrackingPipeline, TrackingResult};
+use ratatui::Terminal;
+
+use crate::{mouse, ui};
 
 /// Shared state surfaced to the TUI
 struct AppState {

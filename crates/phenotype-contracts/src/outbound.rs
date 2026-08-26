@@ -1,7 +1,8 @@
 //! Outbound ports (driven side) - interfaces for accessing external services.
 
-use crate::error;
 use std::collections::HashMap;
+
+use crate::error;
 
 /// Repository port for persisting and retrieving domain entities.
 pub trait Repository: Send + Sync {

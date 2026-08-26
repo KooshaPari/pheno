@@ -2,24 +2,20 @@
 //!
 //! Traceability: WP06-T030
 
+use agileplus_domain::domain::audit::AuditEntry;
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::governance::{Evidence, GovernanceContract, PolicyRule};
+use agileplus_domain::domain::metric::Metric;
+use agileplus_domain::domain::module::{Module, ModuleFeatureTag, ModuleWithFeatures};
+use agileplus_domain::domain::state_machine::FeatureState;
+use agileplus_domain::domain::sync_mapping::SyncMapping;
+use agileplus_domain::domain::work_package::{WorkPackage, WpDependency, WpState};
+use agileplus_domain::error::DomainError;
+use agileplus_domain::ports::StoragePort;
+
 use crate::ports::adapter::SqliteStorageAdapter;
 use crate::repository::{
     audit, cycles, features, governance, metrics, modules, projects, sync_mappings, work_packages,
-};
-
-use agileplus_domain::{
-    domain::{
-        audit::AuditEntry,
-        feature::Feature,
-        governance::{Evidence, GovernanceContract, PolicyRule},
-        metric::Metric,
-        module::{Module, ModuleFeatureTag, ModuleWithFeatures},
-        state_machine::FeatureState,
-        sync_mapping::SyncMapping,
-        work_package::{WorkPackage, WpDependency, WpState},
-    },
-    error::DomainError,
-    ports::StoragePort,
 };
 
 #[async_trait::async_trait]

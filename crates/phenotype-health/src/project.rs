@@ -3,9 +3,10 @@
 //! Provides types for tracking project health across documentation,
 //! test coverage, security, dependencies, compliance, and code quality.
 
+use std::collections::HashMap;
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 /// Health dimensions tracked per project
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]

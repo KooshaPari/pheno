@@ -1,9 +1,10 @@
 // Feature/work-package state machine — minimal types for WP04 governance/audit.
 // Full implementation deferred to WP03.
 
-use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

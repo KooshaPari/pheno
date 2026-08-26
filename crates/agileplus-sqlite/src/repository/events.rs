@@ -1,9 +1,8 @@
 //! Event repository — CRUD for the `events` table.
 
-use rusqlite::{params, Connection, Row};
-
 use agileplus_domain::domain::event::Event;
 use agileplus_domain::error::DomainError;
+use rusqlite::{params, Connection, Row};
 
 fn map_err(e: rusqlite::Error) -> DomainError {
     DomainError::Storage(e.to_string())

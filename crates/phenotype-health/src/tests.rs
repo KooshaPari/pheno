@@ -1,9 +1,10 @@
+use std::pin::Pin;
+use std::time::Duration;
+
 use crate::{
     CacheHealthChecker, DatabaseHealthChecker, ExternalServiceHealthChecker, HealthCheckConfig,
     HealthChecker, HealthMonitor, HealthStatus, MemoryHealthChecker,
 };
-use std::pin::Pin;
-use std::time::Duration;
 
 // --- HealthStatus tests ---
 

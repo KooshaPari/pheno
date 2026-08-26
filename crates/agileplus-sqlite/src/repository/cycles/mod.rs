@@ -2,12 +2,9 @@
 //!
 //! Traces to: FR-C01, FR-C02, FR-C03, FR-C04, FR-C05, FR-C07
 
+use agileplus_domain::domain::cycle::{Cycle, CycleFeature, CycleState, CycleWithFeatures};
+use agileplus_domain::error::DomainError;
 use rusqlite::{params, Connection, OptionalExtension};
-
-use agileplus_domain::{
-    domain::cycle::{Cycle, CycleFeature, CycleState, CycleWithFeatures},
-    error::DomainError,
-};
 
 use crate::repository::features::map_err;
 

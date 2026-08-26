@@ -1,5 +1,6 @@
-use super::*;
 use clap::Parser;
+
+use super::*;
 
 /// Wrap ModuleArgs so we can parse it from a top-level binary name.
 #[derive(Debug, clap::Parser)]

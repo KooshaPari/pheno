@@ -9,9 +9,8 @@
 //! concrete wire format (JSON, YAML, binary) and storage backend (file,
 //! PlayerPrefs, cloud save).
 
-use std::fs;
-use std::io;
 use std::path::Path;
+use std::{fs, io};
 
 use serde::{Deserialize, Serialize};
 
@@ -108,9 +107,9 @@ impl PostFxSerializationPort for JsonFilePostFxSerialization {
             ));
         }
         let bytes = fs::read(destination).map_err(|e| match e.kind() {
-            io::ErrorKind::NotFound => PostFxError::InvalidLut(format!(
-                "snapshot file not found: {destination}"
-            )),
+            io::ErrorKind::NotFound => {
+                PostFxError::InvalidLut(format!("snapshot file not found: {destination}"))
+            }
             _ => PostFxError::Io(e),
         })?;
         if bytes.is_empty() {
@@ -127,8 +126,9 @@ impl PostFxSerializationPort for JsonFilePostFxSerialization {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::env;
+
+    use super::*;
 
     fn tmp_path(name: &str) -> String {
         let mut p = env::temp_dir();

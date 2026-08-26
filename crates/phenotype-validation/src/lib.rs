@@ -359,8 +359,7 @@ pub fn required_validator(field: &str) -> FieldValidator {
 // ---------------------------------------------------------------------------
 
 use std::collections::HashMap;
-use std::sync::LazyLock;
-use std::sync::RwLock;
+use std::sync::{LazyLock, RwLock};
 
 static VALIDATOR_REGISTRY: LazyLock<RwLock<ValidatorRegistry>> =
     LazyLock::new(|| RwLock::new(ValidatorRegistry::default()));

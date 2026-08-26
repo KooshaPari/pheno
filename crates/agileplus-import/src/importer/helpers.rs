@@ -1,8 +1,7 @@
-use chrono::Utc;
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::feature::Feature;
 use agileplus_domain::domain::state_machine::FeatureState;
+use chrono::Utc;
 
 pub(super) fn build_import_audit_entry(feature_id: i64, state: &FeatureState) -> AuditEntry {
     let mut entry = AuditEntry {

@@ -1,5 +1,6 @@
-use super::*;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use super::*;
 
 fn make_args(since: Option<&str>, event_type: Option<&str>, actor: Option<&str>) -> EventsArgs {
     EventsArgs {

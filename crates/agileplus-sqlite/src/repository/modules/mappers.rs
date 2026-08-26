@@ -1,6 +1,7 @@
+use agileplus_domain::domain::feature::Feature;
+use agileplus_domain::domain::module::Module;
+use agileplus_domain::domain::state_machine::FeatureState;
 use rusqlite::Row;
-
-use agileplus_domain::domain::{feature::Feature, module::Module, state_machine::FeatureState};
 
 pub(super) fn row_to_module(row: &Row<'_>) -> rusqlite::Result<Module> {
     let id: i64 = row.get(0)?;

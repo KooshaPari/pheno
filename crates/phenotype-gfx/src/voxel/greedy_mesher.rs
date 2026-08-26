@@ -35,11 +35,10 @@ use core::marker::PhantomData;
 
 use crate::voxel::chunk::{ChunkView, CHUNK_EDGE};
 use crate::voxel::cubic_mesher::face_ao;
+pub use crate::voxel::cubic_mesher::CubicVoxel;
 use crate::voxel::lod::LodLevel;
 use crate::voxel::material::MaterialId;
 use crate::voxel::mesh::{MeshBuffer, MeshError, MeshResult, MeshVertex, Mesher};
-
-pub use crate::voxel::cubic_mesher::CubicVoxel;
 
 // ---------------------------------------------------------------------------
 // Mask cell — material + 4-corner AO signature

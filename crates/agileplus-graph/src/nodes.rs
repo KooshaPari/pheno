@@ -1,5 +1,6 @@
-use crate::store::{GraphError, GraphStore};
 use serde_json::json;
+
+use crate::store::{GraphError, GraphStore};
 
 pub struct NodeStore<'a> {
     store: &'a GraphStore,

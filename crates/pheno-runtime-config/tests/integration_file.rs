@@ -5,16 +5,18 @@
 //! timing characteristics. Run explicitly with:
 //!   cargo test --test integration_file -- --ignored
 
-use pheno_runtime_config::Reloadable;
 use std::io::Write;
+
+use pheno_runtime_config::Reloadable;
 use tempfile::NamedTempFile;
 
 #[test]
 #[ignore]
 fn file_config_reloads_on_modify() {
+    use std::time::Duration;
+
     use pheno_runtime_config::file::FileConfig;
     use serde::Deserialize;
-    use std::time::Duration;
 
     #[derive(Deserialize, Debug, PartialEq)]
     struct TestConfig {
@@ -27,9 +29,7 @@ fn file_config_reloads_on_modify() {
     let path = file.path().to_path_buf();
 
     let rt = tokio::runtime::Runtime::new().unwrap();
-    let config = rt.block_on(async {
-        FileConfig::<TestConfig>::new(&path).await.unwrap()
-    });
+    let config = rt.block_on(async { FileConfig::<TestConfig>::new(&path).await.unwrap() });
 
     assert_eq!(config.current().value, 1);
 

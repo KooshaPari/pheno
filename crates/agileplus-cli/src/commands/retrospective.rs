@@ -7,12 +7,11 @@
 
 use std::path::PathBuf;
 
-use anyhow::{Context, Result};
-use chrono::{DateTime, Utc};
-
 use agileplus_domain::domain::audit::{hash_entry, AuditEntry};
 use agileplus_domain::domain::state_machine::FeatureState;
 use agileplus_domain::ports::{StoragePort, VcsPort};
+use anyhow::{Context, Result};
+use chrono::{DateTime, Utc};
 
 /// Arguments for the `retrospective` subcommand.
 #[derive(Debug, clap::Args)]
@@ -485,9 +484,10 @@ async fn get_latest_hash<S: StoragePort>(storage: &S, feature_id: i64) -> [u8; 3
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use agileplus_domain::domain::audit::AuditEntry;
     use chrono::{Duration, Utc};
+
+    use super::*;
 
     fn make_audit(transition: &str, ts: DateTime<Utc>) -> AuditEntry {
         let mut e = AuditEntry {

@@ -7,11 +7,11 @@ mod handlers;
 mod tests;
 mod types;
 
+use anyhow::Result;
 pub use types::{InboundOutcome, LocalEntityStore};
 
-use anyhow::Result;
-
-use crate::{state_mapper::PlaneStateMapper, webhook::PlaneInboundEvent};
+use crate::state_mapper::PlaneStateMapper;
+use crate::webhook::PlaneInboundEvent;
 
 /// Inbound sync processor.
 pub struct InboundSync {

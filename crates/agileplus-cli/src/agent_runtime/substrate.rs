@@ -153,13 +153,15 @@ pub(super) fn terminate_process(pid: u32) -> Result<(), DomainError> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use agileplus_domain::ports::agent::AgentKind;
     use std::io::{Read, Write};
     use std::net::TcpListener;
     use std::path::PathBuf;
     use std::sync::mpsc;
     use std::time::Duration;
+
+    use agileplus_domain::ports::agent::AgentKind;
+
+    use super::*;
 
     fn task() -> AgentTask {
         AgentTask {

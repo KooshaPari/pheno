@@ -1,6 +1,5 @@
-use anyhow::Result;
-
 use agileplus_domain::domain::backlog::BacklogItem;
+use anyhow::Result;
 
 pub(crate) fn print_backlog_items(items: &[BacklogItem], output: &str) -> Result<()> {
     if output == "json" {

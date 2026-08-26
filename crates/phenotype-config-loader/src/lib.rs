@@ -21,8 +21,9 @@
 //! println!("app = {}", cfg.name);
 //! ```
 
-use serde::de::DeserializeOwned;
 use std::path::Path;
+
+use serde::de::DeserializeOwned;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -61,8 +62,9 @@ pub fn load_toml<T: DeserializeOwned>(path: &Path) -> Result<T> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use serde::Deserialize;
+
+    use super::*;
 
     #[derive(Deserialize, Debug, PartialEq)]
     struct TestConfig {

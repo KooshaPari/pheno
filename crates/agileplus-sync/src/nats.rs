@@ -145,8 +145,9 @@ impl NatsSyncBridge {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use serde_json::json;
+
+    use super::*;
 
     #[test]
     fn outbound_command_serialises() {

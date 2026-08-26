@@ -2,12 +2,10 @@
 //!
 //! Traceability: WP08-T047
 
-use axum::{
-    body::Bytes,
-    http::{HeaderMap, StatusCode},
-    response::IntoResponse,
-    Json,
-};
+use axum::body::Bytes;
+use axum::http::{HeaderMap, StatusCode};
+use axum::response::IntoResponse;
+use axum::Json;
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
@@ -227,10 +225,11 @@ pub async fn handle_plane_webhook(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use axum::body::Bytes;
     use hmac::{Hmac, Mac};
     use sha2::Sha256;
+
+    use super::*;
 
     fn make_sig(secret: &[u8], body: &[u8]) -> String {
         let mut mac: Hmac<Sha256> = Hmac::new_from_slice(secret).unwrap();

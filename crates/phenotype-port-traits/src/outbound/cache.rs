@@ -1,7 +1,8 @@
 //! Cache port for caching operations.
 
-use async_trait::async_trait;
 use std::time::Duration;
+
+use async_trait::async_trait;
 
 /// Cache port for key-value caching operations.
 #[async_trait]
