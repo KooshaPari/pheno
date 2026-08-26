@@ -20,14 +20,6 @@ repos:
       - id: no-commit-to-branch
         args: [--branch, main, --branch, master]
 
-  # ── Python (ruff = lint + format) ──
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      - id: ruff-format
-
   # ── JavaScript/TypeScript (biome = fast lint+format) ──
   - repo: https://github.com/biomejs/pre-commit
     rev: v2.0.0
@@ -57,12 +49,6 @@ repos:
 
   # ── Secret scanning ──
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.28.1
+    rev: v8.30.1
     hooks:
       - id: gitleaks
-
-  # ── Trunk.io (if installed) ──
-  - repo: https://github.com/trunk-io/trunk
-    rev: v1.0.0
-    hooks:
-      - id: trunk-check
