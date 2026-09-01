@@ -2,6 +2,8 @@
 
 > Reusable workflows and shared GitHub configurations
 
+[![AI slop inside](https://sladge.net/badge.svg)](https://sladge.net) [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/KooshaPari/pheno/total)](https://github.com/KooshaPari/pheno/releases)
+
 ## Overview
 
 This repository contains reusable GitHub Actions workflows used across the entire Phenotype ecosystem. By centralizing CI/CD configurations, we reduce duplication and ensure consistent quality standards.
